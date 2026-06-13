@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('TEST_NM', 30)->nullable();
             $table->string('DATA_TYP', 2)->nullable();
             $table->string('RESULT_VALUE', 40)->nullable();
-            $table->string('RESULT_FT', 8000)->nullable();
+            $table->text('RESULT_FT')->nullable();
             $table->string('UNIT', 15)->nullable();
             $table->string('FLAG', 2)->nullable();
             $table->string('REF_RANGE', 30)->nullable();

@@ -92,6 +92,50 @@ These are autoloaded via `composer.json` `files` key and are used in controllers
 
 **SQL Server notes:** The legacy schema uses case-sensitive collations. Raw queries using `DB::select()` must account for this. Avoid MySQL-specific syntax (`LIMIT`, backtick identifiers) — use `TOP` and bracket identifiers `[column]` where raw SQL is needed.
 
+### Writing Idempotent Migrations
+
+All migrations must be safe to re-run (e.g. against a database that already has the legacy schema applied). Follow these rules when writing or editing migration files:
+
+1. **`Schema::create` (new tables):** guard with an early-return `hasTable()` check before the `Schema::create` call:
+   ```php
+   public function up(): void
+   {
+       if (Schema::hasTable('patients')) {
+           return;
+       }
+
+       Schema::create('patients', function (Blueprint $table) {
+           // ...
+       });
+   }
+   ```
+
+2. **Views:** use `CREATE OR ALTER VIEW` instead of `CREATE VIEW` in the raw `DB::statement()` SQL.
+
+3. **Stored procedures:** use `CREATE OR ALTER PROCEDURE` (or `PROC`) instead of `CREATE PROCEDURE`/`CREATE PROC`.
+
+4. **Foreign keys (`add_foreign_keys_to_*` migrations):** guard each `$table->foreign(...)` call with a `sys.foreign_keys` existence check via a private helper, early-returning if the constraint already exists:
+   ```php
+   public function up(): void
+   {
+       if ($this->foreignKeyExists('FK_dc_menu_dc_modul')) {
+           return;
+       }
+
+       Schema::table('dc_menu', function (Blueprint $table) {
+           $table->foreign(['id_dc_modul'], 'FK_dc_menu_dc_modul')->references(['id_dc_modul'])->on('dc_modul');
+       });
+   }
+
+   private function foreignKeyExists(string $name): bool
+   {
+       return DB::select('SELECT 1 FROM sys.foreign_keys WHERE name = ?', [$name]) !== [];
+   }
+   ```
+   Remember to `use Illuminate\Support\Facades\DB;`.
+
+5. **Other raw `CREATE` statements** (indexes, triggers, etc.): check `sys.objects`/`sys.indexes` (or the relevant `sys.*` catalog view) for existence before creating, following the same early-return pattern.
+
 ### Directory Guide
 
 | Path | Purpose |
