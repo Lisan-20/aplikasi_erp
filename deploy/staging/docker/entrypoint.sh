@@ -23,6 +23,12 @@ mkdir -p /shared-public
 cp -r /var/www/html/public/. /shared-public/
 chown -R www-data:www-data /shared-public
 
+# Clear any stale bootstrap/cache/config.php that may have been baked into
+# the Docker image or persisted across restarts via the bootstrap_cache volume.
+# This ensures the DB connection timeout (set via DB_TIMEOUT) is picked up
+# before running DB-dependent commands below.
+php artisan config:clear 2>/dev/null || true
+
 # Legacy DB already has 4300+ migrations applied; run any pending ones.
 # Don't let a DB outage abort the entrypoint - log it and keep going so
 # nginx can still serve the published assets above.
