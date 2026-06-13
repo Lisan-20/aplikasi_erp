@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Head, Link, router } from '@inertiajs/react';
-import { Search, User, Edit, FileText, CheckSquare, Settings, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight, UserPlus, ArrowLeft } from 'lucide-react';
+import { User, Edit, FileText, CheckSquare } from 'lucide-react';
 import DashboardLayout from '@/Layouts/DashboardLayout';
 
 export default function DaftarCariPasien({ pasien, filters }) {
@@ -23,6 +23,10 @@ export default function DaftarCariPasien({ pasien, filters }) {
 
     const config = getTypeConfig(type);
 
+    const handleSearch = useCallback(() => {
+        router.get('/registrasi/cari-pasien', { type, topik, filter: filterVal }, { preserveState: true, replace: true });
+    }, [filterVal, topik, type]);
+
     // Auto search timer (debounce)
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -31,11 +35,7 @@ export default function DaftarCariPasien({ pasien, filters }) {
             }
         }, 800); // 800ms debounce
         return () => clearTimeout(timer);
-    }, [filterVal, topik]);
-
-    const handleSearch = () => {
-        router.get('/registrasi/cari-pasien', { type, topik, filter: filterVal }, { preserveState: true, replace: true });
-    };
+    }, [filterVal, filters.filter, filters.topik, handleSearch, topik]);
 
     const handleTopikChange = (e) => {
         setTopik(e.target.value);

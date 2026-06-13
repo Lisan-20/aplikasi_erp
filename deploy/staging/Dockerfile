@@ -45,7 +45,7 @@ RUN composer dump-autoload --optimize --no-dev \
 #######################################
 # Stage 3: Frontend assets (Vite + ESLint)
 #######################################
-FROM node:20-alpine AS node_build
+FROM node:24-alpine AS node_build
 
 WORKDIR /app
 

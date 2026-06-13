@@ -32,8 +32,8 @@ class PasienBaruController extends Controller
         try {
             // Get last no_mr
             $lastMr = DB::table('mt_master_pasien')->max('no_mr');
-            $mrID = (int)$lastMr + 1;
-            $mrIDFormatted = str_pad($mrID, 6, '0', STR_PAD_LEFT);
+            $mrID = (int) $lastMr + 1;
+            $mrIDFormatted = str_pad((string) $mrID, 6, '0', STR_PAD_LEFT);
 
             $data = [
                 'no_mr' => $mrIDFormatted,
@@ -55,10 +55,11 @@ class PasienBaruController extends Controller
             DB::table('mt_master_pasien')->insert($data);
             DB::commit();
 
-            return redirect()->route('registrasi.pasien-baru')->with('success', 'Pasien baru berhasil didaftarkan dengan No. MR: ' . $mrIDFormatted);
+            return redirect()->route('registrasi.pasien-baru')->with('success', 'Pasien baru berhasil didaftarkan dengan No. MR: '.$mrIDFormatted);
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'Gagal mendaftar pasien: ' . $e->getMessage())->withInput();
+
+            return redirect()->back()->with('error', 'Gagal mendaftar pasien: '.$e->getMessage())->withInput();
         }
     }
 }

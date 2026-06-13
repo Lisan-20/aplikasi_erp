@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Inertia\Inertia;
 use Illuminate\Support\Facades\DB;
+use Inertia\Inertia;
 
 class InformasiMedis1Controller extends Controller
 {
@@ -34,7 +34,7 @@ class InformasiMedis1Controller extends Controller
 
         return Inertia::render('Registrasi/JadwalDokter', [
             'jadwal' => $jadwal,
-            'filters' => $request->only(['filter', 'tipeCari'])
+            'filters' => $request->only(['filter', 'tipeCari']),
         ]);
     }
 
@@ -52,9 +52,9 @@ class InformasiMedis1Controller extends Controller
                     $query->where('no_mr', $filter);
                     break;
                 case 'nasabah':
-                    $query->where(function($q) use ($filter) {
+                    $query->where(function ($q) use ($filter) {
                         $q->where('nasabah', 'like', "%{$filter}%")
-                          ->orWhere('perusahaan', 'like', "%{$filter}%");
+                            ->orWhere('perusahaan', 'like', "%{$filter}%");
                     });
                     break;
                 case 'alamat':
@@ -78,7 +78,7 @@ class InformasiMedis1Controller extends Controller
 
         return Inertia::render('Registrasi/RiwayatPasien', [
             'pasien' => $pasien,
-            'filters' => $request->only(['filter', 'topik'])
+            'filters' => $request->only(['filter', 'topik']),
         ]);
     }
 }

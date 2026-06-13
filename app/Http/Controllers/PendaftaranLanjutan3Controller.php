@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Patient;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class PendaftaranLanjutan3Controller extends Controller
@@ -12,9 +12,9 @@ class PendaftaranLanjutan3Controller extends Controller
     {
         // Mock data options for the form
         $patients = Patient::select('id', 'mr_number', 'name')->limit(50)->get();
-        
+
         return Inertia::render('Registrasi/PendaftaranRi', [
-            'patients' => $patients
+            'patients' => $patients,
         ]);
     }
 
@@ -30,13 +30,13 @@ class PendaftaranLanjutan3Controller extends Controller
         if ($request->has('mr_number')) {
             $patient = Patient::where('mr_number', $request->input('mr_number'))->first();
         }
-        
-        if (!$patient) {
+
+        if (! $patient) {
             $patient = Patient::first();
         }
 
         return Inertia::render('Registrasi/EditDataUmum', [
-            'patient' => $patient
+            'patient' => $patient,
         ]);
     }
 

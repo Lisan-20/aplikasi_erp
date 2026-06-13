@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Head, Link } from '@inertiajs/react';
-import { Search, ArrowLeft, CheckCircle, XCircle, Clock, Trash2, Edit } from 'lucide-react';
+import { Search, ArrowLeft, Trash2 } from 'lucide-react';
 import axios from 'axios';
 import '../../../css/pasien-lama.css';
 

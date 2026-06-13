@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Inertia\Inertia;
 use Illuminate\Support\Facades\DB;
+use Inertia\Inertia;
 
 class VerifikasiOnlineController extends Controller
 {
@@ -24,28 +24,28 @@ class VerifikasiOnlineController extends Controller
             $query->where('status_batal', 1);
         }
 
-        if (!empty($search)) {
+        if (! empty($search)) {
             switch ($topic) {
                 case 'nama':
-                    $query->where('nama_pasien', 'LIKE', '%' . $search . '%');
+                    $query->where('nama_pasien', 'LIKE', '%'.$search.'%');
                     break;
                 case 'mr':
                     $query->where('no_mr', $search);
                     break;
                 case 'nasabah':
-                    $query->where(function($q) use ($search) {
-                        $q->where('nasabah', 'LIKE', '%' . $search . '%')
-                          ->orWhere('perusahaan', 'LIKE', '%' . $search . '%');
+                    $query->where(function ($q) use ($search) {
+                        $q->where('nasabah', 'LIKE', '%'.$search.'%')
+                            ->orWhere('perusahaan', 'LIKE', '%'.$search.'%');
                     });
                     break;
                 case 'alamat':
-                    $query->where('almt_ttp_pasien', 'LIKE', '%' . $search . '%');
+                    $query->where('almt_ttp_pasien', 'LIKE', '%'.$search.'%');
                     break;
                 case 'ktp':
-                    $query->where('no_ktp', 'LIKE', '%' . $search . '%');
+                    $query->where('no_ktp', 'LIKE', '%'.$search.'%');
                     break;
                 case 'telpon':
-                    $query->where('tlp_almt_ttp', 'LIKE', '%' . $search . '%');
+                    $query->where('tlp_almt_ttp', 'LIKE', '%'.$search.'%');
                     break;
             }
         }
@@ -57,8 +57,8 @@ class VerifikasiOnlineController extends Controller
             'filters' => [
                 'tab' => $tab,
                 'search' => $search,
-                'topic' => $topic
-            ]
+                'topic' => $topic,
+            ],
         ]);
     }
 }

@@ -1,10 +1,8 @@
-import React, { useState } from 'react';
-import { Head, Link, useForm, usePage } from '@inertiajs/react';
+import React from 'react';
+import { Head, useForm, usePage } from '@inertiajs/react';
 import DashboardLayout from '@/Layouts/DashboardLayout';
 
-export default function PasienBaru({ auth }) {
-    const user = auth?.user || { username: 'Admin', role: 'Registrasi' };
-    
+export default function PasienBaru() {
     // Inertia form
     const { data, setData, post, processing, errors, reset } = useForm({
         nama_pasien: '',

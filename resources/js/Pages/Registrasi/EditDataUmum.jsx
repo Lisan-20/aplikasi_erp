@@ -8,7 +8,7 @@ export default function EditDataUmum({ auth, patient }) {
     const p = patient || {};
     
     // Inertia form
-    const { data, setData, post, processing, errors, reset } = useForm({
+    const { data, setData, post, processing, errors } = useForm({
         no_mr: p.mr_number || '',
         nama_pasien: p.name || '',
         no_ktp: p.id_card_number || '',

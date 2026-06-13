@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Head, Link, useForm, usePage } from '@inertiajs/react';
 
 export default function PendaftaranRi({ auth, patients }) {

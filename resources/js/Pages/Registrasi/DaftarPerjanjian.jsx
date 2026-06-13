@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Head, Link, router } from '@inertiajs/react';
-import { Search, ArrowLeft, Users, Plus, FileText } from 'lucide-react';
+import { Search, ArrowLeft, Users, Plus } from 'lucide-react';
 import '../../../css/pasien-lama.css';
 
 export default function DaftarPerjanjian({ daftar, filters }) {

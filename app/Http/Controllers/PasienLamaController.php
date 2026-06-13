@@ -25,14 +25,14 @@ class PasienLamaController extends Controller
 
         if ($search) {
             $query->where('no_mr', 'like', "%{$search}%")
-                  ->orWhere('nama_pasien', 'like', "%{$search}%");
+                ->orWhere('nama_pasien', 'like', "%{$search}%");
         }
 
         $patients = $query->orderBy('no_mr', 'desc')->paginate(10)->withQueryString();
 
         return Inertia::render('Registrasi/PasienLama', [
             'patients' => $patients,
-            'filters' => $request->only('search')
+            'filters' => $request->only('search'),
         ]);
     }
 }

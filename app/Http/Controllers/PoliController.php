@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
-use Carbon\Carbon;
 
 class PoliController extends Controller
 {
@@ -18,7 +18,7 @@ class PoliController extends Controller
         $query = DB::table('pl_mt_pasien_v')
             ->where(function ($q) {
                 $q->where('status_periksa', 0)
-                  ->orWhereNull('status_periksa');
+                    ->orWhereNull('status_periksa');
             })
             ->where('no_antrian', '>', 0)
             ->where('kode_bagian', '<>', '011801')
@@ -94,7 +94,7 @@ class PoliController extends Controller
                     'no_kunjungan' => $item->no_kunjungan,
                     'nama_pasien' => $item->nama_pasien,
                     'status_pasien' => $item->stat_pasien,
-                    'nasabah' => $nasabah . ($penanggung ? ' / ' . $penanggung : ''),
+                    'nasabah' => $nasabah.($penanggung ? ' / '.$penanggung : ''),
                     'nama_poli' => $item->nama_poli,
                     'nama_dokter' => $item->nama_dokter,
                     'no_antrian' => $item->kode_bagian_poli != '011901' ? $item->no_antrian : '',
@@ -119,8 +119,8 @@ class PoliController extends Controller
             'filters' => [
                 'search' => $search,
                 'kode_bagian' => $kode_bagian,
-                'topik' => $topik
-            ]
+                'topik' => $topik,
+            ],
         ]);
     }
 }

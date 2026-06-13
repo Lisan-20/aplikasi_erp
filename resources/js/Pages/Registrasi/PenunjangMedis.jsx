@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
 import { Head, Link, useForm, usePage } from '@inertiajs/react';
 
-export default function PenunjangMedis({ auth, pasien, nasabahList, perusahaanList, kepemilikanList, bagianList, dokterList }) {
-    const user = auth?.user || { username: 'Admin', role: 'Registrasi' };
-    
+export default function PenunjangMedis({ pasien, nasabahList, perusahaanList, bagianList, dokterList }) {
     // Inertia form
-    const { data, setData, post, get, processing, errors, reset } = useForm({
+    const { data, setData, post, get, processing, reset } = useForm({
         no_mr: pasien?.no_mr || '',
         txt_kode_kelompok: '',
         txt_kode_perusahaan: '',

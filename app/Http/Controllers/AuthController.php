@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
@@ -17,8 +16,9 @@ class AuthController extends Controller
         } catch (\Exception $e) {
             // Keep config null if table does not exist or query fails
         }
+
         return inertia('Auth/Login', [
-            'config' => $config
+            'config' => $config,
         ]);
     }
 
@@ -29,8 +29,8 @@ class AuthController extends Controller
 
         // Mengikuti pola lama: MD5 dengan Case Sensitive (Collate)
         $user = DB::table('dd_user')
-            ->whereRaw("username COLLATE Latin1_General_CS_AS = ?", [$username])
-            ->whereRaw("password COLLATE Latin1_General_CS_AS = ?", [md5($password)])
+            ->whereRaw('username COLLATE Latin1_General_CS_AS = ?', [$username])
+            ->whereRaw('password COLLATE Latin1_General_CS_AS = ?', [md5($password)])
             ->where('status', 0)
             ->first();
 
@@ -45,7 +45,7 @@ class AuthController extends Controller
                 'session_id' => Session::getId(),
                 'login_time' => now(),
                 'ip_address' => $request->ip(),
-                'ko_wil' => $user->ko_wil
+                'ko_wil' => $user->ko_wil,
             ], 'id_log_user');
 
             Session::put('id_log_user', $idLogUser);
@@ -81,6 +81,7 @@ class AuthController extends Controller
         }
 
         Session::flush();
+
         return redirect('/login');
     }
 }

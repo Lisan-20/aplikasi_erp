@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Inertia\Inertia;
 use Illuminate\Support\Facades\DB;
+use Inertia\Inertia;
 
 class PendaftaranLanjutan1Controller extends Controller
 {
@@ -15,22 +15,23 @@ class PendaftaranLanjutan1Controller extends Controller
         if ($no_mr) {
             $pasien = DB::table('mt_master_pasien')->where('no_mr', $no_mr)->first();
         }
-        
+
         $nasabahList = DB::table('mt_nasabah')->whereNotIn('kode_kelompok', [2])->get();
         $perusahaanList = DB::table('mt_perusahaan')->orderBy('nama_perusahaan')->get();
-        
+
         // Some tables might be missing so we use try catch or schema check, but assuming they exist since legacy query uses them
         $kepemilikanList = [];
         try {
             $kepemilikanList = DB::table('tbl_milik')->orderBy('id')->get();
-        } catch (\Exception $e) {}
+        } catch (\Exception $e) {
+        }
 
         $bagianList = DB::table('mt_bagian')
             ->where('kode_bagian', 'like', '05%')
             ->where('status_aktif', 1)
             ->where('group_bag', '<>', 'Group')
             ->get();
-            
+
         $dokterList = DB::table('mt_karyawan')
             ->whereNotNull('kode_dokter')
             ->where('kode_dokter', '<>', 0)
@@ -44,14 +45,14 @@ class PendaftaranLanjutan1Controller extends Controller
             'perusahaanList' => $perusahaanList,
             'kepemilikanList' => $kepemilikanList,
             'bagianList' => $bagianList,
-            'dokterList' => $dokterList
+            'dokterList' => $dokterList,
         ]);
     }
 
     public function storePenunjangMedis(Request $request)
     {
         // Validasi bisa ditambahkan di sini
-        
+
         return redirect('/dashboard/2')->with('success', 'Pendaftaran Penunjang Medis berhasil disimpan.');
     }
 
@@ -62,14 +63,15 @@ class PendaftaranLanjutan1Controller extends Controller
         if ($no_mr) {
             $pasien = DB::table('mt_master_pasien')->where('no_mr', $no_mr)->first();
         }
-        
+
         $nasabahList = DB::table('mt_nasabah')->get();
         $perusahaanList = DB::table('mt_perusahaan')->orderBy('nama_perusahaan')->get();
-        
+
         $kelasList = [];
         try {
             $kelasList = DB::table('mt_klas')->get();
-        } catch (\Exception $e) {}
+        } catch (\Exception $e) {
+        }
 
         $dokterList = DB::table('mt_karyawan')
             ->whereNotNull('kode_dokter')
@@ -83,14 +85,14 @@ class PendaftaranLanjutan1Controller extends Controller
             'nasabahList' => $nasabahList,
             'perusahaanList' => $perusahaanList,
             'kelasList' => $kelasList,
-            'dokterList' => $dokterList
+            'dokterList' => $dokterList,
         ]);
     }
 
     public function storeIgdMalam(Request $request)
     {
         // Validasi bisa ditambahkan di sini
-        
+
         return redirect('/dashboard/2')->with('success', 'Pendaftaran IGD Malam berhasil disimpan.');
     }
 }

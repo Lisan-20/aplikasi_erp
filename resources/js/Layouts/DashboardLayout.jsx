@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Head, Link, usePage } from '@inertiajs/react';
 import { 
     Menu, X, ChevronDown, ChevronRight, 
-    Home, Users, Activity, Settings, 
+    Users, Activity, Settings, 
     FileText, HeartPulse, LogOut, LayoutDashboard,
     Sun, Moon 
 } from 'lucide-react';
@@ -19,9 +19,9 @@ const getMenuIcon = (name) => {
 };
 
 export default function DashboardLayout({ children }) {
-    const { auth, dashboard, url: currentUrl } = usePage().props;
-    // Alternative way to get url if it's not in props: const currentUrl = usePage().url;
-    const activeUrl = currentUrl || usePage().url;
+    const page = usePage();
+    const { auth, dashboard } = page.props;
+    const activeUrl = page.url;
     const user = auth?.user || { username: 'User', role: 'Administrator' };
     const module_name = dashboard?.module_name || 'Dashboard';
     const menus = dashboard?.menus || [];
@@ -33,7 +33,7 @@ export default function DashboardLayout({ children }) {
         try {
             const saved = sessionStorage.getItem('medilink_open_menus');
             return saved ? JSON.parse(saved) : {};
-        } catch (e) {
+        } catch {
             return {};
         }
     });
