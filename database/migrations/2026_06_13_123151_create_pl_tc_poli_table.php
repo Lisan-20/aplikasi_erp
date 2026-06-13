@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('pl_tc_poli')) {
+            return;
+        }
+
         Schema::create('pl_tc_poli', function (Blueprint $table) {
             $table->increments('id_pl_tc_poli');
             $table->integer('kode_poli')->default(0)->comment('Primary Key');

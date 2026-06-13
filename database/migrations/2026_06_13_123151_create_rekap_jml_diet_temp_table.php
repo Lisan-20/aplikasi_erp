@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('rekap_jml_diet_temp')) {
+            return;
+        }
+
         Schema::create('rekap_jml_diet_temp', function (Blueprint $table) {
             $table->integer('tgl')->nullable();
             $table->integer('bln')->nullable();

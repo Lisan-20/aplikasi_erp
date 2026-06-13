@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.tc_trans_kasir_unuion_v
+        DB::statement("CREATE OR ALTER VIEW dbo.tc_trans_kasir_unuion_v
 AS
 SELECT     kode_tc_trans_kasir, seri_kuitansi, no_kuitansi, no_kuitansi_bendahara, no_induk, tgl_jam, no_mr, no_registrasi, bill, tambahan, potongan, tunai, debet, no_debet, kredit, no_kredit, cetak_kartu, nd, 
                       nk, nk_karyawan, nk_perusahaan, nk_askes, no_mr_karyawan, kode_perusahaan, no_batch_cc, kd_bank_cc, kd_bank_dc, no_batch_dc, pembulatan, nama_pasien, pembayar, keterangan, 

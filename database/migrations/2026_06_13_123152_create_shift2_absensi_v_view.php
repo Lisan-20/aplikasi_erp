@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.shift2_absensi_v
+        DB::statement("CREATE OR ALTER VIEW dbo.shift2_absensi_v
 AS
 SELECT     TOP (100) PERCENT dbo.mt_karyawan.nama_pegawai, dbo.mt_karyawan.st_shift, dbo.tc_absensi.npp, dbo.ks_mt_shift.kode_shift, YEAR(dbo.tc_absensi.jam_masuk) AS tahun, 
                       REPLACE(CONVERT(varchar, dbo.tc_absensi.jam_masuk, 108), ':', '') AS jam_masuk, REPLACE(CONVERT(varchar, dbo.ks_mt_shift.dari_jam, 108), ':', '') AS dari_jam, CONVERT(varchar, 

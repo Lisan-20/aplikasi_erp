@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.referensi_man_v
+        DB::statement("CREATE OR ALTER VIEW dbo.referensi_man_v
 AS
 SELECT     TOP (100) PERCENT dbo.suplier_lama.suplier, dbo.suplier_lama.kode_sup, dbo.mt_supplier.namasupplier, '/REF/03/2015' AS ref, 
                       dbo.mt_supplier.kodesupplier,ROW_NUMBER() OVER (ORDER BY kodesupplier) AS RowNumber FROM         dbo.suplier_lama INNER JOIN

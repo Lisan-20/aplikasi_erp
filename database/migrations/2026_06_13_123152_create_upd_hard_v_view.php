@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.upd_hard_v
+        DB::statement("CREATE OR ALTER VIEW dbo.upd_hard_v
 AS
 SELECT     dbo.mt_master_tarif.nama_tarif, dbo.mt_master_tarif_detail.total_hardlent, dbo.mt_master_tarif_detail.kode_klas, dbo.updatelab_hard.I
 FROM         dbo.mt_master_tarif_detail INNER JOIN

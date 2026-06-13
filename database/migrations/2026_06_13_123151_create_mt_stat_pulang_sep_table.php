@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('mt_stat_pulang_sep')) {
+            return;
+        }
+
         Schema::create('mt_stat_pulang_sep', function (Blueprint $table) {
             $table->integer('value')->nullable();
             $table->string('status', 50)->nullable();

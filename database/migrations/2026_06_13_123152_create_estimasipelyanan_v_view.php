@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.estimasipelyanan_v
+        DB::statement("CREATE OR ALTER VIEW dbo.estimasipelyanan_v
 AS
 SELECT     dbo.pl_tc_poli.kode_poli, dbo.pl_tc_poli.no_kunjungan, dbo.mt_jadwal_dokter.jam_mulai, dbo.pl_tc_poli.no_antrian, dbo.pl_tc_poli.no_antrian * 15 * 60000 AS waktu_tunggu, 
                       dbo.pl_tc_poli.tgl_jam_poli, { fn HOUR(dbo.mt_jadwal_dokter.jam_mulai) } * 3600000 AS waktu_mulai

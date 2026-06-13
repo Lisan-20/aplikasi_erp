@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.grouper_maret_2016_v
+        DB::statement("CREATE OR ALTER VIEW dbo.grouper_maret_2016_v
 AS
 SELECT     Kdrs, Klsrs, Norm, Klsrawat, TariffRS, Jnsrawat, Tglmsk, Tglklr, Los, Tgllhr, UmurThn, UmurHari, JK, CaraPlg, Berat, Dutama, D1, D2, D3, D4, D5, D6, D7, D8, D9, D10, D11, D12, D13, D14, D15, D16, 
                       D17, D18, D19, D20, D21, D22, D23, D24, D25, D26, D27, D28, D29, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19, P20, P21, P22, P23, P24, P25, P26, P27, 

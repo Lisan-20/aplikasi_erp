@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.proses_gaji_gabung_v
+        DB::statement("CREATE OR ALTER VIEW dbo.proses_gaji_gabung_v
 AS
 SELECT     dbo.mt_karyawan.npp, dbo.mt_karyawan.nama_pegawai, dbo.mt_periode_gaji.id_periode_gaji, dbo.mt_periode_gaji.status_periode_gaji, 
                       CASE WHEN dbo.proses_gaji_pokok_v.nominal_gaji_pokok IS NULL THEN 0 ELSE dbo.proses_gaji_pokok_v.nominal_gaji_pokok END AS nominal_gaji_pokok, 

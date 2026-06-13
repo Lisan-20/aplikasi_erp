@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.lap_kunjungan_update_kelas_sum_v
+        DB::statement("CREATE OR ALTER VIEW dbo.lap_kunjungan_update_kelas_sum_v
 AS
 SELECT     dbo.lap_kunjungan_gizi_kelas_sum_v.kelas_I, dbo.lap_kunjungan_gizi_kelas_sum_v.kelas_II, dbo.lap_kunjungan_gizi_kelas_sum_v.kelas_III, dbo.lap_kunjungan_gizi_kelas_sum_v.vvip, 
                       dbo.lap_kunjungan_gizi_kelas_sum_v.vip, dbo.lap_kunjungan_gizi_temp.tgl, dbo.lap_kunjungan_gizi_temp.bln, dbo.lap_kunjungan_gizi_temp.thn, dbo.lap_kunjungan_gizi_temp.kelas_vvip, 

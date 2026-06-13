@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.list_transaksi_piutang_belum_bayar_v
+        DB::statement("CREATE OR ALTER VIEW dbo.list_transaksi_piutang_belum_bayar_v
 AS
 SELECT     a.id_tc_tagih, a.no_invoice_tagih, a.jumlah_tagih, a.tgl_tagih, a.diskon, a.nama_tertagih, a.status_batal, a.jenis_tagih, SUM(b.pajak) AS pajak, 
                       SUM(b.tagihan_tidak_dicover) AS tagihan_tidak_dicover, SUM(b.biaya_transfer) AS biaya_transfer, dbo.transaksi_piutang.status_bayar, 

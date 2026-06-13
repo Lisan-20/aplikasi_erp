@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.Gicu_1_v
+        DB::statement("CREATE OR ALTER VIEW dbo.Gicu_1_v
 AS
 SELECT     no_kunjungan, kode_bagian, kode_pemeriksaan, hasil, no_registrasi, no_urut_ews, no_mr, ROW_NUMBER() OVER (PARTITION BY no_registrasi
 ORDER BY no_urut_ews) AS Nomor

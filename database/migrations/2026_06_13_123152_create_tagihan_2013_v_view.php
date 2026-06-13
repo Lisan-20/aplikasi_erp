@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.tagihan_2013_v
+        DB::statement("CREATE OR ALTER VIEW dbo.tagihan_2013_v
 AS
 SELECT     TOP (100) PERCENT SUM(tx_nominal) AS tagihan, YEAR(tx_tgl) AS tahun, kode_perusahaan, referensi
 FROM         dbo.tx_harian

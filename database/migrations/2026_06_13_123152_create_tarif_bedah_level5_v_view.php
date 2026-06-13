@@ -12,7 +12,7 @@ return new class extends Migration
     {
         DB::statement("
 
-CREATE VIEW dbo.tarif_bedah_level5_v
+CREATE OR ALTER VIEW dbo.tarif_bedah_level5_v
 AS
 SELECT     kode_tarif, kode_tindakan, nama_tarif, referensi, tingkatan, kode_bagian
 FROM         dbo.mt_master_tarif

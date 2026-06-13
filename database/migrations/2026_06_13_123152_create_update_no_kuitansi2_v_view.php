@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.update_no_kuitansi2_v
+        DB::statement("CREATE OR ALTER VIEW dbo.update_no_kuitansi2_v
 AS
 SELECT     ROW_NUMBER() OVER (PARTITION BY tgl, bln, thn
 ORDER BY tgl DESC) AS no, seri_kuitansi, no_kuitansi, RIGHT('0' + CAST(tgl AS varchar(2)), 2) AS tgl, bln, thn, CAST(CAST(RIGHT(thn, 2) AS varchar(2)) + '' + RIGHT('0' + CAST(bln AS varchar(2)), 2) 

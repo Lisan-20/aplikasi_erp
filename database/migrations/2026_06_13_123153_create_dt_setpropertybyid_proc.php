@@ -17,7 +17,7 @@ return new class extends Migration
 **		value -- the text value of the property
 **		lvalue -- the binary value of the property (image)
 */
-create procedure dbo.dt_setpropertybyid
+CREATE OR ALTER PROCEDURE dbo.dt_setpropertybyid
 	@id int,
 	@property varchar(64),
 	@value varchar(255),

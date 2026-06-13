@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('tarifhard')) {
+            return;
+        }
+
         Schema::create('tarifhard', function (Blueprint $table) {
             $table->float('KODE', 53, 0)->nullable();
             $table->string('NAMA')->nullable();

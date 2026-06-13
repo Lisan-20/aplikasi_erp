@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.tx_harian_subledger_v
+        DB::statement("CREATE OR ALTER VIEW dbo.tx_harian_subledger_v
 AS
 SELECT     dbo.tx_harian.*, dbo.mt_account.sub_ledger
 FROM         dbo.tx_harian INNER JOIN

@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::unprepared("CREATE proc [dbo].[reset_database_sp]
+        DB::unprepared("CREATE OR ALTER PROCEDURE [dbo].[reset_database_sp]
 
 as
 

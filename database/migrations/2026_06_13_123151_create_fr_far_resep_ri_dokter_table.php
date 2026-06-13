@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('fr_far_resep_ri_dokter')) {
+            return;
+        }
+
         Schema::create('fr_far_resep_ri_dokter', function (Blueprint $table) {
             $table->increments('id_resep_ri_dr');
             $table->integer('kode_resep')->nullable();

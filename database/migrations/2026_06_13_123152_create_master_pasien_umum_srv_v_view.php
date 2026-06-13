@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.master_pasien_umum_srv_v
+        DB::statement("CREATE OR ALTER VIEW dbo.master_pasien_umum_srv_v
 AS
 SELECT     NOPASIEN, no_mr, kode_agama, gol_darah, kode_pendidikan, kode_perusahaan, nama_pasien, tempat_lahir, tgl_lhr, jen_kelamin, status_perkaw, almt_ttp_pasien, tlp_almt_ttp, id_dc_propinsi, 
                       id_dc_kota, kota, kelurahan, kecamatan, kode_pos, pekerjaan, nama_almt_kantor, TLPPEKERJA, alergi, nama_kel_ter, nik, nama_almt_kel, ALM2PGJWB, HUBPGJWB, NOTANGPAS, TGLAKHRS, 

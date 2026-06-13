@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('fr_gg_return_brg')) {
+            return;
+        }
+
         Schema::create('fr_gg_return_brg', function (Blueprint $table) {
             $table->integer('id_return');
             $table->dateTime('tgl_input')->nullable();

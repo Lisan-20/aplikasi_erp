@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('mt_emr')) {
+            return;
+        }
+
         Schema::create('mt_emr', function (Blueprint $table) {
             $table->increments('kode_rm')->index('ix_kode_rm');
             $table->string('nama_form', 250)->nullable()->index('ix_nama_form');

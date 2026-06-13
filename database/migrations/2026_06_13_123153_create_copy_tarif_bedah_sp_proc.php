@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::unprepared("create proc copy_tarif_bedah_sp
+        DB::unprepared("CREATE OR ALTER PROCEDURE copy_tarif_bedah_sp
 as
 insert into mt_master_tarif_detail_bedah
 (

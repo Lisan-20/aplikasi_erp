@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::unprepared("create proc dbo.dt_isundersourcecontrol_u
+        DB::unprepared("CREATE OR ALTER PROCEDURE dbo.dt_isundersourcecontrol_u
     @vchLoginName nvarchar(255) = '',
     @vchPassword  nvarchar(255) = '',
     @iWhoToo      int = 0 /* 0 => Just check project; 1 => get list of objs */

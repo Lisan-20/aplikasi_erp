@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('scant_bpjs_upd')) {
+            return;
+        }
+
         Schema::create('scant_bpjs_upd', function (Blueprint $table) {
             $table->float('F1', 53, 0)->nullable();
             $table->string('tarif')->nullable();

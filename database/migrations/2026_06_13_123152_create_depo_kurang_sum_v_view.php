@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.depo_kurang_sum_v
+        DB::statement("CREATE OR ALTER VIEW dbo.depo_kurang_sum_v
 AS
 SELECT     TOP (100) PERCENT dbo.mt_bagian.nama_bagian, dbo.depo_kurang_v.kode_bagian, dbo.depo_kurang_v.kode_brg
 FROM         dbo.mt_bagian INNER JOIN

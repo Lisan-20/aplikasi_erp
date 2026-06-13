@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('tc_pemantauan_fungsional')) {
+            return;
+        }
+
         Schema::create('tc_pemantauan_fungsional', function (Blueprint $table) {
             $table->increments('no_urut_pemantauan');
             $table->string('no_mr', 50)->nullable();

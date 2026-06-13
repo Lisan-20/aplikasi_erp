@@ -12,7 +12,7 @@ return new class extends Migration
     {
         DB::unprepared("
 
-CREATE proc [dbo].[inp_tran_sed_RI_sp]
+CREATE OR ALTER PROCEDURE [dbo].[inp_tran_sed_RI_sp]
 as
 update update_kode_bagian_jurnal_v set kode_bagian_asal=kode_bagian_masuk;--untuk kode bagian asal yg kosong
 update upd_trans_reg_v set kode_kelompok=kode_kelompok_reg,kode_perusahaan=kode_perusahaan_reg;

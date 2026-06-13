@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('fr_tc_far_2024')) {
+            return;
+        }
+
         Schema::create('fr_tc_far_2024', function (Blueprint $table) {
             $table->integer('kode_trans_far')->nullable();
             $table->integer('kode_pesan_resep')->nullable();

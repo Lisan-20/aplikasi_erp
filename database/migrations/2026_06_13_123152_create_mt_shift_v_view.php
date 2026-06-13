@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.mt_shift_v
+        DB::statement("CREATE OR ALTER VIEW dbo.mt_shift_v
 AS
 SELECT     kode_shift, nama_shift, dari_jam, sampai_jam, { fn HOUR(dari_jam) } AS jam
 FROM         dbo.ks_mt_shift

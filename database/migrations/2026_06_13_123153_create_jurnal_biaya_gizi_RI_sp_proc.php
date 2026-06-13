@@ -11,7 +11,7 @@ return new class extends Migration
     public function up(): void
     {
         DB::unprepared("
-CREATE PROCEDURE [dbo].[jurnal_biaya_gizi_RI_sp]
+CREATE OR ALTER PROCEDURE [dbo].[jurnal_biaya_gizi_RI_sp]
 AS
 BEGIN
 --- selisih positif

@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.show_all_table_v
+        DB::statement("CREATE OR ALTER VIEW dbo.show_all_table_v
 AS
 SELECT     TABLE_CATALOG, TABLE_SCHEMA, TABLE_NAME, TABLE_TYPE
 FROM         INFORMATION_SCHEMA.TABLES

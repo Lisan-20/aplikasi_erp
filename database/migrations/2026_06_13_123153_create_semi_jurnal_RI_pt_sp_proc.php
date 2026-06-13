@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::unprepared("CREATE proc [dbo].[semi_jurnal_RI_pt_sp]
+        DB::unprepared("CREATE OR ALTER PROCEDURE [dbo].[semi_jurnal_RI_pt_sp]
 as
 exec inp_tran_sed_adm_pt_RI_sp;
 exec inp_tran_sed_pt_RI_sp;

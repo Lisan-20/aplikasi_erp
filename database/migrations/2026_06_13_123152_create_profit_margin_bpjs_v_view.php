@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.profit_margin_bpjs_v
+        DB::statement("CREATE OR ALTER VIEW dbo.profit_margin_bpjs_v
 AS
 SELECT     TOP (100) PERCENT kode_kelompok, nama_pelayanan, profit_obat AS profit_bpjs, kode_profit, kode_klas, golongan
 FROM         dbo.fr_mt_profit_margin

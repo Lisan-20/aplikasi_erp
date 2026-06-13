@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.triase_all_v
+        DB::statement("CREATE OR ALTER VIEW dbo.triase_all_v
 AS
 SELECT     dbo.lap_kunjungan_igd_new_temp.tglnya, dbo.lap_kunjungan_igd_new_temp.blnnya, dbo.lap_kunjungan_igd_new_temp.thnnya, dbo.lap_kunjungan_igd_new_temp.tri_hijau, 
                       dbo.lap_kunjungan_igd_new_temp.tri_kuning, dbo.lap_kunjungan_igd_new_temp.tri_merah, dbo.lap_kunjungan_igd_new_temp.tri_hitam, CASE WHEN triase_hijau_v.jmlpas IS NULL 

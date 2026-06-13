@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.sep_upd_sep_v
+        DB::statement("CREATE OR ALTER VIEW dbo.sep_upd_sep_v
 AS
 SELECT     YEAR(Tglklr) AS thn, MONTH(Tglklr) AS bln, DAY(Tglklr) AS tgl, TariffRS, NoSep, NoPeserta, no_mr, Los, Jnsrawat
 FROM         dbo.GROUPER_INACBG_REST

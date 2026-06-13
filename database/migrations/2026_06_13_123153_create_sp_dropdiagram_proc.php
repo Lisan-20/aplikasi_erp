@@ -11,7 +11,7 @@ return new class extends Migration
     public function up(): void
     {
         DB::unprepared("
-	CREATE PROCEDURE dbo.sp_dropdiagram
+	CREATE OR ALTER PROCEDURE dbo.sp_dropdiagram
 	(
 		@diagramname 	sysname,
 		@owner_id	int	= null

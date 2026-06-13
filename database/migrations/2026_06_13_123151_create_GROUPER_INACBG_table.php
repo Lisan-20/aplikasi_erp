@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('GROUPER_INACBG')) {
+            return;
+        }
+
         Schema::create('GROUPER_INACBG', function (Blueprint $table) {
             $table->float('Kdrs', 53, 0)->nullable();
             $table->string('Klsrs')->nullable();

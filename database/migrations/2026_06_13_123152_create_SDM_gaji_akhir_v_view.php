@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.SDM_gaji_akhir_v
+        DB::statement("CREATE OR ALTER VIEW dbo.SDM_gaji_akhir_v
 AS
 SELECT     MAX(id_tc_thp) AS id_tc_thp, npp
 FROM         dbo.tc_gaji_tiap_bulan

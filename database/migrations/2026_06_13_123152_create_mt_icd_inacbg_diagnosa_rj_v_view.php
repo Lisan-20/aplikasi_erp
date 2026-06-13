@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.mt_icd_inacbg_diagnosa_rj_v
+        DB::statement("CREATE OR ALTER VIEW dbo.mt_icd_inacbg_diagnosa_rj_v
 AS
 SELECT     TOP (100) PERCENT dbo.tariff_cbg.[ tariff], dbo.tariff_cbg.kode_tariff, dbo.tariff_cbg.regional, dbo.tariff_cbg.kelas_rawat, dbo.tariff_cbg.[ jenis_pelayanan], dbo.mt_master_icd10_inacbgs.icd_x, 
                       dbo.mt_master_icd10_inacbgs.diagnosa, dbo.mt_master_icd10_inacbgs.out, dbo.tariff_cbg.inacbg

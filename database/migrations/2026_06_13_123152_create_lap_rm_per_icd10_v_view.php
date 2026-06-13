@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.lap_rm_per_icd10_v
+        DB::statement("CREATE OR ALTER VIEW dbo.lap_rm_per_icd10_v
 AS
 SELECT     MONTH(dbo.th_icd10_pasien.tgl_input) AS bulan, YEAR(dbo.th_icd10_pasien.tgl_input) AS tahun, dbo.th_icd10_pasien.kode_icd, dbo.th_icd10_pasien.tipe_rl, 
                       SUBSTRING(dbo.th_icd10_pasien.kode_bagian, 1, 2) AS kobag, dbo.th_icd10_pasien.kode_bagian, dbo.mt_grup_icd_10.nama_icd_10, dbo.th_icd10_pasien.no_registrasi, 

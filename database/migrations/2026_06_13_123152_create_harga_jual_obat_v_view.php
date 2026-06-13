@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.harga_jual_obat_v
+        DB::statement("CREATE OR ALTER VIEW dbo.harga_jual_obat_v
 AS
 SELECT     dbo.mt_barang.kode_brg, dbo.mt_barang.nama_brg, dbo.mt_barang.obat_khusus, dbo.fr_mt_profit_margin_all_v.nama_pelayanan, dbo.fr_mt_profit_margin_all_v.nama_golongan, 
                       CASE WHEN profit_umum IS NULL THEN 0 ELSE profit_umum END AS profit_umum, CASE WHEN profit_perusahaan IS NULL THEN 0 ELSE profit_perusahaan END AS profit_perusahaan, 

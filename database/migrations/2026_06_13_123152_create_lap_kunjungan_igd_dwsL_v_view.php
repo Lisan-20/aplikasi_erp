@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.lap_kunjungan_igd_dwsL_v
+        DB::statement("CREATE OR ALTER VIEW dbo.lap_kunjungan_igd_dwsL_v
 AS
 SELECT     TOP (100) PERCENT tgl, bln, thn, COUNT(jml_pas) AS jmlPas, jen_kelamin
 FROM         dbo.lap_kunjungan_igd_all_v

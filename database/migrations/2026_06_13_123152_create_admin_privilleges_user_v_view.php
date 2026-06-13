@@ -11,7 +11,7 @@ return new class extends Migration
     public function up(): void
     {
         DB::statement("
-CREATE VIEW dbo.admin_privilleges_user_v
+CREATE OR ALTER VIEW dbo.admin_privilleges_user_v
 AS
 SELECT     dbo.dd_user.username, dbo.dd_group.nama_group, dbo.dc_modul.nama_modul, dbo.dc_menu.nama_menu, dbo.dc_menu.id_dc_menu, 
                       dbo.dc_modul.id_dc_modul, dbo.dd_user.id_dd_user, dbo.dc_sub_menu.nama_sub_menu, dbo.dd_group_menu.id_dd_group_menu, 

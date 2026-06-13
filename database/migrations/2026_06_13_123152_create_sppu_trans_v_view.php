@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.sppu_trans_v
+        DB::statement("CREATE OR ALTER VIEW dbo.sppu_trans_v
 AS
 SELECT        TOP (200) MAX(kd_trans_bendahara) AS kd_trans_bendahara, kd_group_trans, acc_no, uraian_trans, int
 FROM            dbo.trans_bendahara

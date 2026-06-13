@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('rm_format_lap_rl')) {
+            return;
+        }
+
         Schema::create('rm_format_lap_rl', function (Blueprint $table) {
             $table->integer('nomer');
             $table->string('no_urut_dtd', 10)->nullable();

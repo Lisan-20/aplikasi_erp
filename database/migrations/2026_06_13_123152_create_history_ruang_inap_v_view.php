@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.history_ruang_inap_v
+        DB::statement("CREATE OR ALTER VIEW dbo.history_ruang_inap_v
 AS
 SELECT     TOP (100) PERCENT tgl_transaksi, bill_rs, jumlah, tgl_pindah, jenis_tindakan, kode_trans_pelayanan, no_mr, no_registrasi, tgl_transaksi AS tgl_masuk, kode_bagian, kode_klas, no_kamar, 
                       no_bed

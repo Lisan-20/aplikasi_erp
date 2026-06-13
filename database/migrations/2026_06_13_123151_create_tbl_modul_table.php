@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('tbl_modul')) {
+            return;
+        }
+
         Schema::create('tbl_modul', function (Blueprint $table) {
             $table->integer('id_modul');
             $table->string('nama_modul', 50)->nullable();

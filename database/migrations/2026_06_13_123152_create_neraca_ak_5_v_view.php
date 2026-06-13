@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.neraca_ak_5_v
+        DB::statement("CREATE OR ALTER VIEW dbo.neraca_ak_5_v
 AS
 SELECT     TOP (100) PERCENT dbo.mt_account.acc_no, dbo.mt_account.acc_nama, dbo.mt_account.level_coa, dbo.mt_account.acc_type, dbo.mt_account.referensi, 
                       dbo.master_hist_bl.tahun, dbo.master_hist_bl.bulan, dbo.master_hist_bl.mutasi_d, dbo.master_hist_bl.mutasi_k, dbo.master_hist_bl.saldo_awal, 

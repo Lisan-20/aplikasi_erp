@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('tbl_obat_racikan2_temp')) {
+            return;
+        }
+
         Schema::create('tbl_obat_racikan2_temp', function (Blueprint $table) {
             $table->integer('id')->nullable();
             $table->integer('kode_trans_far')->nullable();

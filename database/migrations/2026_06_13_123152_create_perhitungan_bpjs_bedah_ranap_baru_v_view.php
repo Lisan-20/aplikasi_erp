@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.perhitungan_bpjs_bedah_ranap_baru_v
+        DB::statement("CREATE OR ALTER VIEW dbo.perhitungan_bpjs_bedah_ranap_baru_v
 AS
 SELECT     TOP (100) PERCENT dbo.mt_jenis_tindakan.jenis_tindakan, SUM(CAST((CASE WHEN status_kredit = 1 THEN (- 1) ELSE 1 END) * dbo.tc_trans_pelayanan.bill_rs AS int)) AS rs, 
                       SUM(CAST((CASE WHEN status_kredit = 1 THEN (- 1) ELSE 1 END) * dbo.tc_trans_pelayanan.bill_dr1 AS int)) AS dr, dbo.mt_jenis_tindakan.kode

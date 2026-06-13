@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('mt_periode_gaji')) {
+            return;
+        }
+
         Schema::create('mt_periode_gaji', function (Blueprint $table) {
             $table->increments('id_periode_gaji');
             $table->string('periode_gaji', 20)->nullable();

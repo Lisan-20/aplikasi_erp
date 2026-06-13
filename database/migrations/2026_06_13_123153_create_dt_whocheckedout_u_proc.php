@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::unprepared("create proc dbo.dt_whocheckedout_u
+        DB::unprepared("CREATE OR ALTER PROCEDURE dbo.dt_whocheckedout_u
         @chObjectType  char(4),
         @vchObjectName nvarchar(255),
         @vchLoginName  nvarchar(255),

@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('LIS_ORDER')) {
+            return;
+        }
+
         Schema::create('LIS_ORDER', function (Blueprint $table) {
             $table->increments('ID');
             $table->string('MESSAGE_DT', 14)->nullable();

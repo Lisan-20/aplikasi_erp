@@ -13,7 +13,7 @@ return new class extends Migration
         DB::statement("
 
 
-CREATE VIEW dbo.ak_dd_mapping_v
+CREATE OR ALTER VIEW dbo.ak_dd_mapping_v
 AS
 SELECT     TOP 100 PERCENT dbo.ak_dd_mapping_lv_1_v.nama_mapping_kb AS nama_mapping_1, 
                       dbo.ak_dd_mapping_kb.nama_mapping_kb AS nama_mapping_2, dbo.ak_dd_mapping_kb_det.id_ak_dd_mapping_kb_det, 

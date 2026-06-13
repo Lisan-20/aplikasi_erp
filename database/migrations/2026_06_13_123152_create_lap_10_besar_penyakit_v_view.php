@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.lap_10_besar_penyakit_v
+        DB::statement("CREATE OR ALTER VIEW dbo.lap_10_besar_penyakit_v
 AS
 SELECT     CASE WHEN MONTH(dbo.tc_registrasi.tgl_jam_masuk) IS NULL THEN MONTH(dbo.tc_registrasi.tgl_jam_masuk) ELSE MONTH(dbo.tc_registrasi.tgl_jam_masuk) END AS bulan, 
                       CASE WHEN year(dbo.tc_registrasi.tgl_jam_masuk) IS NULL THEN year(dbo.tc_registrasi.tgl_jam_masuk) ELSE year(dbo.tc_registrasi.tgl_jam_masuk) END AS tahun, dbo.th_icd10_pasien.kode_icd,

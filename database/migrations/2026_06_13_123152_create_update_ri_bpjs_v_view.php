@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.update_ri_bpjs_v
+        DB::statement("CREATE OR ALTER VIEW dbo.update_ri_bpjs_v
 AS
 SELECT     dbo.tariff_2012_1_rsuc_ri.code, CAST(dbo.tariff_2012_1_rsuc_ri.code AS char(6)) AS inpat, dbo.tariff_2012_1_rsuc_ri.kelas_3, dbo.tariff_2012_1_rsuc_ri.kelas_2, 
                       dbo.tariff_2012_1_rsuc_ri.kelas_1, dbo.mt_tariff_bpjs_ri.kelas_3 AS up1, dbo.mt_tariff_bpjs_ri.kelas_2 AS up2, dbo.mt_tariff_bpjs_ri.kelas_1 AS up3, 

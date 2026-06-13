@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.view_dashboard_isi_fiks
+        DB::statement("CREATE OR ALTER VIEW dbo.view_dashboard_isi_fiks
 AS
 SELECT     dbo.mt_ruangan.kode_klas, dbo.mt_ruangan.kode_klas_bpjs, dbo.tb_dashboard.kelas_dan_ruang, dbo.mt_ruangan.kode_klas_bpjs AS kode_bpjs, COUNT(dbo.mt_ruangan.kode_ruangan) 
                       AS jml_bed, dbo.tb_dashboard.logo, COUNT(dbo.view_dashboard_isi.jml_bed) AS jml_isi, dbo.mt_ruangan.kode_ruangan, dbo.mt_ruangan.status

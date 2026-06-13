@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('mt_brg_update')) {
+            return;
+        }
+
         Schema::create('mt_brg_update', function (Blueprint $table) {
             $table->float('NO', 53, 0)->nullable();
             $table->string('NAMA OBAT')->nullable();

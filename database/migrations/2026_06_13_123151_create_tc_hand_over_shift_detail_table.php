@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('tc_hand_over_shift_detail')) {
+            return;
+        }
+
         Schema::create('tc_hand_over_shift_detail', function (Blueprint $table) {
             $table->increments('no_urut');
             $table->integer('kode_shift')->nullable();

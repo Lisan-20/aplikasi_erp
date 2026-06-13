@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.rl_32_gd_v
+        DB::statement("CREATE OR ALTER VIEW dbo.rl_32_gd_v
 AS
 SELECT     COUNT(no_registrasi) AS jml, DAY(tgl_masuk) AS day, MONTH(tgl_masuk) AS bln, YEAR(tgl_masuk) AS thn, kode_bagian_tujuan AS kode_bagian_keluar, kode_bagian_asal, 
                       kode_bagian_asal AS kode_bagian, tgl_keluar

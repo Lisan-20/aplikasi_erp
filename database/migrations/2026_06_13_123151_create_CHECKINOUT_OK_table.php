@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('CHECKINOUT_OK')) {
+            return;
+        }
+
         Schema::create('CHECKINOUT_OK', function (Blueprint $table) {
             $table->integer('USERID');
             $table->dateTime('CHECKTIME');

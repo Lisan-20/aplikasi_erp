@@ -12,7 +12,7 @@ return new class extends Migration
     {
         DB::unprepared("
 
-CREATE proc [dbo].[inp_tran_kasir_jual_obat_bebas_sp]
+CREATE OR ALTER PROCEDURE [dbo].[inp_tran_kasir_jual_obat_bebas_sp]
 as
 insert into tran_kasir_bebas (kode_tc_trans_kasir,no_registrasi,no_mr,no_kuitansi,seri_kuitansi,no_induk,tgl_jam,jumlah,kode_bagian,tgl_proses,kode,nama_pasien,no_resep) select kode_tc_trans_kasir,no_registrasi,no_mr,no_kuitansi,cast(seri_kuitansi as varchar(2)) as seri_kuitansi,no_induk,tgl_jam,tunai as jumlah,kode_bagian,getdate() as tgl_proses,1 as kode,nama_pasien_layan,no_resep from v_trans_kasir_obat_bebas where flag_jurnal=0 and tunai>0;
 insert into tran_kasir_bebas (kode_tc_trans_kasir,no_registrasi,no_mr,no_kuitansi,seri_kuitansi,no_induk,tgl_jam,jumlah,kode_bagian,tgl_proses,kode,nama_pasien,no_resep) select kode_tc_trans_kasir,no_registrasi,no_mr,no_kuitansi,seri_kuitansi,no_induk,tgl_jam,debet as jumlah,kode_bagian,getdate() as tgl_proses,2 as kode,nama_pasien_layan,no_resep from v_trans_kasir_obat_bebas where flag_jurnal=0 and debet>0;

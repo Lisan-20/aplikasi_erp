@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.upd_stok_depo_v
+        DB::statement("CREATE OR ALTER VIEW dbo.upd_stok_depo_v
 AS
 SELECT     TOP (100) PERCENT SUM(dbo.tc_trans_pelayanan.jumlah) AS jumlah, dbo.tc_trans_pelayanan.kode_barang, dbo.mt_depo_stok.jml_sat_kcl, 
                       dbo.mt_depo_stok.jml_sat_kcl - SUM(dbo.tc_trans_pelayanan.jumlah) AS jml

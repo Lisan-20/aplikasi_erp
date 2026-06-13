@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('gd_tc_cetak_visum')) {
+            return;
+        }
+
         Schema::create('gd_tc_cetak_visum', function (Blueprint $table) {
             $table->increments('id_cetak_visum');
             $table->string('no_visum', 50)->nullable();

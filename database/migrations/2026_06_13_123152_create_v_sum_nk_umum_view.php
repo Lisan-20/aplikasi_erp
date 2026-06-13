@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.v_sum_nk_umum
+        DB::statement("CREATE OR ALTER VIEW dbo.v_sum_nk_umum
 AS
 SELECT     TOP (100) PERCENT b.nama_perusahaan, a.kode_penanggung AS kode_perusahaan, b.flag, a.flag_tagih, SUM(a.nk) AS jumlah_tagihan, 
                       SUM(a.materai) AS materai, a.kd_inv_umum_tx AS kd_inv_persh_tx, a.flag_tagih_penanggung

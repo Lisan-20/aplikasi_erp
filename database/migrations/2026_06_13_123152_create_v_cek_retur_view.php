@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.v_cek_retur
+        DB::statement("CREATE OR ALTER VIEW dbo.v_cek_retur
 AS
 SELECT     kode_trans_far, SUM(CASE WHEN jumlah_retur IS NULL THEN 0 ELSE jumlah_retur END) AS retur, SUM(CASE WHEN jumlah_tebus IS NULL THEN 0 ELSE jumlah_tebus END) AS tebus, 
                       SUM(CASE WHEN jumlah_tebus IS NULL THEN 0 ELSE jumlah_tebus END - CASE WHEN jumlah_retur IS NULL THEN 0 ELSE jumlah_retur END) AS hasil

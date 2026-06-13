@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.update_spasi_brg_v
+        DB::statement("CREATE OR ALTER VIEW dbo.update_spasi_brg_v
 AS
 SELECT     RTRIM(nama_brg) AS nama_brg_upd, nama_brg
 FROM         dbo.mt_barang

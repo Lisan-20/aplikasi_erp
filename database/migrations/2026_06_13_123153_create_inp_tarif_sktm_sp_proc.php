@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::unprepared("create proc inp_tarif_sktm_sp
+        DB::unprepared("CREATE OR ALTER PROCEDURE inp_tarif_sktm_sp
 as
 
 insert into mt_master_tarif_detail_sktm(kode_master_tarif_detail,

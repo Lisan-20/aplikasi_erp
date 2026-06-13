@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('hsl_angket_ri')) {
+            return;
+        }
+
         Schema::create('hsl_angket_ri', function (Blueprint $table) {
             $table->increments('id');
             $table->text('nama')->nullable();

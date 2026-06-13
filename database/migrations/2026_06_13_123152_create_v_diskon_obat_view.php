@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.v_diskon_obat
+        DB::statement("CREATE OR ALTER VIEW dbo.v_diskon_obat
 AS
 SELECT     TOP (100) PERCENT SUM(CASE WHEN diskon_rs IS NULL THEN 0 ELSE diskon_rs END) AS diskon_rs, no_registrasi, no_mr, kode_trans_far, status_batal
 FROM         dbo.tc_trans_pelayanan

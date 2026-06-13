@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::unprepared("CREATE proc update_bedah_cito_sp
+        DB::unprepared("CREATE OR ALTER PROCEDURE update_bedah_cito_sp
 @no_registrasi int
 
 as

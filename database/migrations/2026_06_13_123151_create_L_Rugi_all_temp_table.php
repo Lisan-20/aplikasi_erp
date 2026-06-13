@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('L_Rugi_all_temp')) {
+            return;
+        }
+
         Schema::create('L_Rugi_all_temp', function (Blueprint $table) {
             $table->integer('acc_no')->nullable();
             $table->decimal('debet', 18)->nullable();

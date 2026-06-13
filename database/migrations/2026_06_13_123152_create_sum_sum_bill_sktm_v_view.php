@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.sum_sum_bill_sktm_v
+        DB::statement("CREATE OR ALTER VIEW dbo.sum_sum_bill_sktm_v
 AS
 SELECT     NAMA, SUM(lain_lain) AS Expr1, SUBSTRING(KOBAG, 1, 2) AS Expr2
 FROM         dbo.SUM_BILL_PASIEN_SKTM_V

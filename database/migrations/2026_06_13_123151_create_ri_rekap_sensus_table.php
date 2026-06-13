@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('ri_rekap_sensus')) {
+            return;
+        }
+
         Schema::create('ri_rekap_sensus', function (Blueprint $table) {
             $table->dateTime('tgl_input')->nullable();
             $table->integer('tgl')->nullable();

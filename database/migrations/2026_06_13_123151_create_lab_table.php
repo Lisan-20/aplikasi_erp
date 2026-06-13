@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('lab')) {
+            return;
+        }
+
         Schema::create('lab', function (Blueprint $table) {
             $table->float('kode_master_tarif_detail', 53, 0)->nullable();
             $table->float('kode_klas', 53, 0)->nullable();

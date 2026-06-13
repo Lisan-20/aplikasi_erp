@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.no_batch_v
+        DB::statement("CREATE OR ALTER VIEW dbo.no_batch_v
 AS
 SELECT     TOP (100) PERCENT kode_brg, no_batch, CONVERT(VARCHAR(10), tgl_kadaluarsa, 110) AS tgl_kadaluarsa, SUM(pemasukan) AS masuk, SUM(pengeluaran) AS keluar, 
                       SUM(pemasukan) - SUM(pengeluaran) AS sisa

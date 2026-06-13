@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.pola_diskon_tarif_v
+        DB::statement("CREATE OR ALTER VIEW dbo.pola_diskon_tarif_v
 AS
 SELECT     dbo.mt_pola_diskon.kd_pola_diskon, dbo.mt_pola_diskon.kode_perusahaan, dbo.mt_pola_diskon.kode_klas, dbo.mt_pola_diskon.kd_jenis_diskon, 
                       dbo.mt_pola_diskon.kode_bagian, dbo.mt_pola_diskon_tarif.diskon, dbo.mt_pola_diskon_tarif.diskon_dr_part, 

@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.lap_biaya_op_rs_v
+        DB::statement("CREATE OR ALTER VIEW dbo.lap_biaya_op_rs_v
 AS
 SELECT     dbo.mt_biaya_op_rs_v.kode_biaya, dbo.mt_biaya_op_rs_v.nama_biaya, dbo.mt_biaya_op_rs_v.kode_ref, dbo.mt_biaya_op_rs_v.referensi, 
                       dbo.mt_biaya_op_rs_v.acc_no, dbo.mt_biaya_op_rs_v.acc_nama, dbo.mt_biaya_op_rs_v.acc_type, SUM(CASE WHEN tx_nominal IS NULL 

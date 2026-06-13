@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.rm_morbilitas_count_v
+        DB::statement("CREATE OR ALTER VIEW dbo.rm_morbilitas_count_v
 AS
 SELECT     TOP 10 COUNT(*) AS jumlah, dbo.th_riwayat_pasien.kode_icd_diagnosa, dbo.mt_icd_diagnosa.nama_diagnosa
 FROM         dbo.th_riwayat_pasien LEFT OUTER JOIN

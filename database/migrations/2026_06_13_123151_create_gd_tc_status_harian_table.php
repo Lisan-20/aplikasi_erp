@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('gd_tc_status_harian')) {
+            return;
+        }
+
         Schema::create('gd_tc_status_harian', function (Blueprint $table) {
             $table->integer('kd_status_harian');
             $table->integer('kd_tind_igd')->nullable();

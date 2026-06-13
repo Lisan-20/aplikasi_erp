@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::unprepared("create proc [proses_SEP_sp]
+        DB::unprepared("CREATE OR ALTER PROCEDURE [proses_SEP_sp]
 
 @query varchar(max)
 

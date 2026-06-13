@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.v_bd_tc_trans_cek
+        DB::statement("CREATE OR ALTER VIEW dbo.v_bd_tc_trans_cek
 AS
 SELECT     COUNT(dbo.bd_tc_trans_detail.id_bd_tc_trans) AS hitung_id, dbo.bd_tc_trans_detail.id_bd_tc_trans
 FROM         dbo.bd_tc_trans_detail INNER JOIN

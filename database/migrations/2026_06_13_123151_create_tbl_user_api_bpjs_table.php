@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('tbl_user_api_bpjs')) {
+            return;
+        }
+
         Schema::create('tbl_user_api_bpjs', function (Blueprint $table) {
             $table->increments('id_user');
             $table->string('username', 50)->nullable();

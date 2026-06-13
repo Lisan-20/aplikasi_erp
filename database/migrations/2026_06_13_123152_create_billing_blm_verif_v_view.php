@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.billing_blm_verif_v
+        DB::statement("CREATE OR ALTER VIEW dbo.billing_blm_verif_v
 AS
 SELECT     TOP (100) PERCENT MONTH(dbo.tc_trans_kasir.tgl_jam) AS bln, YEAR(dbo.tc_trans_kasir.tgl_jam) AS thn, SUM(dbo.tc_trans_kasir.nk_perusahaan) AS ttl_tagih, 
                       dbo.tc_registrasi.kode_kelompok, CASE WHEN dbo.tc_trans_kasir.kode_perusahaan IS NULL 

@@ -15,7 +15,7 @@ return new class extends Migration
 -- Create date: <22-12-2012>
 -- Description:	<jurnal uang muka>
 -- =============================================
-create PROCEDURE [dbo].[jurnal_UM_pasien_pulang_bpjs_sp]
+CREATE OR ALTER PROCEDURE [dbo].[jurnal_UM_pasien_pulang_bpjs_sp]
 AS
 BEGIN
 

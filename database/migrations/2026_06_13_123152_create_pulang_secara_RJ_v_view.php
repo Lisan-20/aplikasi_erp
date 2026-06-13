@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.pulang_secara_RJ_v
+        DB::statement("CREATE OR ALTER VIEW dbo.pulang_secara_RJ_v
 AS
 SELECT     TOP (100) PERCENT COUNT(dbo.lap_kunjungan_igd_all_v.no_kunjungan) AS jmlpas, dbo.gd_daftar_antrian_pulang_v.status_periksa, DAY(dbo.gd_daftar_antrian_pulang_v.tgl_masuk) AS tglmasuk, 
                       MONTH(dbo.gd_daftar_antrian_pulang_v.tgl_masuk) AS blnmasuk, YEAR(dbo.gd_daftar_antrian_pulang_v.tgl_masuk) AS thnmasuk, dbo.gd_daftar_antrian_pulang_v.stat_celaka

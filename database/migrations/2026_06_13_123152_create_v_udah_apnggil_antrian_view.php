@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.v_udah_apnggil_antrian
+        DB::statement("CREATE OR ALTER VIEW dbo.v_udah_apnggil_antrian
 AS
 SELECT     MAX(CASE WHEN no_urut IS NULL THEN 0 ELSE no_urut END) AS no_antrian, kode_bagian
 FROM         dbo.tc_antrian_loket

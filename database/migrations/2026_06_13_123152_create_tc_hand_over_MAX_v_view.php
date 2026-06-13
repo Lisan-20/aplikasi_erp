@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.tc_hand_over_MAX_v
+        DB::statement("CREATE OR ALTER VIEW dbo.tc_hand_over_MAX_v
 AS
 SELECT     MAX(no_urut) AS no_urut, no_registrasi, notes, tgl_jam
 FROM         dbo.tc_hand_over_shift_detail

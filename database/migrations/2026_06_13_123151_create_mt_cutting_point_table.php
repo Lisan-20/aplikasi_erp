@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('mt_cutting_point')) {
+            return;
+        }
+
         Schema::create('mt_cutting_point', function (Blueprint $table) {
             $table->increments('id_cut_point');
             $table->decimal('cut_point', 19, 4)->nullable();

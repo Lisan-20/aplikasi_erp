@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('L_Rugi_biaya_mapping')) {
+            return;
+        }
+
         Schema::create('L_Rugi_biaya_mapping', function (Blueprint $table) {
             $table->integer('id_biaya')->nullable();
             $table->string('ket_biaya', 250)->nullable();

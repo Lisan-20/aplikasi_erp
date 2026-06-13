@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('transaksi_piutang_afiliasi')) {
+            return;
+        }
+
         Schema::create('transaksi_piutang_afiliasi', function (Blueprint $table) {
             $table->integer('id_trans_piutang_afls');
             $table->string('acc_no_1', 50);

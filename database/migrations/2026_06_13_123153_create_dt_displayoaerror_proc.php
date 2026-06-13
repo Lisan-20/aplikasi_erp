@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::unprepared("CREATE PROCEDURE dbo.dt_displayoaerror
+        DB::unprepared("CREATE OR ALTER PROCEDURE dbo.dt_displayoaerror
     @iObject int,
     @iresult int
 as

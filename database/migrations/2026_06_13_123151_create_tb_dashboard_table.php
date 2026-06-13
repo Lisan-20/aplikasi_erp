@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('tb_dashboard')) {
+            return;
+        }
+
         Schema::create('tb_dashboard', function (Blueprint $table) {
             $table->integer('no')->nullable();
             $table->string('kelas_dan_ruang', 50)->nullable();

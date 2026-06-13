@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::unprepared("CREATE proc [dbo].[update_ref_sp]
+        DB::unprepared("CREATE OR ALTER PROCEDURE [dbo].[update_ref_sp]
 as
 --update tgl jatuh tempo hutang
 update upd_tgl_jatuh_tempo_v set tgl_tempo=tgl_jt;

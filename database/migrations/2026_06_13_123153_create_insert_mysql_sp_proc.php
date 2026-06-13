@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::unprepared("CREATE proc insert_mysql_sp
+        DB::unprepared("CREATE OR ALTER PROCEDURE insert_mysql_sp
 as
 --SET NOCOUNT ON;
 --SET XACT_ABORT OFF;

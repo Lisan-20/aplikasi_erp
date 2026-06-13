@@ -12,7 +12,7 @@ return new class extends Migration
     {
         DB::unprepared("
 
-create proc [dbo].[resum_obat_lengkap_temp_sp]
+CREATE OR ALTER PROCEDURE [dbo].[resum_obat_lengkap_temp_sp]
 @no_registrasi as varchar(20)
 
 

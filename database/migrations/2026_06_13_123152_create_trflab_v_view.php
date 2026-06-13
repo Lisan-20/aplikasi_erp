@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.trflab_v
+        DB::statement("CREATE OR ALTER VIEW dbo.trflab_v
 AS
 SELECT     kode_tarif, kode_tindakan, nama_tarif, tingkatan, ket, kode_bagian, referensi, jenis_tindakan, paket_askes, kode_perusahaan, kode_grup_tindakan, paket_mcu, rl_lab, 
                       flag_rujukan, flag_insentif, flag_reg, flag_paket, fee_dr

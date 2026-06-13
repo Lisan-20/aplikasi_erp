@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('mt_jenis_tc_det_tarif')) {
+            return;
+        }
+
         Schema::create('mt_jenis_tc_det_tarif', function (Blueprint $table) {
             $table->increments('id_tc_detail_tarif');
             $table->integer('nomer_tind')->nullable();

@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.upd_stock_opname_20042016_v
+        DB::statement("CREATE OR ALTER VIEW dbo.upd_stock_opname_20042016_v
 AS
 SELECT        dbo.tc_stok_opname.kode_brg, dbo.tc_stok_opname.tgl_stok_opname, YEAR(dbo.tc_stok_opname.tgl_stok_opname) AS thn, MONTH(dbo.tc_stok_opname.tgl_stok_opname) AS bln, 
                          DAY(dbo.tc_stok_opname.tgl_stok_opname) AS tgl, dbo.mt_rekap_stok.harga_beli, dbo.tc_stok_opname.harga_beli AS harga

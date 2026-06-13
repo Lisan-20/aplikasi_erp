@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.plafon_fee_bedah_bpjs_v
+        DB::statement("CREATE OR ALTER VIEW dbo.plafon_fee_bedah_bpjs_v
 AS
 SELECT        dbo.mt_master_tarif_detail_bedah.kode_tarif, dbo.mt_master_tarif.nama_tarif, dbo.mt_master_tarif_detail_bedah.kode_klas, 
                          SUM(dbo.mt_master_tarif_detail_bedah.bill_rs) AS bill_rs, SUM(dbo.mt_master_tarif_detail_bedah.bill_dr1) AS bill_dr1, 

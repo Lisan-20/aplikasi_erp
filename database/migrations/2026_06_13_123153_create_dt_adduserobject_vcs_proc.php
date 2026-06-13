@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::unprepared("create procedure dbo.dt_adduserobject_vcs
+        DB::unprepared("CREATE OR ALTER PROCEDURE dbo.dt_adduserobject_vcs
     @vchProperty varchar(64)
 
 as

@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('gd_tc_gawat_darurat')) {
+            return;
+        }
+
         Schema::create('gd_tc_gawat_darurat', function (Blueprint $table) {
             $table->integer('kode_gd');
             $table->integer('no_kunjungan')->nullable();

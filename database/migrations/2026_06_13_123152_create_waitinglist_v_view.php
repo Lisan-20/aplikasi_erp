@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.waitinglist_v
+        DB::statement("CREATE OR ALTER VIEW dbo.waitinglist_v
 AS
 SELECT        dbo.tc_kunjungan.no_registrasi, dbo.tc_kunjungan.no_mr, dbo.gd_daftar_antrian_v.nama_pasien, dbo.tc_emr_form.kode_rm, dbo.gd_daftar_antrian_v.status_batal, dbo.gd_daftar_antrian_v.status_keluar, 
                          dbo.tc_emr_form.tgl_update, dbo.gd_daftar_antrian_v.kode_kelompok, dbo.gd_daftar_antrian_v.kode_perusahaan

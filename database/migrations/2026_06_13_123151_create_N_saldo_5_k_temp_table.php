@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('N_saldo_5_k_temp')) {
+            return;
+        }
+
         Schema::create('N_saldo_5_k_temp', function (Blueprint $table) {
             $table->integer('acc_no');
             $table->decimal('kredit', 38)->nullable();

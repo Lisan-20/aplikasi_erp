@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('bridging_sep')) {
+            return;
+        }
+
         Schema::create('bridging_sep', function (Blueprint $table) {
             $table->string('method', 50)->nullable();
             $table->string('url', 250)->nullable();

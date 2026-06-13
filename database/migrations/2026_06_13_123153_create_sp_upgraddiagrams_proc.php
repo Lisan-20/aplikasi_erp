@@ -11,7 +11,7 @@ return new class extends Migration
     public function up(): void
     {
         DB::unprepared("
-	CREATE PROCEDURE dbo.sp_upgraddiagrams
+	CREATE OR ALTER PROCEDURE dbo.sp_upgraddiagrams
 	AS
 	BEGIN
 		IF OBJECT_ID(N'dbo.sysdiagrams') IS NOT NULL

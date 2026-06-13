@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('tc_pengadaan')) {
+            return;
+        }
+
         Schema::create('tc_pengadaan', function (Blueprint $table) {
             $table->string('no_po', 18);
             $table->dateTime('tgl_po')->nullable();

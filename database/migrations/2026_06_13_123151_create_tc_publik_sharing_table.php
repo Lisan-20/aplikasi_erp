@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('tc_publik_sharing')) {
+            return;
+        }
+
         Schema::create('tc_publik_sharing', function (Blueprint $table) {
             $table->increments('id_sharing');
             $table->string('nama_file', 250)->nullable();

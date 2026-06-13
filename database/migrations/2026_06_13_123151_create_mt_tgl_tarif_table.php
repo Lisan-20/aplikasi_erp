@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('mt_tgl_tarif')) {
+            return;
+        }
+
         Schema::create('mt_tgl_tarif', function (Blueprint $table) {
             $table->integer('kode_tgl_tarif');
             $table->string('nomor_sk', 20)->nullable();

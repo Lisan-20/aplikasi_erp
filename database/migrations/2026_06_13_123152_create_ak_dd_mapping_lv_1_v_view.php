@@ -13,7 +13,7 @@ return new class extends Migration
         DB::statement("
 
 
-CREATE VIEW dbo.ak_dd_mapping_lv_1_v
+CREATE OR ALTER VIEW dbo.ak_dd_mapping_lv_1_v
 AS
 SELECT     nama_mapping_kb, level_mapping_kb, kode_mapping_kb
 FROM         dbo.ak_dd_mapping_kb

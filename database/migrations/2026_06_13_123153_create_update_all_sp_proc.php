@@ -24,7 +24,7 @@ return new class extends Migration
 
 
 
-CREATE PROC [dbo].[update_all_sp]
+CREATE OR ALTER PROCEDURE [dbo].[update_all_sp]
 AS
 
 

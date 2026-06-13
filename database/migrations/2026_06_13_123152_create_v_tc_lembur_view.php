@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.v_tc_lembur
+        DB::statement("CREATE OR ALTER VIEW dbo.v_tc_lembur
 AS
 SELECT     TOP (100) PERCENT dbo.mt_karyawan.nama_pegawai, dbo.tc_lembur.id_hrtc_lembur, dbo.tc_lembur.npp, dbo.tc_lembur.tgl_lembur, dbo.tc_lembur.kegiatan, dbo.tc_lembur.jam_mulai_lembur, 
                       dbo.tc_lembur.jam_akhir_lembur, dbo.tc_lembur.jumlah_jam_lembur, dbo.tc_lembur.jumlah_uang_makan, dbo.tc_lembur.jumlah_uang_lembur, dbo.tc_lembur.surat_perintah, 

@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.v_kode_tarif_dobel
+        DB::statement("CREATE OR ALTER VIEW dbo.v_kode_tarif_dobel
 AS
 SELECT     TOP (100) PERCENT kode_perusahaan, kode_klas, bill_rs, bill_dr1, bill_dr2, kode_tarif, total, COUNT(kode_tarif) AS Expr1, MAX(kode_master_tarif_detail) 
                       AS kode_dobel

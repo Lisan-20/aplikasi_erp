@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('tc_chatting_reply')) {
+            return;
+        }
+
         Schema::create('tc_chatting_reply', function (Blueprint $table) {
             $table->increments('id_chat');
             $table->text('isi_chat')->nullable();

@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('sysdiagrams')) {
+            return;
+        }
+
         Schema::create('sysdiagrams', function (Blueprint $table) {
             $table->string('name');
             $table->integer('principal_id');

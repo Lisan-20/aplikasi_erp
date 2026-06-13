@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.tc_penyusutan_asset2_v
+        DB::statement("CREATE OR ALTER VIEW dbo.tc_penyusutan_asset2_v
 AS
 SELECT     dbo.mt_depo_asset_v.kode_brg, dbo.mt_depo_asset_v.kode_bagian, dbo.mt_depo_asset_v.nama_brg, dbo.mt_depo_asset_v.satuan_kecil, dbo.mt_depo_asset_v.asset_type, 
                       dbo.mt_depo_asset_v.tgl_perolehan, dbo.mt_depo_asset_v.tgl_pemakaian, dbo.mt_depo_asset_v.qty, dbo.mt_depo_asset_v.estimasi_penggunaan, dbo.mt_depo_asset_v.metode_penyusutan, 

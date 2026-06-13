@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('mt_master_icd10_inacbgs')) {
+            return;
+        }
+
         Schema::create('mt_master_icd10_inacbgs', function (Blueprint $table) {
             $table->float('no', 53, 0)->nullable();
             $table->float('urut', 53, 0)->nullable();

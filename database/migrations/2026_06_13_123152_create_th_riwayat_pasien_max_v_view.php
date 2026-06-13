@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.th_riwayat_pasien_max_v
+        DB::statement("CREATE OR ALTER VIEW dbo.th_riwayat_pasien_max_v
 AS
 SELECT     TOP (100) PERCENT MAX(kode_riwayat) AS kode_riwayat, no_registrasi, no_mr, no_kunjungan
 FROM         dbo.th_riwayat_pasien

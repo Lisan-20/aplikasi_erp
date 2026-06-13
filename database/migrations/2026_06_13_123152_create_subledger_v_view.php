@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.subledger_v
+        DB::statement("CREATE OR ALTER VIEW dbo.subledger_v
 AS
 SELECT     dbo.mt_account.acc_no, dbo.subledger.subledger, dbo.subledger.nama_subledger, dbo.mt_account.acc_nama
 FROM         dbo.mt_account INNER JOIN

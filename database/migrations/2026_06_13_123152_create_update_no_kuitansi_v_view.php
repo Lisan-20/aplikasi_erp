@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.update_no_kuitansi_v
+        DB::statement("CREATE OR ALTER VIEW dbo.update_no_kuitansi_v
 AS
 SELECT     TOP (100) PERCENT dbo.tc_trans_kasir.seri_kuitansi, dbo.tc_trans_kasir.no_kuitansi, YEAR(dbo.tc_trans_kasir.tgl_jam) AS thn, MONTH(dbo.tc_trans_kasir.tgl_jam) AS bln, 
                       CASE WHEN LEN(DAY(dbo.tc_trans_kasir.tgl_jam)) = 1 THEN ('0' + CAST(DAY(dbo.tc_trans_kasir.tgl_jam) AS varchar(2))) ELSE DAY(dbo.tc_trans_kasir.tgl_jam) END AS tgl, 

@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('tbl_obat_promo_temp_old')) {
+            return;
+        }
+
         Schema::create('tbl_obat_promo_temp_old', function (Blueprint $table) {
             $table->integer('id');
             $table->integer('kode_trans_far')->nullable();

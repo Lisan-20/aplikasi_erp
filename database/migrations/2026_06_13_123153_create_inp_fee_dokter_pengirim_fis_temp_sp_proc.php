@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::unprepared("CREATE proc [dbo].[inp_fee_dokter_pengirim_fis_temp_sp]
+        DB::unprepared("CREATE OR ALTER PROCEDURE [dbo].[inp_fee_dokter_pengirim_fis_temp_sp]
 @no_registrasi as int,
 @kode_dokter as int,
 @no_induk as int

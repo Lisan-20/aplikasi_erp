@@ -12,7 +12,7 @@ return new class extends Migration
     {
         DB::statement("
 
-CREATE VIEW dbo.tc_trans_pelayanan_pm_v
+CREATE OR ALTER VIEW dbo.tc_trans_pelayanan_pm_v
 AS
 SELECT     kode_penunjang, status_selesai AS status_selesai_bayar, kode_bagian_asal
 FROM         dbo.tc_trans_pelayanan

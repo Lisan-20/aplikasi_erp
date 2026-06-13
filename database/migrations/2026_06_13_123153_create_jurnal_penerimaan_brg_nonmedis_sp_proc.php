@@ -14,7 +14,7 @@ return new class extends Migration
 
 
 
-CREATE proc [dbo].[jurnal_penerimaan_brg_nonmedis_sp]
+CREATE OR ALTER PROCEDURE [dbo].[jurnal_penerimaan_brg_nonmedis_sp]
 
 as
 

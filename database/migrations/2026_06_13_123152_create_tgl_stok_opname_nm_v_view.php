@@ -11,7 +11,7 @@ return new class extends Migration
     public function up(): void
     {
         DB::statement("
-CREATE VIEW dbo.tgl_stok_opname_nm_v
+CREATE OR ALTER VIEW dbo.tgl_stok_opname_nm_v
 AS
 SELECT     TOP 100 PERCENT DAY(tgl_stok_opname) AS tgl, MONTH(tgl_stok_opname) AS bln, YEAR(tgl_stok_opname) AS thn
 FROM         dbo.tc_stok_opname_nm

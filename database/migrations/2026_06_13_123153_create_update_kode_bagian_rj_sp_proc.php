@@ -15,7 +15,7 @@ return new class extends Migration
 -- Create date: <Create Date,,>
 -- Description:	<Description,,>
 -- =============================================
-create PROCEDURE [dbo].[update_kode_bagian_rj_sp]
+CREATE OR ALTER PROCEDURE [dbo].[update_kode_bagian_rj_sp]
 	-- Add the parameters for the stored procedure here
 	
 AS

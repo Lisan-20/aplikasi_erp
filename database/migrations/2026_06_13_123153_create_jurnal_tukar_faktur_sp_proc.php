@@ -12,7 +12,7 @@ return new class extends Migration
     {
         DB::unprepared("
 
-CREATE proc [dbo].[jurnal_tukar_faktur_sp]
+CREATE OR ALTER PROCEDURE [dbo].[jurnal_tukar_faktur_sp]
 
 as
 

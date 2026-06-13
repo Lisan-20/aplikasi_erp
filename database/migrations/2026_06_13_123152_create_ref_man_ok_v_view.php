@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.ref_man_ok_v
+        DB::statement("CREATE OR ALTER VIEW dbo.ref_man_ok_v
 AS
 SELECT     CAST(CAST(RowNumber AS varchar) + ref AS varchar) AS kode_ref, RowNumber AS no_urut_periodik, ref, GETDATE() AS tgl_ref, 1 AS user_id, 
                       kodesupplier

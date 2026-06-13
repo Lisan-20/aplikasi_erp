@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::unprepared("create proc dbo.dt_validateloginparams_u
+        DB::unprepared("CREATE OR ALTER PROCEDURE dbo.dt_validateloginparams_u
     @vchLoginName  nvarchar(255),
     @vchPassword   nvarchar(255)
 as

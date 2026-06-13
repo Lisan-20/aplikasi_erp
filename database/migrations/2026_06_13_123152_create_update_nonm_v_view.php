@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.update_nonm_v
+        DB::statement("CREATE OR ALTER VIEW dbo.update_nonm_v
 AS
 SELECT     nomor_permintaan, CAST('0' + nomor_permintaan AS varchar) AS OK, LEFT(nomor_permintaan, 2) AS OKK, id_tc_permintaan_inst
 FROM         dbo.tc_permintaan_inst_nm

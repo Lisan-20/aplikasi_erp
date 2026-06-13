@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.absen_masuk_outsourcing_v
+        DB::statement("CREATE OR ALTER VIEW dbo.absen_masuk_outsourcing_v
 AS
 SELECT     TOP (100) PERCENT dbo.CHECKINOUT_OK.USERID, dbo.CHECKINOUT_OK.CHECKTYPE, DAY(dbo.CHECKINOUT_OK.CHECKTIME) AS tgl, MONTH(dbo.CHECKINOUT_OK.CHECKTIME) AS bln, 
                       YEAR(dbo.CHECKINOUT_OK.CHECKTIME) AS thn, dbo.CHECKINOUT_OK.CHECKTYPE AS jml_absen, dbo.CHECKINOUT_OK.CHECKTIME, dbo.CHECKINOUT_OK.VERIFYCODE, 

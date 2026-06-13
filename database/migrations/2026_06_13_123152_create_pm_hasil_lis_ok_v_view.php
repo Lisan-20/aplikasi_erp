@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.pm_hasil_lis_ok_v
+        DB::statement("CREATE OR ALTER VIEW dbo.pm_hasil_lis_ok_v
 AS
 SELECT     TOP (100) PERCENT dbo.reshd.ID, dbo.reshd.PID, dbo.reshd.APID, dbo.reshd.PNAME, dbo.reshd.ONO, dbo.reshd.LNO, dbo.reshd.REQUEST_DT, 
                       dbo.reshd.SOURCE_CD, dbo.reshd.SOURCE_NM, dbo.reshd.CLINICIAN_CD, dbo.reshd.PRIORITY, dbo.reshd.CLINICIAN_NM, dbo.reshd.VISITNO, 

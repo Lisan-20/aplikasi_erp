@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.absensi_masuk_v
+        DB::statement("CREATE OR ALTER VIEW dbo.absensi_masuk_v
 AS
 SELECT     TOP (100) PERCENT npp, jam_masuk, CONVERT(int, '47') AS npp1
 FROM         dbo.tc_absensi

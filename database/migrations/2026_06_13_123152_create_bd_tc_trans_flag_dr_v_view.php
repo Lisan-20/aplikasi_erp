@@ -13,7 +13,7 @@ return new class extends Migration
         DB::statement("
 
 
-CREATE VIEW dbo.bd_tc_trans_flag_dr_v
+CREATE OR ALTER VIEW dbo.bd_tc_trans_flag_dr_v
 AS
 SELECT     dbo.tc_trans_pelayanan.*, dbo.bd_tc_trans_flag_dr.id_bd_tc_trans_flag_dr, dbo.bd_tc_trans_flag_dr.flag_kui_dr1, 
                       dbo.bd_tc_trans_flag_dr.flag_kui_dr2, dbo.bd_tc_trans_flag_dr.flag_kui_dr3, dbo.bd_tc_trans_flag_dr.flag_kui_dr4, 

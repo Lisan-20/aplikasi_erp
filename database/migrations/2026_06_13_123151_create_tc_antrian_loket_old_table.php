@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('tc_antrian_loket_old')) {
+            return;
+        }
+
         Schema::create('tc_antrian_loket_old', function (Blueprint $table) {
             $table->integer('no_urut');
             $table->integer('loket');

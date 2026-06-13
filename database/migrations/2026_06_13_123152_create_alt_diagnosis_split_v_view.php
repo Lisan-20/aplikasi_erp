@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.alt_diagnosis_split_v
+        DB::statement("CREATE OR ALTER VIEW dbo.alt_diagnosis_split_v
 AS
 SELECT     A.[Inpatient], A.[code2], A.[chapter], A.[s1], A.[code], A.[description], A.[severity], Split.a.value('.', 'VARCHAR(100)') AS inacbg_inp
 FROM         (SELECT    [Inpatient], [code2], [chapter], [s1], [code], [description], [severity], CAST('<M>' + REPLACE([inacbg_in], ',', '</M><M>') + '</M>' AS XML) AS inacbg_inp

@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('tarif_detail')) {
+            return;
+        }
+
         Schema::create('tarif_detail', function (Blueprint $table) {
             $table->string('kode', 10)->nullable();
             $table->string('kelas', 10)->nullable();

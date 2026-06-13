@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.trans_co_header
+        DB::statement("CREATE OR ALTER VIEW dbo.trans_co_header
 AS
 SELECT     id, no_pesanan, tgl_pesanan, kode_pelanggan, total_pesanan, diskon, ppn, biaya, keterangan, nama_pemesan, ttd, created_by, status
 FROM         OPENQUERY(LOGISTIK, 'select * from trans_co_header') AS trans_co_header

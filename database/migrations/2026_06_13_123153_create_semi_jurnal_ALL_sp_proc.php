@@ -15,7 +15,7 @@ return new class extends Migration
 -- Create date: <Create Date,,>
 -- Description:	<Description,,>
 -- =============================================
-CREATE PROCEDURE [dbo].[semi_jurnal_ALL_sp]
+CREATE OR ALTER PROCEDURE [dbo].[semi_jurnal_ALL_sp]
 	-- Add the parameters for the stored procedure here
 	
 AS

@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('mt_emr_poli_temp')) {
+            return;
+        }
+
         Schema::create('mt_emr_poli_temp', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('no_urut')->nullable();

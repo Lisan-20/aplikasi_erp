@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('tx_harian')) {
+            return;
+        }
+
         Schema::create('tx_harian', function (Blueprint $table) {
             $table->increments('no_urut');
             $table->integer('acc_no');

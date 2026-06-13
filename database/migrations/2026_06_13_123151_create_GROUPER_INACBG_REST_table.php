@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('GROUPER_INACBG_REST')) {
+            return;
+        }
+
         Schema::create('GROUPER_INACBG_REST', function (Blueprint $table) {
             $table->increments('KodeMan');
             $table->string('NoSep', 50)->nullable();

@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.cek_pembayaran_supplier_v
+        DB::statement("CREATE OR ALTER VIEW dbo.cek_pembayaran_supplier_v
 AS
 SELECT     TOP (100) PERCENT MONTH(dbo.tx_harian.tx_tgl) AS bln, YEAR(dbo.tx_harian.tx_tgl) AS thn, SUM(dbo.tx_harian.tx_nominal) AS Expr1, dbo.Bank_v.acc_nama
 FROM         dbo.tx_harian INNER JOIN

@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.warna_PEWS_v
+        DB::statement("CREATE OR ALTER VIEW dbo.warna_PEWS_v
 AS
 SELECT     sekor, warna
 FROM         dbo.mt_acc_erm

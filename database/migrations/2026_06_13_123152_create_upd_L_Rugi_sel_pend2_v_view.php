@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.upd_L_Rugi_sel_pend2_v
+        DB::statement("CREATE OR ALTER VIEW dbo.upd_L_Rugi_sel_pend2_v
 AS
 SELECT     dbo.upd_L_Rugi_sel_pend1_v.total_pend, dbo.L_Rugi_bag_fix_temp.rupiah, dbo.upd_L_Rugi_sel_pend1_v.total_pend_ll, dbo.L_Rugi_bag_fix_temp.rupiah_ll, dbo.L_Rugi_bag_fix_temp.ratio, 
                       dbo.L_Rugi_bag_fix_temp.ratio_ll, dbo.L_Rugi_bag_fix_temp.rupiah / dbo.upd_L_Rugi_sel_pend1_v.total_pend * 100 AS ratio_up, 

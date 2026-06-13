@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.v_description_modul
+        DB::statement("CREATE OR ALTER VIEW dbo.v_description_modul
 AS
 SELECT     TOP (100) PERCENT dbo.dc_modul.nama_modul, dbo.dc_menu.nama_menu, dbo.dc_sub_menu.nama_sub_menu, dbo.dc_sub_menu.summary
 FROM         dbo.dc_modul INNER JOIN
