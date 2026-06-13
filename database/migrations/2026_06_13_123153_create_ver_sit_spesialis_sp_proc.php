@@ -30,6 +30,6 @@ update tc_jadwal_dokter set flag_ver=1 where kode_dokter=@kode_dokter and id_jad
      */
     public function down(): void
     {
-        DB::unprepared("DROP PROCEDURE IF EXISTS ver_sit_spesialis_sp");
+        DB::unprepared('DROP PROCEDURE IF EXISTS ver_sit_spesialis_sp');
     }
 };
