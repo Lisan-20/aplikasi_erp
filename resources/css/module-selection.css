@@ -1,0 +1,193 @@
+/* resources/css/module-selection.css */
+:root {
+  --ms-bg: #0b0f19;
+  --ms-card-bg: rgba(20, 25, 40, 0.6);
+  --ms-card-border: rgba(255, 255, 255, 0.08);
+  --ms-card-hover: rgba(30, 40, 60, 0.8);
+  --ms-primary: #3b82f6;
+  --ms-primary-glow: rgba(59, 130, 246, 0.4);
+  --ms-text: #f8fafc;
+  --ms-text-muted: #94a3b8;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', -apple-system, sans-serif;
+  background-color: var(--ms-bg);
+  color: var(--ms-text);
+}
+
+.ms-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Glassmorphism background blobs */
+.ms-glow {
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, var(--ms-primary-glow) 0%, transparent 70%);
+  border-radius: 50%;
+  filter: blur(80px);
+  z-index: 0;
+  opacity: 0.5;
+  animation: float 10s ease-in-out infinite alternate;
+}
+
+.ms-glow-1 { top: -200px; left: -100px; }
+.ms-glow-2 { bottom: -200px; right: -100px; background: radial-gradient(circle, rgba(139, 92, 246, 0.3) 0%, transparent 70%); }
+
+@keyframes float {
+  0% { transform: translateY(0px) scale(1); }
+  100% { transform: translateY(30px) scale(1.1); }
+}
+
+.ms-content {
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 3rem 2rem;
+  width: 100%;
+}
+
+.ms-header {
+  text-align: center;
+  margin-bottom: 4rem;
+  animation: fadeInDown 0.8s ease-out forwards;
+}
+
+.ms-header h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(135deg, #fff, #94a3b8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.ms-header p {
+  color: var(--ms-text-muted);
+  font-size: 1.1rem;
+}
+
+.ms-modular-section {
+  margin-bottom: 3rem;
+  animation: fadeInUp 0.8s ease-out forwards;
+}
+
+.ms-modular-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--ms-text);
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--ms-card-border);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.ms-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.ms-card {
+  background: var(--ms-card-bg);
+  border: 1px solid var(--ms-card-border);
+  border-radius: 16px;
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.ms-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.05), transparent);
+  transform: skewX(-20deg);
+  transition: left 0.7s ease;
+}
+
+.ms-card:hover::before {
+  left: 150%;
+}
+
+.ms-card:hover {
+  transform: translateY(-5px);
+  background: var(--ms-card-hover);
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5), 0 0 20px -5px var(--ms-primary-glow);
+}
+
+.ms-card-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ms-primary);
+  margin-bottom: 0.5rem;
+  transition: transform 0.3s ease;
+}
+
+.ms-card:hover .ms-card-icon {
+  transform: scale(1.1);
+  background: rgba(59, 130, 246, 0.15);
+}
+
+.ms-card-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.ms-card-footer {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--ms-text-muted);
+  font-size: 0.9rem;
+}
+
+.ms-card-arrow {
+  opacity: 0;
+  transform: translateX(-10px);
+  transition: all 0.3s ease;
+  color: var(--ms-primary);
+}
+
+.ms-card:hover .ms-card-arrow {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
