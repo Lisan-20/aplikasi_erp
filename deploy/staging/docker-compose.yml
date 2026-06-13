@@ -7,6 +7,8 @@ services:
     restart: unless-stopped
     env_file:
       - .env.staging
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     volumes:
       - storage_data:/var/www/html/storage
       - bootstrap_cache:/var/www/html/bootstrap/cache

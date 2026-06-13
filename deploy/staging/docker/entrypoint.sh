@@ -13,20 +13,26 @@ fi
 
 php artisan storage:link || true
 
+chown -R www-data:www-data storage bootstrap/cache
+
+# Publish the built assets + storage symlink into a shared volume so the
+# nginx container can serve them without duplicating the app image. Do this
+# before the DB-dependent steps below so nginx always has something to serve
+# (the app shell), even if the external SQL Server is unreachable on startup.
+mkdir -p /shared-public
+cp -r /var/www/html/public/. /shared-public/
+chown -R www-data:www-data /shared-public
+
 # Legacy DB already has 4300+ migrations applied; run any pending ones.
-php artisan migrate --force
+# Don't let a DB outage abort the entrypoint - log it and keep going so
+# nginx can still serve the published assets above.
+if ! php artisan migrate --force; then
+    echo "[entrypoint] WARNING: migrate failed (DB unreachable?). Continuing without it." >&2
+fi
 
 # route:cache is intentionally OMITTED: routes/web.php and routes/api.php
 # contain closure-based routes, which route:cache cannot serialize.
 php artisan config:cache
 php artisan view:cache
-
-# Publish the built assets + storage symlink into a shared volume so the
-# nginx container can serve them without duplicating the app image.
-mkdir -p /shared-public
-cp -r /var/www/html/public/. /shared-public/
-chown -R www-data:www-data /shared-public
-
-chown -R www-data:www-data storage bootstrap/cache
 
 exec "$@"

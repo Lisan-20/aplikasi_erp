@@ -1,11 +1,33 @@
 # syntax=docker/dockerfile:1
 
 #######################################
-# Stage 1: Composer dependencies
+# Stage 1: PHP static analysis (Larastan)
+#
+# Pint formatting is intentionally NOT enforced here: the repo has
+# pre-existing style issues outside this change's scope. Pint is run in CI
+# scoped to changed files only (see .github/workflows/ci.yml).
+#######################################
+FROM composer:2 AS php_lint
+
+WORKDIR /app
+
+COPY composer.json composer.lock ./
+RUN composer install --no-scripts --no-interaction --prefer-dist
+
+COPY . .
+RUN ./vendor/bin/phpstan analyse --no-progress --memory-limit=512M
+
+
+#######################################
+# Stage 2: Composer dependencies
 #######################################
 FROM composer:2 AS composer_deps
 
 WORKDIR /app
+
+# Force this stage to depend on php_lint so `docker build` fails the whole
+# build if static analysis fails.
+COPY --from=php_lint /app/composer.lock /tmp/.php-lint-ok
 
 COPY composer.json composer.lock ./
 RUN composer install \
@@ -21,7 +43,7 @@ RUN composer dump-autoload --optimize --no-dev \
 
 
 #######################################
-# Stage 2: Frontend assets (Vite)
+# Stage 3: Frontend assets (Vite + ESLint)
 #######################################
 FROM node:20-alpine AS node_build
 
@@ -31,11 +53,12 @@ COPY package.json package-lock.json ./
 RUN npm ci
 
 COPY . .
+RUN npm run lint
 RUN npm run build
 
 
 #######################################
-# Stage 3: Runtime (php-fpm + sqlsrv)
+# Stage 4: Runtime (php-fpm + sqlsrv)
 #######################################
 FROM php:8.3-fpm-alpine3.20 AS runtime
 

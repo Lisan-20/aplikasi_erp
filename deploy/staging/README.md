@@ -45,3 +45,16 @@ SQL Server instance — no database container is included.
   ```bash
   docker compose -f deploy/staging/docker-compose.yml logs -f app
   ```
+
+## Troubleshooting
+
+- **`curl http://localhost:9091` returns `403 Forbidden`**: this means the
+  `app_public` shared volume is empty (nginx has no `index.php` to serve and
+  directory listing is disabled). Check `docker compose logs app` for SQL
+  Server connection errors. `DB_HOST` must be reachable from *inside* the
+  `app` container - `localhost` refers to the container itself, not your
+  Docker host. If SQL Server runs on the Docker host, set
+  `DB_HOST=host.docker.internal` (the compose file maps this via
+  `extra_hosts`). Otherwise point it at the real SQL Server hostname/IP.
+  After fixing `.env.staging`, restart with
+  `docker compose -f deploy/staging/docker-compose.yml up -d --force-recreate app`.
