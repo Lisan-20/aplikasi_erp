@@ -1,0 +1,28 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Support\Facades\DB;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        DB::statement("CREATE VIEW dbo.fr_depo_cito_v
+AS
+SELECT     dbo.mt_barang.kode_brg, dbo.mt_barang.nama_brg, dbo.fr_depo_cito.jml_sat_kcl
+FROM         dbo.mt_barang INNER JOIN
+                      dbo.fr_depo_cito ON dbo.mt_barang.kode_brg = dbo.fr_depo_cito.kode_brg
+");
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        DB::statement("DROP VIEW IF EXISTS [fr_depo_cito_v]");
+    }
+};

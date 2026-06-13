@@ -1,0 +1,34 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('sie_partus', function (Blueprint $table) {
+            $table->increments('id_partus');
+            $table->string('kode_bagian', 18)->nullable();
+            $table->integer('kode_kelas')->nullable();
+            $table->integer('bln')->nullable();
+            $table->integer('thn')->nullable();
+            $table->integer('kode_kelompok')->nullable();
+            $table->integer('jenis_partus')->nullable();
+            $table->integer('jml_partus')->nullable();
+            $table->integer('kode_perusahaan')->nullable();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('sie_partus');
+    }
+};

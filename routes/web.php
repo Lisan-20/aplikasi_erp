@@ -101,6 +101,10 @@ Route::middleware(['web', 'check.permission'])->group(function () {
         Route::get('/kinerja/cetak-rujukan', [\App\Http\Controllers\LaporanController::class, 'cetakKinerjaRujukan'])->name('laporan.kinerja.cetak-rujukan');
     });
 
+    Route::prefix('poli')->group(function () {
+        Route::get('/antrian-poli', [\App\Http\Controllers\PoliController::class, 'antrianPoli'])->name('poli.antrian-poli');
+    });
+
     // Legacy Route Catcher
     Route::get('/{legacy_dir}/{legacy_file}', [LegacyController::class, 'show'])
         ->where('legacy_dir', 'mod_.*')

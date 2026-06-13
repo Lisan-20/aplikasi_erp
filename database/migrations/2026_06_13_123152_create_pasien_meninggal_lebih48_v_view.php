@@ -1,0 +1,31 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Support\Facades\DB;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        DB::statement("CREATE VIEW dbo.pasien_meninggal_lebih48_v
+AS
+SELECT     dbo.ri_tc_rawatinap.kode_ri AS jml, dbo.ri_tc_rawatinap.status_pulang, YEAR(dbo.ri_tc_rawatinap.tgl_keluar) AS thn, MONTH(dbo.ri_tc_rawatinap.tgl_keluar) AS bln, 
+                      dbo.ri_tc_riwayat_kelas.ket_keluar, dbo.ri_tc_rawatinap.bag_pas, dbo.ri_tc_rawatinap.input_pulang, dbo.ri_tc_riwayat_kelas.status_hidup, dbo.ri_tc_riwayat_kelas.kode_kematian, 
+                      dbo.ri_tc_riwayat_kelas.waktu_kematian
+FROM         dbo.ri_tc_rawatinap INNER JOIN
+                      dbo.ri_tc_riwayat_kelas ON dbo.ri_tc_rawatinap.kode_ri = dbo.ri_tc_riwayat_kelas.kode_ri
+WHERE     (dbo.ri_tc_rawatinap.status_pulang = 1) AND (dbo.ri_tc_riwayat_kelas.ket_keluar = 3) AND (dbo.ri_tc_riwayat_kelas.kode_kematian = '> 48 jam')
+");
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        DB::statement("DROP VIEW IF EXISTS [pasien_meninggal_lebih48_v]");
+    }
+};

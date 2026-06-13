@@ -1,0 +1,34 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Support\Facades\DB;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        DB::statement("CREATE VIEW dbo.tagihan_2013_dibayar_2014
+AS
+SELECT     TOP (100) PERCENT dbo.mt_perusahaan.kode_perusahaan, dbo.mt_perusahaan.nama_perusahaan, SUM(dbo.tc_tagih.jumlah_tagih) AS jumlah_tagihan, 
+                      dbo.tc_tagih.status_batal
+FROM         dbo.tc_tagih INNER JOIN
+                      dbo.tc_bayar_tagih ON dbo.tc_tagih.id_tc_tagih = dbo.tc_bayar_tagih.id_tc_tagih INNER JOIN
+                      dbo.mt_perusahaan ON dbo.tc_tagih.id_tertagih = dbo.mt_perusahaan.kode_perusahaan
+GROUP BY dbo.mt_perusahaan.kode_perusahaan, dbo.mt_perusahaan.nama_perusahaan, YEAR(dbo.tc_tagih.tgl_tagih), YEAR(dbo.tc_bayar_tagih.tgl_bayar), 
+                      dbo.tc_tagih.status_batal
+HAVING      (YEAR(dbo.tc_tagih.tgl_tagih) = 2013) AND (YEAR(dbo.tc_bayar_tagih.tgl_bayar) = 2014) AND (dbo.tc_tagih.status_batal IS NULL)
+ORDER BY dbo.mt_perusahaan.nama_perusahaan
+");
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        DB::statement("DROP VIEW IF EXISTS [tagihan_2013_dibayar_2014]");
+    }
+};

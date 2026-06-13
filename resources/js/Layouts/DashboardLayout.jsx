@@ -183,6 +183,12 @@ export default function DashboardLayout({ children }) {
                                                         if (subId == 1773) subUrlRaw = '/registrasi/listing-jkn';
                                                         // Laporan Mappings (defined here, overrides set below at line 226)
                                                         // (mapping handled at line 226)
+                                                        
+                                                        // Poli Mappings
+                                                        if (subUrlRaw.includes('mod_poli/antrian.php') || subUrlRaw.includes('mod_poli/antrian_pasien.php')) {
+                                                            subUrlRaw = '/poli/antrian-poli';
+                                                        }
+
                                                         // Phase 5 Mappings - remaining legacy submenus via LegacyView
                                                         if (subId == 2192) subUrlRaw = '/registrasi/listing-poli'; // Listing Pasien His → same page
                                                         // PENDAFTARAN group legacy
@@ -197,7 +203,7 @@ export default function DashboardLayout({ children }) {
                                                         if (subId == 1812) subUrlRaw = '/registrasi/legacy-ext?url=' + encodeURIComponent('http://192.168.0.4:8081/mod_registrasi/vclaim_monitoring_peserta_view.php') + '&title=Monitoring+VClaim';
                                                         // LISTING PASIEN group legacy
                                                         if (subId == 662) subUrlRaw = '/mod_igd/batal_pasien_igd_view.php';
-                                                        if (subId == 437) subUrlRaw = '/mod_poli/antrian_pasien.php';
+                                                        // (subId == 437 mapped above for antrian_pasien.php)
                                                         if (subId == 1151) subUrlRaw = '/mod_pm/listing_pasien_lab_v.php';
                                                         if (subId == 1152) subUrlRaw = '/mod_pm/listing_pasien_rad_v.php';
                                                         if (subId == 1154) subUrlRaw = '/mod_pm/list_pasien_fisio.php';
