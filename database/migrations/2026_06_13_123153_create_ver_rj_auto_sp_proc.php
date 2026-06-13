@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::unprepared("CREATE proc ver_rj_auto_sp
+        DB::unprepared("CREATE OR ALTER PROCEDURE ver_rj_auto_sp
 
 as
 

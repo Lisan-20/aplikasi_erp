@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('dd_sie_kpi')) {
+            return;
+        }
+
         Schema::create('dd_sie_kpi', function (Blueprint $table) {
             $table->increments('id_kpi');
             $table->integer('id_group')->nullable();

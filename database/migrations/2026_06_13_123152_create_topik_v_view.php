@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.topik_v
+        DB::statement("CREATE OR ALTER VIEW dbo.topik_v
 AS
 SELECT     dbo.topik.id_topik, dbo.topik.isi_topik, dbo.topik.tgl_topik, dbo.topik.username, dbo.dd_user.email, dbo.topik.dibaca
 FROM         dbo.topik LEFT OUTER JOIN

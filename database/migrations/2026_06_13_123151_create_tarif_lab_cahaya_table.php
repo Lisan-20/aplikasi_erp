@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('tarif_lab_cahaya')) {
+            return;
+        }
+
         Schema::create('tarif_lab_cahaya', function (Blueprint $table) {
             $table->string('Tindakan')->nullable();
             $table->float('harga', 53, 0)->nullable();

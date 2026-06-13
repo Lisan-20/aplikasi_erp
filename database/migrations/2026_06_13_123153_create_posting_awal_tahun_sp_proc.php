@@ -18,7 +18,7 @@ return new class extends Migration
 
 
 
-CREATE proc [dbo].[posting_awal_tahun_sp]
+CREATE OR ALTER PROCEDURE [dbo].[posting_awal_tahun_sp]
 as
 set nocount on
 --delete from master_hist_bl where tahun=year(getdate()) and bulan=month(getdate());

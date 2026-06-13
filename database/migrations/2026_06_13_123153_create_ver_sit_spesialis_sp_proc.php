@@ -3,14 +3,13 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
     public function up(): void
     {
-        DB::unprepared("create PROCEDURE [dbo].[ver_sit_spesialis_sp]
+        DB::unprepared("CREATE OR ALTER PROCEDURE [dbo].[ver_sit_spesialis_sp]
 @kode_dokter as int,
 @kode_bagian as int,
 @biaya_dr1 as int,
@@ -30,6 +29,6 @@ update tc_jadwal_dokter set flag_ver=1 where kode_dokter=@kode_dokter and id_jad
      */
     public function down(): void
     {
-        DB::unprepared("DROP PROCEDURE IF EXISTS ver_sit_spesialis_sp");
+        DB::unprepared('DROP PROCEDURE IF EXISTS ver_sit_spesialis_sp');
     }
 };

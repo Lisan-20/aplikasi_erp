@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.privy_sing2_v
+        DB::statement("CREATE OR ALTER VIEW dbo.privy_sing2_v
 AS
 SELECT     dbo.tc_emr_form.id_tc_emr, dbo.tc_emr_form.no_mr, dbo.tc_emr_form.no_registrasi, dbo.tc_emr_form.kode_rm, dbo.tc_emr_form.tgl_update, dbo.tc_emr_form.reference_number, 
                       dbo.tc_emr_form.document_token, dbo.tc_emr_form.signed_document, dbo.tc_emr_form.update_at, dbo.tc_emr_form.link_url, dbo.mt_master_pasien.nama_pasien, dbo.mt_emr.nama_form, 

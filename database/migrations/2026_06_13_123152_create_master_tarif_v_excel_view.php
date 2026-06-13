@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.master_tarif_v_excel
+        DB::statement("CREATE OR ALTER VIEW dbo.master_tarif_v_excel
 AS
 SELECT     TOP (100) PERCENT dbo.mt_master_tarif.nama_tarif, dbo.mt_tarif_v.nama_klas, dbo.mt_bagian.nama_bagian, dbo.mt_tarif_v.bill_rs, dbo.mt_tarif_v.bill_dr1, dbo.mt_tarif_v.bill_dr2, 
                       dbo.mt_tarif_v.total, dbo.mt_tarif_v.bill_rs_bpjs, dbo.mt_tarif_v.bill_dr1_bpjs, dbo.mt_tarif_v.bill_dr2_bpjs, dbo.mt_tarif_v.total_bpjs, dbo.mt_tarif_v.bill_rs_ass, dbo.mt_tarif_v.bill_dr1_ass, 

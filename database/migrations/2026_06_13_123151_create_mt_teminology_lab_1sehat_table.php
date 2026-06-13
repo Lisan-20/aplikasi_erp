@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('mt_teminology_lab_1sehat')) {
+            return;
+        }
+
         Schema::create('mt_teminology_lab_1sehat', function (Blueprint $table) {
             $table->integer('id')->nullable();
             $table->string('code', 50)->nullable();

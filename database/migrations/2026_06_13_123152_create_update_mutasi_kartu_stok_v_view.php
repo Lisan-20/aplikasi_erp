@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.update_mutasi_kartu_stok_v
+        DB::statement("CREATE OR ALTER VIEW dbo.update_mutasi_kartu_stok_v
 AS
 SELECT     dbo.mt_rekap_stok_temp.id, dbo.mt_rekap_stok_temp.kode_bagian, dbo.mt_rekap_stok_temp.kode_brg, dbo.mt_rekap_stok_temp.pemasukan, dbo.mt_rekap_stok_temp.pengeluaran, 
                       dbo.mt_rekap_stok_temp.bln, dbo.mt_rekap_stok_temp.thn, dbo.tc_kartu_stok_lap_v.pemasukan_up, dbo.tc_kartu_stok_lap_v.pengeluaran_up

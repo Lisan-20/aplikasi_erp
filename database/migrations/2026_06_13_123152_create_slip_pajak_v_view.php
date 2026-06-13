@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.slip_pajak_v
+        DB::statement("CREATE OR ALTER VIEW dbo.slip_pajak_v
 AS
 SELECT     id_periode_gaji, npp, gross_bln AS nilai, 'Tunjangan Pajak' AS ket, 5 AS urut
 FROM         dbo.tc_gaji_tiap_bulan

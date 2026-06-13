@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.saldo_awal_off_k_union_v
+        DB::statement("CREATE OR ALTER VIEW dbo.saldo_awal_off_k_union_v
 AS
 SELECT     dbo.bd_tc_trans_union_v.acc_no, dbo.bd_tc_trans_union_v.tx_tipe, MIN(DISTINCT dbo.bd_tc_trans_union_v.jumlah) AS saldo_awal, 
                       DAY(dbo.bd_tc_trans_union_v.tgl_transaksi) AS tgl, MONTH(dbo.bd_tc_trans_union_v.tgl_transaksi) AS bln, YEAR(dbo.bd_tc_trans_union_v.tgl_transaksi) AS thn, 

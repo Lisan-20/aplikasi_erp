@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.posting_account_v
+        DB::statement("CREATE OR ALTER VIEW dbo.posting_account_v
 AS
 SELECT     dbo.mt_account.acc_no, dbo.mt_account.level_coa, dbo.mt_account.acc_type, dbo.dd_konfigurasi.ko_wil
 FROM         dbo.mt_account CROSS JOIN

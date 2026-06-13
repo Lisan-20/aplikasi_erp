@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.stok_akhir_perbln_v
+        DB::statement("CREATE OR ALTER VIEW dbo.stok_akhir_perbln_v
 AS
 SELECT     TOP (100) PERCENT a.kode_brg, a.stok_sekarang, d.nama_brg, MONTH(a.tgl_stok_opname) AS bln, YEAR(a.tgl_stok_opname) AS thn, dbo.cek_max_SO_v.nama_bagian, a.tgl_stok_opname, 
                       a.harga_beli, dbo.cek_max_SO_v.kode_bagian

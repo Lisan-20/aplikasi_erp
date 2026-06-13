@@ -16,7 +16,7 @@ return new class extends Migration
 -- Create date: <Create Date,,>
 -- Description:	<Description,,>
 -- =============================================
-CREATE PROCEDURE [dbo].[jurnal_sed_pt_rj_sp]
+CREATE OR ALTER PROCEDURE [dbo].[jurnal_sed_pt_rj_sp]
 AS
 BEGIN
 	-- pt 

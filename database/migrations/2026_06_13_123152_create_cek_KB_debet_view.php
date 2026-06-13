@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.cek_KB_debet
+        DB::statement("CREATE OR ALTER VIEW dbo.cek_KB_debet
 AS
 SELECT     SUM(dbo.bd_tc_trans_detail.jumlah) AS debet, dbo.bd_tc_trans_detail.id_bd_tc_trans, dbo.bd_tc_trans_detail.tx_tipe, dbo.bd_tc_trans_detail.tgl_ver, 
                       dbo.bd_tc_trans_detail.flag_jurnal, dbo.bd_tc_trans.flag_tmp, dbo.bd_tc_trans_detail.no_bukti

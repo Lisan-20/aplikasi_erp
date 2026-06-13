@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.xocp_users
+        DB::statement("CREATE OR ALTER VIEW dbo.xocp_users
 AS
 SELECT     user_id, person_id, user_nm, pwd0, pwd1, language, avatar, regdate, icq, viewemail, aim, yim, msnm, startpage, user_theme, theme, sig, attachsig, tz_offset, popmsgon, last_login, pgroup_id, 
                       status_cd, last_org_id, last_page_id, cur_ses_id

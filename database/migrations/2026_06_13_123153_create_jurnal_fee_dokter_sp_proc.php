@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::unprepared("CREATE proc [dbo].[jurnal_fee_dokter_sp]
+        DB::unprepared("CREATE OR ALTER PROCEDURE [dbo].[jurnal_fee_dokter_sp]
 as
 INSERT INTO tx_harian(acc_no,tx_nominal,tx_uraian,tx_tgl,tx_jam,tx_tipe,no_jurnal,no_det_jurnal,no_bukti,kel_jurnal,kode_dr,referensi) SELECT '2110504' as acc_no,(case when nominal is null then 0 else nominal end)+(case when potongan is null then 0 else potongan end)+(case when potongan_pajak is null then 0 else potongan_pajak end) as tx_nominal,'Hutang Jasa Dokter Sementara No Bukti :'+cast(no_bukti as varchar(255))as tx_uraian,tgl_pembentukan as tx_tgl,getdate() as tx_jam,'D' as tx_tipe,id_bd_tc_hutang_dr as no_jurnal,2 as no_det_jurnal,no_bukti, '17' as kel_jurnal,kode_dokter as kode_dr,no_sppu as referensi FROM bd_tc_hutang_dr WHERE status_ver=0 and nominal>0 and rj_ri='RJ';
 INSERT INTO tx_harian(acc_no,tx_nominal,tx_uraian,tx_tgl,tx_jam,tx_tipe,no_jurnal,no_det_jurnal,no_bukti,kel_jurnal,kode_dr,referensi) SELECT '2110505' as acc_no,(case when nominal is null then 0 else nominal end)+(case when potongan is null then 0 else potongan end)+(case when potongan_pajak is null then 0 else potongan_pajak end) as tx_nominal,'Hutang Jasa Dokter Sementara No Bukti :'+cast(no_bukti as varchar(255))as tx_uraian,tgl_pembentukan as tx_tgl,getdate() as tx_jam,'D' as tx_tipe,id_bd_tc_hutang_dr as no_jurnal,2 as no_det_jurnal,no_bukti, '17' as kel_jurnal,kode_dokter as kode_dr,no_sppu as referensi FROM bd_tc_hutang_dr WHERE status_ver=0 and nominal>0 and rj_ri='RI';

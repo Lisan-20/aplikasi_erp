@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.tgl_upd
+        DB::statement("CREATE OR ALTER VIEW dbo.tgl_upd
 AS
 SELECT     dbo.tc_referensi.tgl_ref, dbo.tc_referensi_det.tgl_ref AS tgl_ref_up
 FROM         dbo.tc_referensi INNER JOIN

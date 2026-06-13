@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.rekap_input_resep_v
+        DB::statement("CREATE OR ALTER VIEW dbo.rekap_input_resep_v
 AS
 SELECT     SUM(dbo.fr_hisbebasluar_v.jumlah_tebus * dbo.fr_hisbebasluar_v.harga_jual) AS bill_total, dbo.tc_registrasi.kode_kelompok, DAY(dbo.fr_hisbebasluar_v.tgl_trans) 
                       AS tgl, MONTH(dbo.fr_hisbebasluar_v.tgl_trans) AS bln, YEAR(dbo.fr_hisbebasluar_v.tgl_trans) AS thn, dbo.fr_hisbebasluar_v.kode_profit, 

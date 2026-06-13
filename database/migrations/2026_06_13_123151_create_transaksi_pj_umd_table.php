@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('transaksi_pj_umd')) {
+            return;
+        }
+
         Schema::create('transaksi_pj_umd', function (Blueprint $table) {
             $table->integer('id_trans_pj_umd');
             $table->integer('id_bd_tc_trans');

@@ -24,7 +24,7 @@ return new class extends Migration
 
 
 
-create proc [dbo].[posting_mutasi_sp]
+CREATE OR ALTER PROCEDURE [dbo].[posting_mutasi_sp]
 as
 
 update v_posting_d set mutasi_d = debet;

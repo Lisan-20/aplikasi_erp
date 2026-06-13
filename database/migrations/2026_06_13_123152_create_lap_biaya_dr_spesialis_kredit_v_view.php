@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.lap_biaya_dr_spesialis_kredit_v
+        DB::statement("CREATE OR ALTER VIEW dbo.lap_biaya_dr_spesialis_kredit_v
 AS
 SELECT     SUM(CASE WHEN tx_nominal IS NULL THEN 0 ELSE tx_nominal END) AS kredit, MONTH(dbo.tx_harian.tx_tgl) AS bulan, YEAR(dbo.tx_harian.tx_tgl) AS tahun, 
                       dbo.tx_harian.tx_tipe, dbo.mt_karyawan.kode_spesialisasi, dbo.bd_tc_hutang_dr.rj_ri

@@ -13,7 +13,7 @@ return new class extends Migration
         DB::unprepared("
 
 
-create proc [dbo].[posting_ulang_sp]
+CREATE OR ALTER PROCEDURE [dbo].[posting_ulang_sp]
 @bln as int,
 @thn as int
 as

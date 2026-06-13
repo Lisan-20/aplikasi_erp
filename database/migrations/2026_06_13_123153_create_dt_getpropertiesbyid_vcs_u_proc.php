@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::unprepared("create procedure dbo.dt_getpropertiesbyid_vcs_u
+        DB::unprepared("CREATE OR ALTER PROCEDURE dbo.dt_getpropertiesbyid_vcs_u
     @id       int,
     @property varchar(64),
     @value    nvarchar(255) = NULL OUT

@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.satu_v
+        DB::statement("CREATE OR ALTER VIEW dbo.satu_v
 AS
 SELECT       row_number() over (order by bd_tc_trans.id_bd_tc_trans)  AS No,dbo.bd_tc_trans.id_bd_tc_trans, dbo.bd_tc_trans.kd_group_trans, dbo.bd_tc_trans.kd_trans_bendahara, dbo.bd_tc_trans.id_bank, dbo.bd_tc_trans.giro, dbo.bd_tc_trans.tgl_bank, 
                       dbo.bd_tc_trans.no_bukti, dbo.bd_tc_trans.no_ref, dbo.bd_tc_trans.tgl_transaksi, dbo.bd_tc_trans.penerima, dbo.bd_tc_trans.uraian, dbo.bd_tc_trans.materai, dbo.bd_tc_trans.jumlah, 

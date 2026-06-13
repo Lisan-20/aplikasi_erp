@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('mt_klasifikasi_insentif')) {
+            return;
+        }
+
         Schema::create('mt_klasifikasi_insentif', function (Blueprint $table) {
             $table->increments('id_mt_klasifikasi_insentif');
             $table->integer('kode_klasifikasi')->nullable();

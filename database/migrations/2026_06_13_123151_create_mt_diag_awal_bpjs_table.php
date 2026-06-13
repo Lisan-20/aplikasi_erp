@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('mt_diag_awal_bpjs')) {
+            return;
+        }
+
         Schema::create('mt_diag_awal_bpjs', function (Blueprint $table) {
             $table->string('Code', 10)->nullable();
             $table->text('Deskripsi')->nullable();

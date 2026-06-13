@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.ews_atas_v
+        DB::statement("CREATE OR ALTER VIEW dbo.ews_atas_v
 AS
 SELECT     tgl_jam, no_registrasi, no_urut_ews, jenis
 FROM         dbo.tc_pemeriksaan_ews

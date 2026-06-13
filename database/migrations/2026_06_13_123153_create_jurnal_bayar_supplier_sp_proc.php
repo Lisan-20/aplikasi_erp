@@ -24,7 +24,7 @@ return new class extends Migration
 
 
 
-CREATE PROC [dbo].[jurnal_bayar_supplier_sp]
+CREATE OR ALTER PROCEDURE [dbo].[jurnal_bayar_supplier_sp]
 AS
 INSERT INTO tx_harian(acc_no,tx_nominal,tx_uraian,tx_tgl,tx_jam,tx_tipe,no_jurnal,no_det_jurnal,no_bukti,kode_bagian,no_induk,kel_jurnal,kode_bank,kode_supplier,kd_group_trans,kd_trans_bendahara,referensi) SELECT acc_no,(jumlah) as tx_nominal,cast(uraian as varchar(255)) as tx_uraian,tgl_transaksi as tx_tgl,getdate() as tx_jam,'K' as tx_tipe,id_bd_tc_trans as no_jurnal,no_urut as no_det_jurnal,no_bukti,kode_bagian,no_induk,'5' as kel_jurnal,id_bank as kode_bank,kode_suplier as kode_supplier,kd_group_trans,kd_trans_bendahara,no_ref as referensi FROM bd_tc_trans_v WHERE flag_jurnal=1 and tx_tipe=1 ;
 INSERT INTO tx_harian(acc_no,tx_nominal,tx_uraian,tx_tgl,tx_jam,tx_tipe,no_jurnal,no_det_jurnal,no_bukti,kode_bagian,no_induk,kel_jurnal,kode_bank,kode_supplier,kd_group_trans,kd_trans_bendahara,referensi) SELECT acc_no,(jumlah) as tx_nominal,cast(uraian as varchar(255)) as tx_uraian,tgl_transaksi as tx_tgl,getdate() as tx_jam,'D' as tx_tipe,id_bd_tc_trans as no_jurnal,no_urut as no_det_jurnal,no_bukti,kode_bagian,no_induk,'5' as kel_jurnal,id_bank as kode_bank,kode_suplier as kode_supplier,kd_group_trans,kd_trans_bendahara,no_ref as referensi FROM bd_tc_trans_v WHERE flag_jurnal=1 and tx_tipe=0 ;

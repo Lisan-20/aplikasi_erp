@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('tc_jadwal_HD')) {
+            return;
+        }
+
         Schema::create('tc_jadwal_HD', function (Blueprint $table) {
             $table->increments('id_surat');
             $table->string('no_mr', 8)->nullable();

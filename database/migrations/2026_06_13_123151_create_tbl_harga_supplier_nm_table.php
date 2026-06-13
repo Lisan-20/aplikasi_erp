@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('tbl_harga_supplier_nm')) {
+            return;
+        }
+
         Schema::create('tbl_harga_supplier_nm', function (Blueprint $table) {
             $table->increments('id');
             $table->string('kode_brg', 50)->nullable();

@@ -14,7 +14,7 @@ return new class extends Migration
 
 
 
-CREATE PROCEDURE [dbo].[posting_saldo_awal_sp]
+CREATE OR ALTER PROCEDURE [dbo].[posting_saldo_awal_sp]
 as
 declare @bln int
 declare @thn int

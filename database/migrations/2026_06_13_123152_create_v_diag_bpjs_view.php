@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.v_diag_bpjs
+        DB::statement("CREATE OR ALTER VIEW dbo.v_diag_bpjs
 AS
 SELECT        CAST(Code AS varchar) AS Code, Description, Severity, InPatient, OutPatient, CAST(InPatient + '-' + 'i' AS varchar) AS code_inacbg, Code AS kode
 FROM            dbo.refdiagnosis

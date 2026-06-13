@@ -12,7 +12,7 @@ return new class extends Migration
     {
         DB::unprepared("
 
-CREATE PROCEDURE [dbo].[jurnal_ALL_sp]
+CREATE OR ALTER PROCEDURE [dbo].[jurnal_ALL_sp]
 AS
 BEGIN
 --exec semi_jurnal_ALL_sp;

@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.harga_ref_v
+        DB::statement("CREATE OR ALTER VIEW dbo.harga_ref_v
 AS
 SELECT     TOP (100) PERCENT dbo.tc_referensi_det.tgl_ref AS tgl, dbo.tc_referensi_det.kode_brg, dbo.tc_referensi_det.jumlah_besar, dbo.tc_referensi_det.rasio AS isi, dbo.tc_referensi_det.satuan, 
                       dbo.tc_referensi_det.harga_satuan_netto AS harga, dbo.tc_referensi.kodesupplier, dbo.tc_referensi_det.pilih_satuan, dbo.tc_referensi_det.discount

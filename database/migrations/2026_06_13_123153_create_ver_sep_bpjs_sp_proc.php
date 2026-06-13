@@ -11,7 +11,7 @@ return new class extends Migration
     public function up(): void
     {
         DB::unprepared("
-CREATE proc ver_sep_bpjs_sp
+CREATE OR ALTER PROCEDURE ver_sep_bpjs_sp
 
 @date_start as date,
 @date_end as date,

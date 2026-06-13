@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.upd_GDS_lab_v
+        DB::statement("CREATE OR ALTER VIEW dbo.upd_GDS_lab_v
 AS
 SELECT     id_fee_dr_ri_temp, kode_dr, no_kunjungan, no_registrasi, no_mr, seri_kuitansi, no_kuitansi, tgl_transaksi, tgl_kuitansi, kode_bagian, nama_tindakan, kode_trans_pelayanan, no_sppu, flag_sppu, 
                       tahun, jumlah, kode_kelompok, kode_perusahaan, kode_tc_trans_kasir, nama_pasien, no_induk, flag_umum, flag_pt, flag_ass, flag_bpjs, jumlah * 100 AS total, 

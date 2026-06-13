@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.lap_rekap_resep_v
+        DB::statement("CREATE OR ALTER VIEW dbo.lap_rekap_resep_v
 AS
 SELECT     TOP (100) PERCENT COUNT(dbo.lap_rekap_resep_new_v.kode_trans_far) AS jumlah, DAY(dbo.lap_rekap_resep_new_v.tgl_trans) AS tgl, MONTH(dbo.lap_rekap_resep_new_v.tgl_trans) AS bln, 
                       YEAR(dbo.lap_rekap_resep_new_v.tgl_trans) AS thn, CASE WHEN kode_kelompok IS NULL THEN 1 ELSE kode_kelompok END AS nasabah, dbo.lap_rekap_resep_new_v.kode_profit

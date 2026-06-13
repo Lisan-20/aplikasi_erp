@@ -16,7 +16,7 @@ return new class extends Migration
 -- Create date: <Create Date,,>
 -- Description:	<Description,,>
 -- =============================================
-CREATE PROCEDURE [dbo].[jurnal_tran_sed_RI_BPJS_sp]
+CREATE OR ALTER PROCEDURE [dbo].[jurnal_tran_sed_RI_BPJS_sp]
 AS
 BEGIN
     -- bpjs rawat inap

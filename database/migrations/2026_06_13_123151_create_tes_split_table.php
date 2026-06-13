@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('tes_split')) {
+            return;
+        }
+
         Schema::create('tes_split', function (Blueprint $table) {
             $table->integer('Id')->nullable();
             $table->string('String', 250)->nullable();

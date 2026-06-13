@@ -11,7 +11,7 @@ return new class extends Migration
     public function up(): void
     {
         DB::statement("
-CREATE VIEW [dbo].[no_antrian_poli_v]
+CREATE OR ALTER VIEW [dbo].[no_antrian_poli_v]
 AS
 SELECT        dbo.tc_registrasi.no_registrasi, dbo.tc_kunjungan.no_kunjungan, dbo.pl_tc_poli.kode_poli, dbo.pl_tc_poli.no_antrian, dbo.pl_tc_poli.kode_bagian, YEAR(dbo.tc_registrasi.tgl_jam_masuk) AS Expr1, dbo.tc_registrasi.flag_kirim, 
                          dbo.tc_registrasi.respon_addantrian

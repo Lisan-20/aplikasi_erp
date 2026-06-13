@@ -15,7 +15,7 @@ return new class extends Migration
 -- Create date: <Create Date,,>
 -- Description:	<Description,,>
 -- =============================================
-create PROCEDURE [dbo].[jurnal_um_batal_sp]
+CREATE OR ALTER PROCEDURE [dbo].[jurnal_um_batal_sp]
 AS
 BEGIN
 	-- SET NOCOUNT ON added to prevent extra result sets from

@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.list_po_rs_v
+        DB::statement("CREATE OR ALTER VIEW dbo.list_po_rs_v
 AS
 SELECT     dbo.tc_po_det.id_tc_po, SUM(CASE WHEN harga_satuan IS NULL THEN 0 ELSE harga_satuan END * CASE WHEN jumlah_besar_acc IS NULL THEN 0 ELSE jumlah_besar_acc END) AS JmlHarga, 
                       dbo.tc_po.ket_acc, dbo.tc_po.term_of_pay

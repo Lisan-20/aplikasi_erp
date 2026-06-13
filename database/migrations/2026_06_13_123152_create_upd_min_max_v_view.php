@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.upd_min_max_v
+        DB::statement("CREATE OR ALTER VIEW dbo.upd_min_max_v
 AS
 SELECT     dbo.mt_barang.nama_brg, dbo.mt_depo_stok.kode_bagian, dbo.upd_min_max.[stok minimal], dbo.upd_min_max.[stok maksimal], dbo.mt_depo_stok.stok_minimum, 
                       dbo.mt_depo_stok.stok_maksimum, dbo.upd_min_max.No#

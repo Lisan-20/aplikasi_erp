@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('th_gicu_icu')) {
+            return;
+        }
+
         Schema::create('th_gicu_icu', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('no_registrasi')->nullable();

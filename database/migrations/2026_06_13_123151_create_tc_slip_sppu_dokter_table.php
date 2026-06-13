@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('tc_slip_sppu_dokter')) {
+            return;
+        }
+
         Schema::create('tc_slip_sppu_dokter', function (Blueprint $table) {
             $table->integer('kode_slip');
             $table->string('no_slip', 50)->nullable();

@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.mt_tarif_ruangan_persh_v
+        DB::statement("CREATE OR ALTER VIEW dbo.mt_tarif_ruangan_persh_v
 AS
 SELECT     dbo.mt_master_tarif_ruangan.*, dbo.mt_perusahaan.kode_perusahaan
 FROM         dbo.mt_perusahaan CROSS JOIN

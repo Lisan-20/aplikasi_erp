@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.upd_L_Rugi_all_fix_temp_v
+        DB::statement("CREATE OR ALTER VIEW dbo.upd_L_Rugi_all_fix_temp_v
 AS
 SELECT     TOP (100) PERCENT dbo.mt_account.kode_utama, dbo.mt_account.kode_golongan, dbo.mt_account.level_coa, SUM(dbo.L_Rugi_all_temp.debet) AS debet, SUM(dbo.L_Rugi_all_temp.kredit) 
                       AS kredit, dbo.L_Rugi_all_temp.bulan, dbo.L_Rugi_all_temp.tahun, dbo.mt_account.acc_no, dbo.mt_account.acc_nama, dbo.L_Rugi_all_temp.acc_no AS Expr1, dbo.mt_account.acc_type, 

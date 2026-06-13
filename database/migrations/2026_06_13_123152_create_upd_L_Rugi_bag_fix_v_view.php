@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.upd_L_Rugi_bag_fix_v
+        DB::statement("CREATE OR ALTER VIEW dbo.upd_L_Rugi_bag_fix_v
 AS
 SELECT     CASE WHEN acc_type = 'D' THEN SUM(debet) - SUM(kredit) ELSE SUM(kredit) - SUM(debet) END AS rupiah_upd, dbo.L_Rugi_bag_union_v.kode_bagian, dbo.mt_account.acc_no, 
                       dbo.mt_account.acc_nama, SUM(dbo.L_Rugi_bag_union_v.debet) AS debet, SUM(dbo.L_Rugi_bag_union_v.kredit) AS kredit, dbo.L_Rugi_bag_union_v.bulan, dbo.L_Rugi_bag_union_v.tahun, 

@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('tb_data_obat')) {
+            return;
+        }
+
         Schema::create('tb_data_obat', function (Blueprint $table) {
             $table->float('NO', 53, 0)->nullable();
             $table->text('NAMA OBAT')->nullable();

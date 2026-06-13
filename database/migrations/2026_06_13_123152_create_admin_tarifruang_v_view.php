@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.admin_tarifruang_v
+        DB::statement("CREATE OR ALTER VIEW dbo.admin_tarifruang_v
 AS
 SELECT     TOP (100) PERCENT dbo.mt_bagian.kode_bagian, dbo.mt_bagian.nama_bagian, dbo.mt_bagian.group_bag, dbo.mt_bagian.jumlah_kamar, dbo.mt_bagian.harga_kamar, 
                       dbo.mt_bagian.kelompok_unit, dbo.mt_bagian.validasi, dbo.mt_klas.nama_klas, dbo.mt_bagian.id_mt_bagian, dbo.mt_master_tarif_ruangan.kd_tarif_r, dbo.mt_master_tarif_ruangan.harga_r, 

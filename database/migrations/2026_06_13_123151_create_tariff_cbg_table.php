@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('tariff_cbg')) {
+            return;
+        }
+
         Schema::create('tariff_cbg', function (Blueprint $table) {
             $table->string('inacbg')->nullable();
             $table->string('regional')->nullable();

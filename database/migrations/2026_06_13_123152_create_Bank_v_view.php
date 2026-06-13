@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.Bank_v
+        DB::statement("CREATE OR ALTER VIEW dbo.Bank_v
 AS
 SELECT     TOP (100) PERCENT dbo.kas_bank.Id_Kas_Bank AS id_bank, dbo.kas_bank.Kas_Bank, dbo.mt_account.acc_nama, dbo.mt_account.acc_no, dbo.kas_bank.urutan
 FROM         dbo.kas_bank INNER JOIN

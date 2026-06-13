@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.lap_kunjungan_rajal_nasabah_all_v
+        DB::statement("CREATE OR ALTER VIEW dbo.lap_kunjungan_rajal_nasabah_all_v
 AS
 SELECT     CASE WHEN lap_kunjungan_BpjsPbi_rajal_v.BpjsPbi IS NULL THEN 0 ELSE lap_kunjungan_BpjsPbi_rajal_v.BpjsPbi END AS BpjsPbi, 
                       CASE WHEN lap_kunjungan_jamkesda_rajal_v.jamkesda IS NULL THEN 0 ELSE lap_kunjungan_jamkesda_rajal_v.jamkesda END AS jamkesda, 

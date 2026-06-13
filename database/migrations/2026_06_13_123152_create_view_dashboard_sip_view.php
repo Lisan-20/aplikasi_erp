@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.view_dashboard_sip
+        DB::statement("CREATE OR ALTER VIEW dbo.view_dashboard_sip
 AS
 SELECT     kelas_dan_ruang, logo, jml_bed, jml_isi, jml_bed - jml_isi AS sisa, kode_bpjs, jml_bed_asli, no
 FROM         dbo.view_dashboard_fiks

@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.update_tarif_man_v
+        DB::statement("CREATE OR ALTER VIEW dbo.update_tarif_man_v
 AS
 SELECT     TOP (100) PERCENT bill_rs, bill_dr1, CAST(bill_rs + bill_dr1 AS varchar) AS kriting, bill_rs - 1 AS bill_upd
 FROM         dbo.mt_master_tarif_detail

@@ -11,7 +11,7 @@ return new class extends Migration
     public function up(): void
     {
         DB::unprepared("
-create proc linked_srv_mysql
+CREATE OR ALTER PROCEDURE linked_srv_mysql
 
 as 
 

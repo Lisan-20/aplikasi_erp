@@ -13,7 +13,7 @@ return new class extends Migration
         DB::unprepared("/*
 **	Add an object to the dtproperties table
 */
-create procedure dbo.dt_adduserobject
+CREATE OR ALTER PROCEDURE dbo.dt_adduserobject
 as
 	set nocount on
 	/*

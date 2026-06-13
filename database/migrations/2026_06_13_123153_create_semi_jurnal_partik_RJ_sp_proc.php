@@ -12,7 +12,7 @@ return new class extends Migration
     {
         DB::unprepared("
 
-CREATE proc [dbo].[semi_jurnal_partik_RJ_sp]
+CREATE OR ALTER PROCEDURE [dbo].[semi_jurnal_partik_RJ_sp]
 as
 exec inp_tran_kasir_RJ_sp;
 exec inp_tran_sed_RJ_sp;--3

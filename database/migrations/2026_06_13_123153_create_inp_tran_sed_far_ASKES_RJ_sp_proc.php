@@ -12,7 +12,7 @@ return new class extends Migration
     {
         DB::unprepared("
 
-CREATE proc [dbo].[inp_tran_sed_far_ASKES_RJ_sp]
+CREATE OR ALTER PROCEDURE [dbo].[inp_tran_sed_far_ASKES_RJ_sp]
 as
 -- obat farmasi rawat inap jamkesmas,sktm,jampersal
 

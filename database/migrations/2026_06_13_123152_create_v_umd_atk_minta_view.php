@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.v_umd_atk_minta
+        DB::statement("CREATE OR ALTER VIEW dbo.v_umd_atk_minta
 AS
 SELECT     dbo.transaksi_umd.kode_bagian, dbo.mt_bagian.nama_bagian, dbo.transaksi_umd.no_bukti, dbo.transaksi_umd.tgl_transaksi, 
                       dbo.transaksi_umd_detail.jumlah_besar, dbo.transaksi_umd_detail.kode_brg, dbo.mt_barang_nm.nama_brg, dbo.transaksi_umd_detail.harga_satuan, 

@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('tc_visite_dokter')) {
+            return;
+        }
+
         Schema::create('tc_visite_dokter', function (Blueprint $table) {
             $table->increments('no_urut_visit');
             $table->dateTime('tgl_jam')->nullable();

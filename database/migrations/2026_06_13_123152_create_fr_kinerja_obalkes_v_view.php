@@ -11,7 +11,7 @@ return new class extends Migration
     public function up(): void
     {
         DB::statement("
-CREATE VIEW dbo.fr_kinerja_obalkes_v
+CREATE OR ALTER VIEW dbo.fr_kinerja_obalkes_v
 AS
 SELECT     dbo.tc_trans_pelayanan.kode_trans_pelayanan, dbo.tc_trans_pelayanan.tgl_transaksi AS tgl_trans, 
                       dbo.tc_trans_pelayanan.nama_tindakan AS nama_brg, dbo.mt_karyawan.no_induk, dbo.mt_karyawan.nama_pegawai, 

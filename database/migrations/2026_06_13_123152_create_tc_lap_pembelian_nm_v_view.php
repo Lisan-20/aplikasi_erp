@@ -12,7 +12,7 @@ return new class extends Migration
     {
         DB::statement("
 
-CREATE VIEW dbo.tc_lap_pembelian_nm_v
+CREATE OR ALTER VIEW dbo.tc_lap_pembelian_nm_v
 AS
 SELECT     dbo.tc_penerimaan_barang_nm.tgl_penerimaan, dbo.tc_penerimaan_barang_nm.kode_penerimaan, dbo.mt_barang_nm.nama_brg, 
                       dbo.mt_barang_nm.kode_brg, dbo.tc_po_nm_det.jumlah_besar, dbo.mt_barang_nm.satuan_besar, dbo.mt_rekap_stok_nm.harga_beli, 

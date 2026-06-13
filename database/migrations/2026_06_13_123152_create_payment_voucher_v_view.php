@@ -11,7 +11,7 @@ return new class extends Migration
     public function up(): void
     {
         DB::statement("
-CREATE VIEW dbo.payment_voucher_v
+CREATE OR ALTER VIEW dbo.payment_voucher_v
 AS
 SELECT     dbo.tc_hutang_supplier_vcr_det.kode_penerimaan, dbo.tc_penerimaan_barang_detail.jumlah_kirim, dbo.mt_barang.nama_brg, dbo.tc_po_det.ppn, 
                       dbo.tc_po_det.harga_satuan, dbo.tc_po_det.jumlah_harga_netto AS total_harga, dbo.mt_supplier.namasupplier, 

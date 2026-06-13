@@ -11,7 +11,7 @@ return new class extends Migration
     public function up(): void
     {
         DB::unprepared("
-CREATE PROCEDURE reduce_log_file_sp
+CREATE OR ALTER PROCEDURE reduce_log_file_sp
 @name_db varchar(200),
 @name_logical varchar(200),
 @space int

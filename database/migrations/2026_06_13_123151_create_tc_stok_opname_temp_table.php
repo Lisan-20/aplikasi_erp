@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('tc_stok_opname_temp')) {
+            return;
+        }
+
         Schema::create('tc_stok_opname_temp', function (Blueprint $table) {
             $table->string('kode_brg', 100)->nullable();
             $table->string('nama_brg', 100)->nullable();

@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.cek_max_SO_v
+        DB::statement("CREATE OR ALTER VIEW dbo.cek_max_SO_v
 AS
 SELECT     TOP (100) PERCENT a.kode_brg, MAX(a.id_tc_stok_opname) AS id_tc_stok_opname, c.kode_bagian, c.nama_bagian, MONTH(a.tgl_stok_opname) AS bln, YEAR(a.tgl_stok_opname) AS thn
 FROM         dbo.tc_stok_opname AS a INNER JOIN

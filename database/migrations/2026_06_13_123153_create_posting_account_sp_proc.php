@@ -17,7 +17,7 @@ return new class extends Migration
 
 
 
-CREATE proc [dbo].[posting_account_sp]
+CREATE OR ALTER PROCEDURE [dbo].[posting_account_sp]
 as
 declare @tahun int
 declare @bulan int

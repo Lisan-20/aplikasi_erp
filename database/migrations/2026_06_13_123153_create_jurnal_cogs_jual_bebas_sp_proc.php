@@ -16,7 +16,7 @@ return new class extends Migration
 -- Create date: <Create Date,,>
 -- Description:	<Description,,>
 -- =============================================
-create PROCEDURE [dbo].[jurnal_cogs_jual_bebas_sp]
+CREATE OR ALTER PROCEDURE [dbo].[jurnal_cogs_jual_bebas_sp]
 AS
 BEGIN
     -- COGS

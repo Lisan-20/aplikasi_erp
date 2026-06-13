@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.rekap_jml_diet_v
+        DB::statement("CREATE OR ALTER VIEW dbo.rekap_jml_diet_v
 AS
 SELECT     DAY(tgl) AS tgl, MONTH(tgl) AS bln, YEAR(tgl) AS thn, COUNT(no_registrasi) AS jumlah, kode_diet AS jns_diet, distribusi
 FROM         dbo.tc_sensus_gizi

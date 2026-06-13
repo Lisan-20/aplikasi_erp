@@ -14,7 +14,7 @@ return new class extends Migration
 
 
 
-CREATE VIEW dbo.tc_po_nm_detail_v
+CREATE OR ALTER VIEW dbo.tc_po_nm_detail_v
 AS
 SELECT     dbo.tc_po_nm.no_po, dbo.tc_po_nm.tgl_po, dbo.tc_po_nm_det.kode_brg, dbo.mt_barang_nm.nama_brg, dbo.tc_po_nm_det.jumlah_besar, dbo.tc_po_nm_det.content, 
                       dbo.tc_po_nm_det.harga_satuan, dbo.tc_po_nm_det.jumlah_harga, dbo.tc_po_nm_det.discount, dbo.tc_po_nm_det.bonus_besar, dbo.tc_po_nm_det.bonus_kecil, 

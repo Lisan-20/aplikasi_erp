@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.pm_hasil_lis_v
+        DB::statement("CREATE OR ALTER VIEW dbo.pm_hasil_lis_v
 AS
 SELECT     lis_sysmax.dbo.reshd.ID, lis_sysmax.dbo.reshd.PID, lis_sysmax.dbo.reshd.APID, lis_sysmax.dbo.reshd.PNAME, lis_sysmax.dbo.reshd.ONO, 
                       lis_sysmax.dbo.reshd.LNO, lis_sysmax.dbo.reshd.REQUEST_DT, lis_sysmax.dbo.reshd.SOURCE_CD, lis_sysmax.dbo.reshd.SOURCE_NM, 

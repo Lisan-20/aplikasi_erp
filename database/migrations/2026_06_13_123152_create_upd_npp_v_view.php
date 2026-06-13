@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.upd_npp_v
+        DB::statement("CREATE OR ALTER VIEW dbo.upd_npp_v
 AS
 SELECT     TOP (100) PERCENT no_induk, urutan_karyawan, nama_pegawai, kode_jabatan, kode_bagian, kode_dokter, kode_spesialisasi, status_dr, status, available, 
                       jatah_kelas, level_id, no_mr, flag_anes, flag_aktif, tgl_lahir, tmp_lahir, tlp, id_sex, id_status, id_dc_kawin, gaji_pokok, npp, nama_bank, no_rekening, bank_cabang, 

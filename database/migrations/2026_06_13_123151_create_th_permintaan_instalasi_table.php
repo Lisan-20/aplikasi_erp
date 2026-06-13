@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('th_permintaan_instalasi')) {
+            return;
+        }
+
         Schema::create('th_permintaan_instalasi', function (Blueprint $table) {
             $table->string('no_history', 18);
             $table->integer('no_urut_permintaan')->nullable();

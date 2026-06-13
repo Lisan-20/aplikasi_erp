@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.tc_informed_consent_v
+        DB::statement("CREATE OR ALTER VIEW dbo.tc_informed_consent_v
 AS
 SELECT     dbo.tc_informed_consent.id_info, dbo.tc_informed_consent.no_kunjungan, dbo.tc_informed_consent.no_registrasi, dbo.tc_informed_consent.kd_dokter_tind, 
                       dbo.mt_karyawan.nama_pegawai AS nama_dokter, dbo.tc_informed_consent.pen_info, dbo.tc_informed_consent.nama, dbo.tc_informed_consent.pem_info, dbo.tc_informed_consent.alamat, 

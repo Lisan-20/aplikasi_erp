@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.filter_jurnal_BPJS_sel
+        DB::statement("CREATE OR ALTER VIEW dbo.filter_jurnal_BPJS_sel
 AS
 SELECT     SUM(jumlah) AS selisih, no_registrasi
 FROM         dbo.tran_kasir

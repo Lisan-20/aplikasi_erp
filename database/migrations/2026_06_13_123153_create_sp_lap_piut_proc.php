@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::unprepared("create proc sp_lap_piut
+        DB::unprepared("CREATE OR ALTER PROCEDURE sp_lap_piut
 
 as
 

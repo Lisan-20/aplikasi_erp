@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.sie_kpi_rs_v
+        DB::statement("CREATE OR ALTER VIEW dbo.sie_kpi_rs_v
 AS
 SELECT     dbo.dd_sie_kpi.id_group, dbo.dd_group_sie.nama_group, dbo.dd_sie_kpi.id_goup_sasaran, dbo.dd_sie_sasaran.nama_sasaran, dbo.dd_sie_kpi.id_kpi, 
                       dbo.dd_sie_kpi.nama_kpi, dbo.dd_sie_kpi.satuan

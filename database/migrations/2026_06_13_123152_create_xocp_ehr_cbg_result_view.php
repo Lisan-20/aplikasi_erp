@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.xocp_ehr_cbg_result
+        DB::statement("CREATE OR ALTER VIEW dbo.xocp_ehr_cbg_result
 AS
 SELECT     patient_id, admission_id, response_txt0, response_txt1, response_txt2, response_txt3, response_txt4, status_cd, CASE WHEN created_dttm LIKE '0000-%' THEN CAST('19000101' AS datetime) 
                       ELSE CAST(created_dttm AS datetime) END AS created_dttm, created_user_id, finalized_user_id, code, tariff, rs_class, rs_tariff, result, unusp, unusa, unusr, unusi, unusd, tm, rs_tariff2, tariff_sp, 

@@ -12,7 +12,7 @@ return new class extends Migration
     {
         DB::unprepared("
 
-CREATE PROCEDURE [dbo].[update_tarif_master_kurang_sp]
+CREATE OR ALTER PROCEDURE [dbo].[update_tarif_master_kurang_sp]
 AS
 BEGIN
  

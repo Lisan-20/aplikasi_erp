@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.cek_total_bpjs_v
+        DB::statement("CREATE OR ALTER VIEW dbo.cek_total_bpjs_v
 AS
 SELECT     TOP (100) PERCENT kode_tarif, SUM(bill_dr1_bpjs + bill_rs_bpjs) AS total, kode_klas
 FROM         dbo.bpjs_bedah_insyaallah

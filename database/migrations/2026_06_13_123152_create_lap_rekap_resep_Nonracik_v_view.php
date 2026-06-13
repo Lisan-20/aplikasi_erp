@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.lap_rekap_resep_Nonracik_v
+        DB::statement("CREATE OR ALTER VIEW dbo.lap_rekap_resep_Nonracik_v
 AS
 SELECT     TOP (100) PERCENT COUNT(kode_trans_far) AS non_racik, DAY(tgl_trans) AS tgl, MONTH(tgl_trans) AS bln, YEAR(tgl_trans) AS thn
 FROM         dbo.lap_rekap_resep_new_v

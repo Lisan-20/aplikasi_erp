@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('rj_plafon_bpjs_apr')) {
+            return;
+        }
+
         Schema::create('rj_plafon_bpjs_apr', function (Blueprint $table) {
             $table->float('No#', 53, 0)->nullable();
             $table->string('Tgl# Masuk')->nullable();

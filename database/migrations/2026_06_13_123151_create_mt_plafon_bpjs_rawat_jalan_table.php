@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('mt_plafon_bpjs_rawat_jalan')) {
+            return;
+        }
+
         Schema::create('mt_plafon_bpjs_rawat_jalan', function (Blueprint $table) {
             $table->increments('id_mt_plafon');
             $table->decimal('plafon', 19, 4)->nullable();

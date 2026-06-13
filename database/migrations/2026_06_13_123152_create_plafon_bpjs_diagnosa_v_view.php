@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.plafon_bpjs_diagnosa_v
+        DB::statement("CREATE OR ALTER VIEW dbo.plafon_bpjs_diagnosa_v
 AS
 SELECT        TOP (100) PERCENT dbo.mt_icd_diagnosa_plafond.klas, dbo.mt_icd_diagnosa_plafond.plafond_awal, dbo.mt_klas.nama_klas, dbo.mt_icd_diagnosa.id_mt_icd_diagnosa, 
                          dbo.mt_icd_diagnosa.kode_icd_diagnosa, dbo.mt_icd_diagnosa.nama_diagnosa, dbo.mt_icd_diagnosa.kode_icd, dbo.mt_master_icd10.nama_icd

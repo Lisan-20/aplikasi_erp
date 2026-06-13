@@ -11,7 +11,7 @@ return new class extends Migration
     public function up(): void
     {
         DB::unprepared("
-create proc rebuild_index_sp
+CREATE OR ALTER PROCEDURE rebuild_index_sp
 
 as 
 --USE rsbh_live --Enter the name of the database you want to reindex

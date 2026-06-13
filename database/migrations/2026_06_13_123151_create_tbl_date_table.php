@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('tbl_date')) {
+            return;
+        }
+
         Schema::create('tbl_date', function (Blueprint $table) {
             $table->dateTime('tgl_awal')->nullable();
             $table->dateTime('tgl_akhir')->nullable();

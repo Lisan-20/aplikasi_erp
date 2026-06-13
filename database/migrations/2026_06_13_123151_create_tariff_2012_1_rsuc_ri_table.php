@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('tariff_2012_1_rsuc_ri')) {
+            return;
+        }
+
         Schema::create('tariff_2012_1_rsuc_ri', function (Blueprint $table) {
             $table->integer('no');
             $table->string('ir_code', 50)->nullable();

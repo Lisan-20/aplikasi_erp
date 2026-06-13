@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('log_angket_bkk')) {
+            return;
+        }
+
         Schema::create('log_angket_bkk', function (Blueprint $table) {
             $table->integer('id')->nullable();
             $table->dateTime('tgl_akses')->nullable();

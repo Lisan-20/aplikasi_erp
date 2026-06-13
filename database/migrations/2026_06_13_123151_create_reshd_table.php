@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('reshd')) {
+            return;
+        }
+
         Schema::create('reshd', function (Blueprint $table) {
             $table->string('ID', 30);
             $table->string('PID', 13)->nullable();

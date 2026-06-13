@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::unprepared("CREATE proc [dbo].[restore_db_all]
+        DB::unprepared("CREATE OR ALTER PROCEDURE [dbo].[restore_db_all]
 as
 
 truncate table  tc_kartu_hutang

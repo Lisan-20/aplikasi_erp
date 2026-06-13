@@ -11,7 +11,7 @@ return new class extends Migration
     public function up(): void
     {
         DB::unprepared("
-create proc inp_tc_insentif_sp
+CREATE OR ALTER PROCEDURE inp_tc_insentif_sp
 as
 insert into tc_insentif(kode_klasifikasi,nama_klasifikasi,bulan,tahun,jumlah_pasien,plafon,fee,id_mt_kategori_ins_det) select kode_klasifikasi,nama_klasifikasi,bulan,tahun,jumlah_pasien,plafon,fee,id_mt_kategori_ins_det from fee_pasien_sum_v;
 

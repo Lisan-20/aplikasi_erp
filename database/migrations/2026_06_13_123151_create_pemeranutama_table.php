@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('pemeranutama')) {
+            return;
+        }
+
         Schema::create('pemeranutama', function (Blueprint $table) {
             $table->string('kode_master_tarif_detail')->nullable();
             $table->float('kode_klas', 53, 0)->nullable();

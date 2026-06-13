@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.update_sep_dobel_v
+        DB::statement("CREATE OR ALTER VIEW dbo.update_sep_dobel_v
 AS
 SELECT        dbo.sep_rj_manual_v.noKartuPeserta, dbo.sep_rj_manual_v.noSep AS SepRS, dbo.grouper_inacbgs_v.NoSep, dbo.grouper_inacbgs_v.NoPeserta, dbo.sep_rj_manual_v.no_mr, 
                          dbo.grouper_inacbgs_v.TglMasuk, dbo.grouper_inacbgs_v.TglKkeluar, dbo.sep_rj_manual_v.no_registrasi

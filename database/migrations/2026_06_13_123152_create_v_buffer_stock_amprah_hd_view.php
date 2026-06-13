@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.v_buffer_stock_amprah_hd
+        DB::statement("CREATE OR ALTER VIEW dbo.v_buffer_stock_amprah_hd
 AS
 SELECT     TOP (100) PERCENT dbo.tc_bpako_hemodialisa.kode_brg, dbo.tc_bpako_hemodialisa.nama_brg, SUM(dbo.tc_bpako_hemodialisa.jumlah) AS jumlah, 
                       dbo.mt_depo_stok.stok_minimum, dbo.mt_depo_stok.jml_sat_kcl, dbo.mt_depo_stok.kode_bagian, dbo.tc_bpako_hemodialisa.flag_amprah, 

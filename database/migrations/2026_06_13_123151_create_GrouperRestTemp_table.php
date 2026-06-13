@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('GrouperRestTemp')) {
+            return;
+        }
+
         Schema::create('GrouperRestTemp', function (Blueprint $table) {
             $table->float('Kdrs', 53, 0)->nullable();
             $table->string('Klsrs')->nullable();

@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.urutan_radiologi_v
+        DB::statement("CREATE OR ALTER VIEW dbo.urutan_radiologi_v
 AS
 SELECT    row_number() OVER (PARTITION BY year(tgl_daftar),month(tgl_daftar) order by tgl_daftar ) as urutan,no_kunjungan,kode_penunjang
 FROM         dbo.pm_tc_penunjang

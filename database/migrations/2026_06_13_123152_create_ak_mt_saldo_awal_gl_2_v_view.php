@@ -11,7 +11,7 @@ return new class extends Migration
     public function up(): void
     {
         DB::statement("
-CREATE VIEW dbo.ak_mt_saldo_awal_gl_2_v
+CREATE OR ALTER VIEW dbo.ak_mt_saldo_awal_gl_2_v
 AS
 SELECT     dbo.ak_mt_saldo_awal_gl.id_akmt_saldo_awal_gl, dbo.ak_mt_saldo_awal_gl.kode_saldo_awal_gl, dbo.ak_mt_saldo_awal_gl.acc_no, 
                       dbo.ak_mt_saldo_awal_gl.nilai_nominal, dbo.ak_mt_saldo_awal_gl.uraian, dbo.ak_mt_saldo_awal_gl.tahun, dbo.ak_mt_saldo_awal_gl.input_id, 

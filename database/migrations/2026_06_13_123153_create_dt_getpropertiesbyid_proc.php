@@ -16,7 +16,7 @@ return new class extends Migration
 **	dt_getproperties objid, null or '' -- retrieve all properties of the object itself
 **	dt_getproperties objid, property -- retrieve the property specified
 */
-create procedure dbo.dt_getpropertiesbyid
+CREATE OR ALTER PROCEDURE dbo.dt_getpropertiesbyid
 	@id int,
 	@property varchar(64)
 as

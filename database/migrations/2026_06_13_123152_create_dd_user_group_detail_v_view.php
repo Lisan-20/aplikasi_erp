@@ -11,7 +11,7 @@ return new class extends Migration
     public function up(): void
     {
         DB::statement("
-CREATE VIEW dbo.dd_user_group_detail_v
+CREATE OR ALTER VIEW dbo.dd_user_group_detail_v
 AS
 SELECT     TOP 100 PERCENT a.*, b.nawil_kerja AS nawil_kerja, dbo.dd_user_group.nama_group AS nama_group
 FROM         dbo.dd_user a LEFT OUTER JOIN

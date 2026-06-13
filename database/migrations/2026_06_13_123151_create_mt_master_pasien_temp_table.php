@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('mt_master_pasien_temp')) {
+            return;
+        }
+
         Schema::create('mt_master_pasien_temp', function (Blueprint $table) {
             $table->bigIncrements('id_mt_master_pasien');
             $table->string('no_mr', 20);

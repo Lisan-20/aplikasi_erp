@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.billing_sudah_tagih_det_v
+        DB::statement("CREATE OR ALTER VIEW dbo.billing_sudah_tagih_det_v
 AS
 SELECT     TOP (100) PERCENT dbo.tc_tagih.jenis_tagih, MONTH(dbo.tc_tagih_det.tgl_kui) AS bln, dbo.tc_tagih.tahun AS thn, dbo.tc_tagih.status_batal, 
                       SUM(dbo.tc_bayar_tagih.diskon) AS diskon, dbo.tc_tagih.id_tertagih, dbo.mt_perusahaan.flag_jpk, dbo.mt_perusahaan.flag_kapitasi, 

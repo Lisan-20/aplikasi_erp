@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.billing_manual_inacbgs_v
+        DB::statement("CREATE OR ALTER VIEW dbo.billing_manual_inacbgs_v
 AS
 SELECT     dbo.GROUPER_INACBG_REST.no_mr, dbo.GROUPER_INACBG_REST.NoPeserta AS noKartuPeserta, dbo.GROUPER_INACBG_REST.NoSep, 
                       MONTH(dbo.GROUPER_INACBG_REST.TglKeluar) AS bln, YEAR(dbo.GROUPER_INACBG_REST.TglKeluar) AS thn, dbo.GROUPER_INACBG_REST.Tarif, 

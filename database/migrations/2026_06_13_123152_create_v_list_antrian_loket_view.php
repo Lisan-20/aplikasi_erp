@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.v_list_antrian_loket
+        DB::statement("CREATE OR ALTER VIEW dbo.v_list_antrian_loket
 AS
 SELECT     dbo.tc_antrian_loket.kode_bagian, COUNT(dbo.tc_antrian_loket.kode_bagian) AS total_antrian, dbo.v_udah_apnggil_antrian.no_antrian, dbo.mt_bagian.nama_bagian
 FROM         dbo.tc_antrian_loket INNER JOIN

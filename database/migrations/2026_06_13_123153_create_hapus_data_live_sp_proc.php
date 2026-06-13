@@ -11,7 +11,7 @@ return new class extends Migration
     public function up(): void
     {
         DB::unprepared("
-CREATE PROCEDURE [dbo].[hapus_data_live_sp]
+CREATE OR ALTER PROCEDURE [dbo].[hapus_data_live_sp]
 	
 
 AS

@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.rl_1_3_det_v
+        DB::statement("CREATE OR ALTER VIEW dbo.rl_1_3_det_v
 AS
 SELECT     dbo.mt_bagian.nama_bagian, YEAR(dbo.tc_kunjungan.tgl_masuk) AS tahun, dbo.mt_ruangan.keterangan, dbo.mt_bagian.jumlah_kamar, dbo.mt_ruangan.kode_bagian, 
                       dbo.mt_ruangan.flag_aktif

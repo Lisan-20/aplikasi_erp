@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.update_showa_diskon_ri_manual_v2
+        DB::statement("CREATE OR ALTER VIEW dbo.update_showa_diskon_ri_manual_v2
 AS
 SELECT     kode_perusahaan, no_registrasi, status_batal, bill_rs_jatah, bill_dr1_jatah, bill_dr2_jatah, lain_lain, status_kredit, diskon_rs_jatah, diskon_dr1_jatah, 
                       diskon_dr2_jatah, CAST(diskon_total * 5 / 100 AS decimal) AS diskon_total, kode_bagian

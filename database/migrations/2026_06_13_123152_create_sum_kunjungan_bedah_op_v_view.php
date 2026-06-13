@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.sum_kunjungan_bedah_op_v
+        DB::statement("CREATE OR ALTER VIEW dbo.sum_kunjungan_bedah_op_v
 AS
 SELECT     TOP (100) PERCENT COUNT(no_mr) AS jml_pasien, kode_tarif, kode_klas, kode_kelompok, kode_perusahaan, kode_bagian, MONTH(tgl_jam_masuk) AS bln, 
                       YEAR(tgl_jam_masuk) AS thn

@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.slip_pokok_v
+        DB::statement("CREATE OR ALTER VIEW dbo.slip_pokok_v
 AS
 SELECT     npp, id_mt_periode_gaji, gaji_pokok AS nilai, 'Gaji Pokok' AS ket, 1 AS urut
 FROM         dbo.tc_gaji_pokok

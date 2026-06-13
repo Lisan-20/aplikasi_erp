@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.lap_rl3_perina_new_v
+        DB::statement("CREATE OR ALTER VIEW dbo.lap_rl3_perina_new_v
 AS
 SELECT     dbo.mt_icd_diagnosa.nama_diagnosa, YEAR(dbo.tc_trans_kasir.tgl_jam) AS thn, MONTH(dbo.tc_trans_kasir.tgl_jam) AS bln, dbo.th_riwayat_pasien.no_mr AS jumlah
 FROM         dbo.tc_trans_pelayanan INNER JOIN

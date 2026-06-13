@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('mt_permukaan_gigi')) {
+            return;
+        }
+
         Schema::create('mt_permukaan_gigi', function (Blueprint $table) {
             $table->increments('id_per');
             $table->string('singkatan', 2)->nullable();

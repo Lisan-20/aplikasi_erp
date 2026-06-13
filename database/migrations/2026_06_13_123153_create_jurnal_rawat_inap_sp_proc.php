@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::unprepared("CREATE proc [dbo].[jurnal_rawat_inap_sp]
+        DB::unprepared("CREATE OR ALTER PROCEDURE [dbo].[jurnal_rawat_inap_sp]
 as
 --update tc_trans_pelayanan set kode_perusahaan=0 where kode_perusahaan is null and status_selesai=3;
 --exec jurnal_kasir_RI_sp;

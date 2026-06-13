@@ -14,7 +14,7 @@ return new class extends Migration
 
 
 
-CREATE proc [dbo].[jurnal_adjustment_so_sp]
+CREATE OR ALTER PROCEDURE [dbo].[jurnal_adjustment_so_sp]
 
 as
 

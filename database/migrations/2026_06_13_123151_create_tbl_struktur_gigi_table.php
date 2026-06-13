@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('tbl_struktur_gigi')) {
+            return;
+        }
+
         Schema::create('tbl_struktur_gigi', function (Blueprint $table) {
             $table->increments('id_st_gigi');
             $table->integer('no_gigi')->nullable();

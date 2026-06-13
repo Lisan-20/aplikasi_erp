@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('tc_surat_internal')) {
+            return;
+        }
+
         Schema::create('tc_surat_internal', function (Blueprint $table) {
             $table->increments('id_surat');
             $table->string('judul')->nullable();

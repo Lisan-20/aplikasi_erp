@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.kasbank_k_union_all_v
+        DB::statement("CREATE OR ALTER VIEW dbo.kasbank_k_union_all_v
 AS
 SELECT     dbo.kasbank_union_all_v.acc_no, dbo.kasbank_union_all_v.tx_tipe, SUM(DISTINCT dbo.kasbank_union_all_v.jumlah) AS saldo_awal, DAY(dbo.kasbank_union_all_v.tgl_transaksi) AS tgl, 
                       MONTH(dbo.kasbank_union_all_v.tgl_transaksi) AS bln, YEAR(dbo.kasbank_union_all_v.tgl_transaksi) AS thn, dbo.Bank_v.Kas_Bank, dbo.Bank_v.acc_nama, dbo.Bank_v.id_bank, 

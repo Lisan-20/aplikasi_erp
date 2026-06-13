@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.diskusi_v
+        DB::statement("CREATE OR ALTER VIEW dbo.diskusi_v
 AS
 SELECT     dbo.kategori_forum.id_kategori, dbo.kategori_forum.nama_kategori, COUNT(dbo.topik.id_topik) AS jml_topik, dbo.kategori_forum.kategori_seo
 FROM         dbo.kategori_forum LEFT OUTER JOIN

@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('refppk')) {
+            return;
+        }
+
         Schema::create('refppk', function (Blueprint $table) {
             $table->increments('ID');
             $table->integer('KDPPK')->nullable();

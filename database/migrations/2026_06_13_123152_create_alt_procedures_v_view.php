@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.alt_procedures_v
+        DB::statement("CREATE OR ALTER VIEW dbo.alt_procedures_v
 AS
 SELECT     Code, Code2, Description, Class, Inpatient, Outpatient
 FROM         OPENQUERY(MYSQL, 'select * from alt_procedures') AS derivedtbl_1

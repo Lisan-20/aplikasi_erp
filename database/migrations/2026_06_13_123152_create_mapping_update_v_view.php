@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.mapping_update_v
+        DB::statement("CREATE OR ALTER VIEW dbo.mapping_update_v
 AS
 SELECT     TOP (100) PERCENT kode_mapping_transaksi, kode_bagian, kode_proses, kode_jenis_proses, acc_debet, acc_kredit, keterangan, no_urut, kode_bagian_asal, 
                       '0' + kode_bagian AS bag_update

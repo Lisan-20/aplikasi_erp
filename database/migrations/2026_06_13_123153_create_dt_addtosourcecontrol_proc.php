@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::unprepared("create proc dbo.dt_addtosourcecontrol
+        DB::unprepared("CREATE OR ALTER PROCEDURE dbo.dt_addtosourcecontrol
     @vchSourceSafeINI varchar(255) = '',
     @vchProjectName   varchar(255) ='',
     @vchComment       varchar(255) ='',

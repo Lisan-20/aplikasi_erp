@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.lama_kontraksi_partograf_v
+        DB::statement("CREATE OR ALTER VIEW dbo.lama_kontraksi_partograf_v
 AS
 SELECT     TOP (100) PERCENT kode_pemeriksaan, nama_pemeriksaan, hasil, no_urut_ews, no_registrasi, ket, CASE WHEN CAST(hasil AS int) < 20 THEN 'dotted' WHEN CAST(hasil AS int) >= 20 AND 
                       CAST(hasil AS int) < 40 THEN 'diagonal' WHEN CAST(hasil AS int) >= 40 THEN 'block' ELSE ' ' END AS style, ROW_NUMBER() OVER (partition by no_registrasi ORDER BY no_urut_ews) AS RowNumber

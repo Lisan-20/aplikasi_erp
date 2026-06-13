@@ -14,7 +14,7 @@ return new class extends Migration
 
 
 
-CREATE VIEW dbo.penerimaan_brg_nm_v
+CREATE OR ALTER VIEW dbo.penerimaan_brg_nm_v
 AS
 SELECT     dbo.tc_penerimaan_barang_nm.no_po, dbo.tc_penerimaan_barang_nm_detail.jumlah_kirim
 FROM         dbo.tc_penerimaan_barang_nm INNER JOIN

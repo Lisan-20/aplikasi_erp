@@ -11,7 +11,7 @@ return new class extends Migration
     public function up(): void
     {
         DB::unprepared("
-CREATE PROCEDURE [dbo].[pl_mt_pasien_temp_sp]
+CREATE OR ALTER PROCEDURE [dbo].[pl_mt_pasien_temp_sp]
 	
 AS
 truncate table  pl_mt_pasien_temp

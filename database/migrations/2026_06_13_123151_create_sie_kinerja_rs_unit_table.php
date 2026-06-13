@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('sie_kinerja_rs_unit')) {
+            return;
+        }
+
         Schema::create('sie_kinerja_rs_unit', function (Blueprint $table) {
             $table->increments('id_lap');
             $table->integer('thn')->nullable();

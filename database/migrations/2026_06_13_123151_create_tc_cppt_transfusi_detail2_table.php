@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('tc_cppt_transfusi_detail2')) {
+            return;
+        }
+
         Schema::create('tc_cppt_transfusi_detail2', function (Blueprint $table) {
             $table->integer('Id')->nullable();
             $table->string('no_mr', 50)->nullable();

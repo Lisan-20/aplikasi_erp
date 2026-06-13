@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.potongan_dr_igd_v
+        DB::statement("CREATE OR ALTER VIEW dbo.potongan_dr_igd_v
 AS
 SELECT     TOP (100) PERCENT ROW_NUMBER() OVER (PARTITION BY dbo.fee_dokter_rj_ri2_v.tgl,dbo.fee_dokter_rj_ri2_v.bln, dbo.fee_dokter_rj_ri2_v.kode_dr
 ORDER BY kode_kelompok DESC) AS no, dbo.fee_dokter_rj_ri2_v.tgl, dbo.fee_dokter_rj_ri2_v.bln, dbo.tc_jadwal_dokter_v.thn, dbo.fee_dokter_rj_ri2_v.kode_dr, 

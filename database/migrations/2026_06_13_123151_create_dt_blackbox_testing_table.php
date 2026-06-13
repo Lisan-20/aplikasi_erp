@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('dt_blackbox_testing')) {
+            return;
+        }
+
         Schema::create('dt_blackbox_testing', function (Blueprint $table) {
             $table->increments('id_bt');
             $table->string('modul_aplikasi', 100)->nullable();

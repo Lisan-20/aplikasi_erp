@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('printer')) {
+            return;
+        }
+
         Schema::create('printer', function (Blueprint $table) {
             $table->integer('kd_printer');
             $table->string('nm_komputer', 50)->nullable();

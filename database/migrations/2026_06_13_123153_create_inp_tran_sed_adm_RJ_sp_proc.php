@@ -12,7 +12,7 @@ return new class extends Migration
     {
         DB::unprepared("
 
-CREATE proc [dbo].[inp_tran_sed_adm_RJ_sp]
+CREATE OR ALTER PROCEDURE [dbo].[inp_tran_sed_adm_RJ_sp]
 as
 -- administrasi pasien
 --update tc_trans_pelayanan set jenis_tindakan=2 where kode_tarif in(501012701,502050101,503010201) and jenis_tindakan=3 and status_selesai=3 and flag_jurnal=0;

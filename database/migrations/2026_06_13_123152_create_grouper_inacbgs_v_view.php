@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.grouper_inacbgs_v
+        DB::statement("CREATE OR ALTER VIEW dbo.grouper_inacbgs_v
 AS
 SELECT        NoSep, NoPeserta, no_mr, CONVERT(VARCHAR(10), TglMasuk, 103) AS TglMasuk, CONVERT(VARCHAR(10), TglKeluar, 103) AS TglKkeluar
 FROM            dbo.GROUPER_INACBG_REST

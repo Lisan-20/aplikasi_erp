@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('fr_mt_profit_margin_pengecualian')) {
+            return;
+        }
+
         Schema::create('fr_mt_profit_margin_pengecualian', function (Blueprint $table) {
             $table->increments('id_profit_kcl');
             $table->integer('kode_profit')->nullable();

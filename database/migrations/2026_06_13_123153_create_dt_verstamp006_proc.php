@@ -15,7 +15,7 @@ return new class extends Migration
 **    procedures used by legacy versions of the Microsoft
 **	Visual Database Tools.  Version is 7.0.00.
 */
-create procedure dbo.dt_verstamp006
+CREATE OR ALTER PROCEDURE dbo.dt_verstamp006
 as
 	select 7000
 ");

@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('diagnosa_rs')) {
+            return;
+        }
+
         Schema::create('diagnosa_rs', function (Blueprint $table) {
             $table->string('DIAGNOSIS_UTAMA')->nullable();
             $table->string('KODE_ICD_10')->nullable();

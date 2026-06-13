@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.GROUPER_INACBG_REST_V
+        DB::statement("CREATE OR ALTER VIEW dbo.GROUPER_INACBG_REST_V
 AS
 SELECT     SUM(TotalTarif) AS Tarif, NoSep, no_mr
 FROM         dbo.GROUPER_INACBG_REST

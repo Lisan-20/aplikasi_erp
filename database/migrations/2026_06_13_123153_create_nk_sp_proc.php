@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::unprepared("CREATE proc nk_sp
+        DB::unprepared("CREATE OR ALTER PROCEDURE nk_sp
 as
 begin
 update upd_upd_nk_perusahaan set nk_perusahaan=0;

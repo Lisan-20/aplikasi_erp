@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('dtproperties')) {
+            return;
+        }
+
         Schema::create('dtproperties', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('objectid')->nullable();

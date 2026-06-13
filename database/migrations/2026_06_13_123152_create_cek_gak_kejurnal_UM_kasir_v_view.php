@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.cek_gak_kejurnal_UM_kasir_v
+        DB::statement("CREATE OR ALTER VIEW dbo.cek_gak_kejurnal_UM_kasir_v
 AS
 SELECT     YEAR(tgl_jam) AS Expr1, kode_tc_trans_kasir, seri_kuitansi, no_kuitansi, status_batal, flag_jurnal, MONTH(tgl_jam) AS Expr2, no_registrasi
 FROM         dbo.tc_trans_kasir

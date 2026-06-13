@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.upd_upload_v
+        DB::statement("CREATE OR ALTER VIEW dbo.upd_upload_v
 AS
 SELECT     bill_rs_kapitasi, bill_dr1_kapitasi, total_kapitasi, bill_dr1_kapitasi + bill_rs_kapitasi AS total
 FROM         dbo.Upload_lagi

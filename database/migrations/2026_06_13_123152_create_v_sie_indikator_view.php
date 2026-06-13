@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("CREATE VIEW dbo.v_sie_indikator
+        DB::statement("CREATE OR ALTER VIEW dbo.v_sie_indikator
 AS
 SELECT     TOP (100) PERCENT dbo.pasien_pulang_sum_v.bag_pas, dbo.pasien_pulang_sum_v.bln, dbo.pasien_pulang_sum_v.thn, 
                       SUM(dbo.pasien_pulang_sum_v.jml_pasien) AS keluar, SUM(dbo.sum_lap_kunjungan_ranap_fix_v.masuk) AS masuk, 

@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('mt_master_tarif_sectio')) {
+            return;
+        }
+
         Schema::create('mt_master_tarif_sectio', function (Blueprint $table) {
             $table->integer('kode_tarif');
             $table->string('kode_tindakan', 5)->nullable();

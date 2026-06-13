@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('printto')) {
+            return;
+        }
+
         Schema::create('printto', function (Blueprint $table) {
             $table->integer('kd_printto');
             $table->string('nm_komputer_klien', 50)->nullable();
