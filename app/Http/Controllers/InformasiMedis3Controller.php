@@ -14,9 +14,9 @@ class InformasiMedis3Controller extends Controller
 
         if ($request->filled('filter') && $request->filled('typeCari')) {
             if ($request->typeCari == '1') {
-                $query->where('kode_tindakan', 'like', $request->filter . '%');
+                $query->where('kode_tindakan', 'like', $request->filter.'%');
             } elseif ($request->typeCari == '2') {
-                $query->where('nama_tarif', 'like', '%' . $request->filter . '%');
+                $query->where('nama_tarif', 'like', '%'.$request->filter.'%');
             }
         }
 
@@ -24,7 +24,7 @@ class InformasiMedis3Controller extends Controller
 
         return Inertia::render('InformasiMedis3/InfoTarifUmum', [
             'data' => $data,
-            'filters' => $request->only(['filter', 'typeCari'])
+            'filters' => $request->only(['filter', 'typeCari']),
         ]);
     }
 
@@ -34,9 +34,9 @@ class InformasiMedis3Controller extends Controller
 
         if ($request->filled('filter') && $request->filled('tipeCari')) {
             if ($request->tipeCari == 'nama_operasi') {
-                $query->where('nama_operasi', 'like', '%' . $request->filter . '%');
+                $query->where('nama_operasi', 'like', '%'.$request->filter.'%');
             } elseif ($request->tipeCari == 'bagian') {
-                $query->where('bagian', 'like', '%' . $request->filter . '%');
+                $query->where('bagian', 'like', '%'.$request->filter.'%');
             }
         }
 
@@ -44,7 +44,7 @@ class InformasiMedis3Controller extends Controller
 
         return Inertia::render('InformasiMedis3/PaketBedah', [
             'data' => $data,
-            'filters' => $request->only(['filter', 'tipeCari'])
+            'filters' => $request->only(['filter', 'tipeCari']),
         ]);
     }
 
@@ -61,7 +61,7 @@ class InformasiMedis3Controller extends Controller
                     'bill_dr1' => 150000,
                     'bill_dr2' => 150000,
                     'bill_rs' => 150000,
-                    'total' => 450000
+                    'total' => 450000,
                 ],
                 [
                     'id' => 2,
@@ -71,15 +71,15 @@ class InformasiMedis3Controller extends Controller
                     'bill_dr1' => 150000,
                     'bill_dr2' => 150000,
                     'bill_rs' => 150000,
-                    'total' => 450000
-                ]
+                    'total' => 450000,
+                ],
             ],
-            'links' => []
+            'links' => [],
         ];
 
         return Inertia::render('InformasiMedis3/PaketMelahirkan', [
             'data' => $data,
-            'filters' => $request->only(['filter', 'tipeCari'])
+            'filters' => $request->only(['filter', 'tipeCari']),
         ]);
     }
 }

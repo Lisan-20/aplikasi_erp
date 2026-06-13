@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
-use Carbon\Carbon;
 
 class PasienRawatInapController extends Controller
 {
@@ -17,7 +16,7 @@ class PasienRawatInapController extends Controller
         $query = DB::table('ri_cari_pasien_v');
 
         // Note: the legacy code has some filtering based on session (bag_pas not in (030901,030501,032001) etc.)
-        // We will stick to a simpler default to show patients that are currently rawat inap, 
+        // We will stick to a simpler default to show patients that are currently rawat inap,
         // matching the main logic: WHERE bag_pas not in (030901,030501,032001)
         // You can adjust these rules as per the new authorization logic.
         $query->whereNotIn('bag_pas', ['030901', '030501', '032001']);
@@ -58,7 +57,7 @@ class PasienRawatInapController extends Controller
                         $kelompok = DB::table('mt_nasabah')->where('kode_kelompok', $item->kode_kelompok)->first();
                         $nasabah = $kelompok ? $kelompok->nama_kelompok : '';
                     }
-                } else if ($item->kode_kelompok == 3) {
+                } elseif ($item->kode_kelompok == 3) {
                     if (is_numeric($item->kode_perusahaan)) {
                         $perusahaan = DB::table('mt_perusahaan')->where('kode_perusahaan', $item->kode_perusahaan)->first();
                         $nasabah = $perusahaan ? $perusahaan->nama_perusahaan : '';
@@ -128,7 +127,7 @@ class PasienRawatInapController extends Controller
             'filters' => [
                 'search' => $search,
                 'search_by' => $searchBy,
-            ]
+            ],
         ]);
     }
 }

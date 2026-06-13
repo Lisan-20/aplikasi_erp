@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
-use Carbon\Carbon;
 
 class RegistrasiKunjunganController extends Controller
 {
@@ -33,7 +33,7 @@ class RegistrasiKunjunganController extends Controller
             'perusahaan' => $perusahaan,
             'milik' => $milik,
             'asal_pasien' => $asal_pasien,
-            'jadwal_dokter' => $jadwal_dokter
+            'jadwal_dokter' => $jadwal_dokter,
         ]);
     }
 
@@ -43,7 +43,7 @@ class RegistrasiKunjunganController extends Controller
             'no_mr' => 'required',
             'kode_bagian' => 'required',
             'kode_dokter' => 'required',
-            'tgl_masuk' => 'required|date'
+            'tgl_masuk' => 'required|date',
         ]);
 
         try {
@@ -53,10 +53,10 @@ class RegistrasiKunjunganController extends Controller
             $kode_bagian = $request->kode_bagian;
             $kode_dokter = $request->kode_dokter;
             $tgl_masuk = Carbon::parse($request->tgl_masuk)->format('Y-m-d H:i:s');
-            
+
             $patient = DB::table('mt_master_pasien')->where('no_mr', $no_mr_param)->first();
             $umur = $patient->tgl_lhr ? Carbon::parse($patient->tgl_lhr)->age : 0;
-            
+
             // generate no_registrasi
             $datePart = Carbon::parse($tgl_masuk)->format('ymd');
             $day = Carbon::parse($tgl_masuk)->format('d');
@@ -66,10 +66,10 @@ class RegistrasiKunjunganController extends Controller
             $maxNoUrut = DB::table('tc_registrasi')
                 ->whereRaw('DAY(tgl_jam_masuk) = ? AND MONTH(tgl_jam_masuk) = ? AND YEAR(tgl_jam_masuk) = ?', [$day, $month, $year])
                 ->max('no_urut');
-            
+
             $no_urut = $maxNoUrut ? $maxNoUrut + 1 : 1;
-            $no_urut_str = str_pad($no_urut, 3, '0', STR_PAD_LEFT);
-            $no_registrasi = $datePart . $no_urut_str;
+            $no_urut_str = str_pad((string) $no_urut, 3, '0', STR_PAD_LEFT);
+            $no_registrasi = $datePart.$no_urut_str;
 
             $kode_kelompok = $request->kode_kelompok ?? $patient->kode_kelompok ?? 0;
             $kode_perusahaan = $request->kode_perusahaan ?? $patient->kode_perusahaan ?? 0;
@@ -188,7 +188,7 @@ class RegistrasiKunjunganController extends Controller
                     ->where('id_tc_pesanan', $request->id_tc_pesanan)
                     ->update([
                         'tgl_masuk' => Carbon::now()->format('Y-m-d H:i:s'),
-                        'ket_antrian' => $request->ket_antrian
+                        'ket_antrian' => $request->ket_antrian,
                     ]);
             }
 
@@ -208,12 +208,12 @@ class RegistrasiKunjunganController extends Controller
                 ->where('kode_bagian', $kode_bagian)
                 ->where('flag_reg', 1)
                 ->get();
-            
+
             foreach ($bill_adm as $resbill_adm) {
                 $jumlah = 1;
                 $bill_rs = 0;
                 $bill_dr1 = 0;
-                
+
                 if (strtolower($stat_pasien) === 'baru') {
                     $bill_rs = $resbill_adm->adm_baru ?? 0;
                 } else {
@@ -252,7 +252,7 @@ class RegistrasiKunjunganController extends Controller
                             break;
                     }
                 }
-                
+
                 $kode_trans_pelayanan = DB::table('tc_trans_pelayanan')->max('kode_trans_pelayanan') + 1;
                 DB::table('tc_trans_pelayanan')->insert([
                     'kode_trans_pelayanan' => $kode_trans_pelayanan,
@@ -281,12 +281,12 @@ class RegistrasiKunjunganController extends Controller
                     ->where('kode_bagian', $kode_bagian)
                     ->where('flag_reg', 2)
                     ->get();
-                
+
                 foreach ($bill_dr as $resbill_dr) {
                     $jumlah = 1;
                     $bill_rs = 0;
                     $bill_dr1 = 0;
-                    
+
                     switch ($kode_kelompok) {
                         case '1':
                             $bill_rs = $resbill_dr->bill_rs ?? 0;
@@ -376,11 +376,12 @@ class RegistrasiKunjunganController extends Controller
 
             DB::commit();
 
-            return redirect()->back()->with('success', 'Pendaftaran Rawat Jalan Berhasil. No Antrian: ' . $no_urut);
+            return redirect()->back()->with('success', 'Pendaftaran Rawat Jalan Berhasil. No Antrian: '.$no_urut);
 
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'Gagal mendaftar: ' . $e->getMessage());
+
+            return redirect()->back()->with('error', 'Gagal mendaftar: '.$e->getMessage());
         }
     }
 
@@ -395,7 +396,7 @@ class RegistrasiKunjunganController extends Controller
 
         return Inertia::render('Registrasi/RawatDarurat', [
             'patient' => $patient,
-            'dokter' => $dokter
+            'dokter' => $dokter,
         ]);
     }
 
@@ -404,7 +405,7 @@ class RegistrasiKunjunganController extends Controller
         $request->validate([
             'no_mr' => 'required',
             'kode_dokter' => 'required',
-            'tgl_masuk' => 'required|date'
+            'tgl_masuk' => 'required|date',
         ]);
 
         try {
@@ -414,10 +415,10 @@ class RegistrasiKunjunganController extends Controller
             $kode_bagian = '020101'; // Default IGD
             $kode_dokter = $request->kode_dokter;
             $tgl_masuk = Carbon::parse($request->tgl_masuk)->format('Y-m-d H:i:s');
-            
+
             // Get patient info
             $patient = DB::table('mt_master_pasien')->where('no_mr', $no_mr_param)->first();
-            
+
             // generate no_registrasi
             $datePart = Carbon::parse($tgl_masuk)->format('ymd');
             $day = Carbon::parse($tgl_masuk)->format('d');
@@ -427,10 +428,10 @@ class RegistrasiKunjunganController extends Controller
             $maxNoUrut = DB::table('tc_registrasi')
                 ->whereRaw('DAY(tgl_jam_masuk) = ? AND MONTH(tgl_jam_masuk) = ? AND YEAR(tgl_jam_masuk) = ?', [$day, $month, $year])
                 ->max('no_urut');
-            
+
             $no_urut = $maxNoUrut ? $maxNoUrut + 1 : 1;
-            $no_urut_str = str_pad($no_urut, 3, '0', STR_PAD_LEFT);
-            $no_registrasi = $datePart . $no_urut_str;
+            $no_urut_str = str_pad((string) $no_urut, 3, '0', STR_PAD_LEFT);
+            $no_registrasi = $datePart.$no_urut_str;
 
             // tc_registrasi
             DB::table('tc_registrasi')->insert([
@@ -449,7 +450,7 @@ class RegistrasiKunjunganController extends Controller
                 'no_urut' => $no_urut,
                 'status_milik' => 0,
                 'kode_penanggung' => 0,
-                'no_jaminan' => $request->no_jaminan ?? ''
+                'no_jaminan' => $request->no_jaminan ?? '',
             ]);
 
             // tc_kunjungan
@@ -467,7 +468,7 @@ class RegistrasiKunjunganController extends Controller
                 'tgl_masuk' => $tgl_masuk,
                 'status_masuk' => 0,
                 'status_cito' => $request->status_cito ?? 0,
-                'keterangan' => $request->keterangan ?? ''
+                'keterangan' => $request->keterangan ?? '',
             ]);
 
             // gd_tc_gawat_darurat
@@ -494,7 +495,7 @@ class RegistrasiKunjunganController extends Controller
                 'status_diterima' => $request->status_diterima ?? '',
                 'no_induk' => session('no_induk', '0'),
                 'kode_klas' => '16',
-                'flag_man' => 1
+                'flag_man' => 1,
             ]);
 
             DB::commit();
@@ -503,7 +504,8 @@ class RegistrasiKunjunganController extends Controller
 
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'Gagal mendaftar: ' . $e->getMessage());
+
+            return redirect()->back()->with('error', 'Gagal mendaftar: '.$e->getMessage());
         }
     }
 }

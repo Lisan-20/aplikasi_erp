@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Inertia\Inertia;
-use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Inertia\Inertia;
 
 class LaporanController extends Controller
 {
@@ -16,12 +16,12 @@ class LaporanController extends Controller
             ->where('kode_bagian', '300001')
             ->where('status', '0')
             ->get();
-            
+
         $shift = DB::table('ks_mt_shift')
             ->select('kode_shift', 'nama_shift')
             ->orderBy('nama_shift')
             ->get();
-            
+
         $asal_pasien = DB::table('dc_asal_pasien')
             ->select('id_dc_asal_pasien', 'asal_pasien')
             ->get();
@@ -48,9 +48,9 @@ class LaporanController extends Controller
 
         $jam_awal = $shift ? substr($shift->dari_jam, 0, 8) : '00:00:00';
         $jam_akhir = $shift ? substr($shift->sampai_jam, 0, 8) : '23:59:59';
-        
-        $start_date = $tgl_awal . ' ' . $jam_awal;
-        $end_date = $tgl_akhir . ' ' . $jam_akhir;
+
+        $start_date = $tgl_awal.' '.$jam_awal;
+        $end_date = $tgl_akhir.' '.$jam_akhir;
 
         $query = DB::table('tc_registrasi as a')
             ->join('mt_master_pasien as b', 'a.no_mr', '=', 'b.no_mr')
@@ -93,13 +93,17 @@ class LaporanController extends Controller
         $nama_petugas = 'Semua Petugas';
         if ($no_induk) {
             $petugas = DB::table('mt_karyawan')->where('no_induk', $no_induk)->first();
-            if ($petugas) $nama_petugas = $petugas->nama_pegawai;
+            if ($petugas) {
+                $nama_petugas = $petugas->nama_pegawai;
+            }
         }
 
         $instalasi_lap = 'Semua Instalasi';
         if ($instalasinya) {
             $inst = DB::table('mt_bagian')->where('kode_bagian', $instalasinya)->first();
-            if ($inst) $instalasi_lap = $inst->nama_bagian;
+            if ($inst) {
+                $instalasi_lap = $inst->nama_bagian;
+            }
         }
 
         return view('laporan.kinerja_registrasi', compact('data', 'start_date', 'end_date', 'nama_petugas', 'shift', 'instalasi_lap'));
@@ -110,23 +114,23 @@ class LaporanController extends Controller
         $kategori = $request->kategori ?? '1';
         $frekuensi = $request->frekuensi ?? '1';
         $tanggal = $request->tanggal;
-        
+
         $start_date = '';
         $end_date = '';
         $periodeStr = '';
 
         if ($frekuensi == '1') {
-            $start_date = $tanggal . ' 05:00:00';
-            $end_date = Carbon::parse($tanggal)->addDay()->format('Y-m-d') . ' 05:59:59';
-            $periodeStr = "Tanggal " . Carbon::parse($tanggal)->translatedFormat('d F Y');
+            $start_date = $tanggal.' 05:00:00';
+            $end_date = Carbon::parse($tanggal)->addDay()->format('Y-m-d').' 05:59:59';
+            $periodeStr = 'Tanggal '.Carbon::parse($tanggal)->translatedFormat('d F Y');
         } elseif ($frekuensi == '2') {
-            $start_date = Carbon::parse($tanggal)->startOfMonth()->format('Y-m-d') . ' 00:00:00';
-            $end_date = Carbon::parse($tanggal)->endOfMonth()->format('Y-m-d') . ' 23:59:59';
-            $periodeStr = "Bulan " . Carbon::parse($tanggal)->translatedFormat('F Y');
+            $start_date = Carbon::parse($tanggal)->startOfMonth()->format('Y-m-d').' 00:00:00';
+            $end_date = Carbon::parse($tanggal)->endOfMonth()->format('Y-m-d').' 23:59:59';
+            $periodeStr = 'Bulan '.Carbon::parse($tanggal)->translatedFormat('F Y');
         } else {
-            $start_date = Carbon::parse($tanggal)->startOfYear()->format('Y-m-d') . ' 00:00:00';
-            $end_date = Carbon::parse($tanggal)->endOfYear()->format('Y-m-d') . ' 23:59:59';
-            $periodeStr = "Tahun " . Carbon::parse($tanggal)->translatedFormat('Y');
+            $start_date = Carbon::parse($tanggal)->startOfYear()->format('Y-m-d').' 00:00:00';
+            $end_date = Carbon::parse($tanggal)->endOfYear()->format('Y-m-d').' 23:59:59';
+            $periodeStr = 'Tahun '.Carbon::parse($tanggal)->translatedFormat('Y');
         }
 
         $query = DB::table('tc_registrasi as a')
@@ -180,10 +184,10 @@ class LaporanController extends Controller
     public function cetakKinerjaRujukan(Request $request)
     {
         $id_dc_asal_pasien = $request->id_dc_asal_pasien;
-        $tgl_awal = $request->tgl_awal . ' 00:00:00';
-        $tgl_akhir = $request->tgl_akhir . ' 23:59:59';
-        
-        $periodeStr = Carbon::parse($request->tgl_awal)->format('d-m-Y') . ' s/d ' . Carbon::parse($request->tgl_akhir)->format('d-m-Y');
+        $tgl_awal = $request->tgl_awal.' 00:00:00';
+        $tgl_akhir = $request->tgl_akhir.' 23:59:59';
+
+        $periodeStr = Carbon::parse($request->tgl_awal)->format('d-m-Y').' s/d '.Carbon::parse($request->tgl_akhir)->format('d-m-Y');
 
         $query = DB::table('lap_jasa_kirim_v')
             ->whereBetween('tgl_jam_masuk', [$tgl_awal, $tgl_akhir]);
@@ -209,9 +213,9 @@ class LaporanController extends Controller
                 ->whereNull('status_batal')
                 ->whereIn('kode_bagian', ['030501', '030901'])
                 ->first();
-            
+
             if ($tindakan) {
-                $explode = explode("-", $tindakan->nama_tindakan);
+                $explode = explode('-', $tindakan->nama_tindakan);
                 $item->tindakan = $explode[0];
             } else {
                 $item->tindakan = '';
@@ -221,7 +225,9 @@ class LaporanController extends Controller
         $asal_pasien_str = 'Semua (Selain Datang Sendiri)';
         if ($id_dc_asal_pasien) {
             $asal = DB::table('dc_asal_pasien')->where('id_dc_asal_pasien', $id_dc_asal_pasien)->first();
-            if ($asal) $asal_pasien_str = $asal->asal_pasien;
+            if ($asal) {
+                $asal_pasien_str = $asal->asal_pasien;
+            }
         }
 
         return view('laporan.kinerja_rujukan', compact('data', 'periodeStr', 'asal_pasien_str'));

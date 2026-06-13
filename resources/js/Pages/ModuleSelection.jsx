@@ -101,7 +101,7 @@ export default function ModuleSelection({ modulars = [] }) {
                         </h2>
 
                         <div className="ms-grid">
-                            {modular.modules.map((mod, idx) => (
+                            {modular.modules.map((mod) => (
                                 <div
                                     key={mod.id_dc_modul}
                                     className="ms-card"

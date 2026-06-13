@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Head, Link, router } from '@inertiajs/react';
-import { Search, ArrowLeft, Activity, Printer, XCircle } from 'lucide-react';
+import { Search, ArrowLeft, Activity, Printer } from 'lucide-react';
 import '../../../css/pasien-lama.css';
 
 export default function ListingPoli({ data, filters }) {
@@ -73,7 +73,7 @@ export default function ListingPoli({ data, filters }) {
                             </thead>
                             <tbody>
                                 {data.data.length > 0 ? (
-                                    data.data.map((item, index) => (
+                                    data.data.map((item) => (
                                         <tr key={item.no_registrasi}>
                                             <td style={{ whiteSpace: 'nowrap' }}>
                                                 <button className="btn btn-secondary" style={{ padding: '0.25rem 0.5rem', fontSize: '0.75rem', marginRight: '4px' }} title="Cetak GC">

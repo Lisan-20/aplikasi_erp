@@ -136,6 +136,16 @@ All migrations must be safe to re-run (e.g. against a database that already has 
 
 5. **Other raw `CREATE` statements** (indexes, triggers, etc.): check `sys.objects`/`sys.indexes` (or the relevant `sys.*` catalog view) for existence before creating, following the same early-return pattern.
 
+## AI Agent Development Workflow
+
+When developing or modifying code via AI agents (including Claude), the following verification steps **must** be performed before considering any task complete:
+
+1. **Lint (Pint):** Run `./vendor/bin/pint --test` to check PHP code style. If there are warnings/errors, run `./vendor/bin/pint` to auto-fix, then re-check until clean.
+2. **Static Analysis (Stan):** Run `./vendor/bin/phpstan analyse --memory-limit=2G` (or the configured level). Iterate on any errors — fix the reported issues and re-run until no errors remain.
+3. **Unit Tests:** Run `php artisan test` (or the relevant test suite). All tests **must** pass. If any test fails, diagnose and fix the code, then re-run tests until green.
+
+> **Iteration rule:** For each step above, if the tool reports any warning or error, the agent must fix the underlying issue and re-run the check. Do not proceed to the next step (or mark work complete) until all three pass cleanly.
+
 ### Directory Guide
 
 | Path | Purpose |

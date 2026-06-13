@@ -93,7 +93,7 @@ export default function PasienRawatInap({ data, filters }) {
                             </thead>
                             <tbody>
                                 {data.data.length > 0 ? (
-                                    data.data.map((item, index) => (
+                                    data.data.map((item) => (
                                         <tr key={item.no_registrasi}>
                                             <td style={{ whiteSpace: 'nowrap' }}>
                                                 <button className="btn btn-secondary" style={{ padding: '0.25rem', marginRight: '2px' }} title="Cetak Label">

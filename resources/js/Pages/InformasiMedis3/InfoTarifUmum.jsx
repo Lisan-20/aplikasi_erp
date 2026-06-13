@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Head, Link, useForm, router } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
 
 export default function InfoTarifUmum({ data, filters }) {
     const [searchTerm, setSearchTerm] = useState(filters.filter || '');

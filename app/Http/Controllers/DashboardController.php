@@ -2,17 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Session;
 
 class DashboardController extends Controller
 {
     public function show($modul)
     {
         $id_dd_user = Session::get('id_dd_user');
-        Log::info('DashboardController show: id_dd_user=' . $id_dd_user . ' modul=' . $modul);
+        Log::info('DashboardController show: id_dd_user='.$id_dd_user.' modul='.$modul);
 
         // Fetch Module Info
         $module = DB::table('dc_modul')->where('id_dc_modul', $modul)->first();
@@ -40,11 +39,11 @@ class DashboardController extends Controller
 
         foreach ($hakAkses as $row) {
             // Check if menu already exists in array
-            if (!isset($menus[$row->id_dc_menu])) {
+            if (! isset($menus[$row->id_dc_menu])) {
                 $menus[$row->id_dc_menu] = [
                     'id_dc_menu' => $row->id_dc_menu,
                     'nama_menu' => $row->nama_menu,
-                    'sub_menus' => []
+                    'sub_menus' => [],
                 ];
             }
 
@@ -59,7 +58,7 @@ class DashboardController extends Controller
                     }
                 }
 
-                if (!$subExists) {
+                if (! $subExists) {
                     $menus[$row->id_dc_menu]['sub_menus'][] = [
                         'id_dc_sub_menu' => $row->id_dc_sub_menu,
                         'nama_sub_menu' => $row->nama_sub_menu,
@@ -72,11 +71,11 @@ class DashboardController extends Controller
         // Convert menus to sequential array
         $menus = array_values($menus);
 
-        Log::info('Menus for User ' . $id_dd_user . ' Modul ' . $modul . ': ' . json_encode($menus));
+        Log::info('Menus for User '.$id_dd_user.' Modul '.$modul.': '.json_encode($menus));
 
         return inertia('Dashboard', [
             'module_name' => $moduleName,
-            'menus' => $menus
+            'menus' => $menus,
         ]);
     }
 }
