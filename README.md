@@ -1,66 +1,367 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+<h1 align="center">SIMRS — Sistem Informasi Manajemen Rumah Sakit</h1>
 
 <p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+  A modern Hospital Information System (SIMRS) built with Laravel, React, and Inertia.js,
+  bridging legacy database structures with a contemporary Single Page Application experience.
 </p>
 
-## About Laravel
+<p align="center">
+  <img src="https://img.shields.io/badge/Laravel-12-red?style=flat-square&logo=laravel" alt="Laravel 12">
+  <img src="https://img.shields.io/badge/PHP-8.2+-blue?style=flat-square&logo=php" alt="PHP 8.2+">
+  <img src="https://img.shields.io/badge/React-18-61DAFB?style=flat-square&logo=react" alt="React 18">
+  <img src="https://img.shields.io/badge/Inertia.js-SPA-8B5CF6?style=flat-square" alt="Inertia.js SPA">
+  <img src="https://img.shields.io/badge/Database-SQL_Server-CC2927?style=flat-square&logo=microsoftsqlserver" alt="SQL Server">
+  <img src="https://img.shields.io/badge/Vite-4-646CFF?style=flat-square&logo=vite" alt="Vite 4">
+</p>
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 📋 Table of Contents
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- [Overview](#overview)
+- [Tech Stack](#tech-stack)
+- [Features](#features)
+- [Architecture](#architecture)
+- [Getting Started](#getting-started)
+- [Development Commands](#development-commands)
+- [Project Structure](#project-structure)
+- [Authentication & Authorization](#authentication--authorization)
+- [Testing & CI](#testing--ci)
+- [Deployment](#deployment)
+- [Contributing](#contributing)
+- [License](#license)
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## 📖 Overview
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+**SIMRS (Sistem Informasi Manajemen Rumah Sakit)** is a comprehensive Hospital Information System that modernizes and extends a legacy hospital management platform. It provides a unified interface for patient registration, outpatient/inpatient management, BPJS/JKN integration, medical record keeping, reporting, pharmacy management, and financial/accounting operations.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+The application serves as a bridge between established legacy database structures (Microsoft SQL Server) and a modern **Single Page Application (SPA)** frontend, ensuring a smooth transition from the legacy system without disrupting existing operations.
 
-## Laravel Sponsors
+---
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+## 🛠️ Tech Stack
 
-### Premium Partners
+| Layer | Technology | Version |
+|-------|-----------|---------|
+| **Backend Framework** | [Laravel](https://laravel.com/) | ^12.0 |
+| **Language** | PHP | ^8.2 |
+| **Frontend Framework** | [React](https://react.dev/) | ^18.3 |
+| **Frontend Bridge** | [Inertia.js](https://inertiajs.com/) | ^1.0 (React), ^2.0 (Laravel) |
+| **Bundler** | [Vite](https://vitejs.dev/) | ^4.0 |
+| **Database** | Microsoft SQL Server (`sqlsrv`) | — |
+| **Icons** | [Lucide React](https://lucide.dev/) | ^1.17 |
+| **HTTP Client** | Axios | ^1.1 |
+| **API Auth** | Laravel Sanctum | ^4.0 |
+| **Testing** | PHPUnit | ^11.0 |
+| **Static Analysis** | Larastan | ^3.0 (Level 5) |
+| **Code Style** | Laravel Pint | ^1.0 |
+| **JS Linting** | ESLint | ^9.0 |
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+---
 
-## Contributing
+## ✨ Features
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Patient Registration & Management
+- **New Patient Registration** — Auto-generated medical record numbers (`no_mr`) with zero-padded 6-digit format
+- **Existing Patient Lookup** — Search and select previously registered patients
+- **Patient Search** — Quick patient lookup across the system
 
-## Code of Conduct
+### Outpatient Services
+- **Polyclinic Registration** — Register patients for outpatient polyclinic visits
+- **Polyclinic Queue** — View and manage patient queues by poly
+- **Patient Listing** — View patients currently waiting in polyclinics
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### Emergency Services (IGD)
+- **Emergency Registration** — Register patients for emergency department visits
+- **Night Emergency (IGD Malam)** — After-hours emergency registration
 
-## Security Vulnerabilities
+### Inpatient Services
+- **Inpatient Registration** — Hospital admission management
+- **Inpatient Listing** — Currently hospitalized patient overview
+- **Hospitalization Requests** — Manage pending admission requests
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### Medical Support Services
+- **Penunjang Medis Registration** — Laboratory, radiology, physiotherapy, hemodialysis
+- **MCU/Package Registration** — Medical checkup packages
+- **Polyclinic Packages** — Bundled polyclinic treatment packages
 
-## License
+### BPJS / JKN Integration
+- **JKN Patient Listing** — BPJS patient registration verification
+- **Online Registration Listing** — Verify and manage online patient registrations
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### Medical Information
+- **Doctor Schedules** — View physician availability by polyclinic
+- **Room Information** — Room/ward availability and occupancy
+- **Room/Hospital Bed Prices** — Pricing information for rooms and beds
+- **General Tariff Info** — Medical service tariff information
+- **Surgery & Delivery Packages** — Package pricing for surgical and maternity services
+- **Patient History** — Medical record history lookup
+
+### Appointments
+- **Patient Appointments** — Schedule and manage patient appointments
+- **Appointment Listing** — View all scheduled appointments
+
+### Reports
+- **Performance Reports** — Registration, cancellation, and referral reporting
+- **Print Functionality** — Printable registration, cancellation, and referral reports
+
+### Legacy Integration
+- **Legacy Module Viewer** — Embed legacy PHP modules via iframe
+- **External URL Integration** — Connect to external/internal hospital servers (VClaim, HIS, etc.)
+
+---
+
+## 🏗️ Architecture
+
+### Data Flow
+
+```
+Browser Request → Laravel Route → Controller → Inertia::render('PageName', $data)
+    → React component renders with props → User interacts → Inertia navigates (no full reload)
+```
+
+The application uses **Inertia.js** as the glue between Laravel and React. Instead of returning Blade views or building a separate JSON API, controllers return `Inertia::render()` calls that map directly to React page components. This eliminates the need for a dedicated API layer while still providing a modern SPA experience.
+
+### Key Patterns
+
+- **Shared Data**: The `HandleInertiaRequests` middleware injects auth user data, flash messages, and sidebar menu structure into every Inertia page response
+- **Permission System**: Module access is controlled by the `CheckPermission` middleware, which queries the `admin_hak_user_v` database view
+- **Legacy DB Helpers**: Two global functions (`read_tabel()`, `baca_tabel()`) in `app/Helpers/DatabaseHelper.php` provide backward-compatible database access to legacy tables
+- **SQL Server Collation**: The legacy schema uses case-sensitive collations; raw queries with `DB::select()` must account for this
+
+### Idempotent Migrations
+
+All **4,315+ migration files** are designed to be safe for re-running against an existing legacy database. They extensively use:
+
+- `Schema::hasTable()` guards before `Schema::create()`
+- `CREATE OR ALTER VIEW` / `CREATE OR ALTER PROCEDURE` for views and stored procedures
+- `sys.foreign_keys` existence checks for foreign key constraints
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- PHP ^8.2 with `pdo_sqlsrv` extension
+- [Microsoft ODBC Driver for SQL Server](https://learn.microsoft.com/en-us/sql/connect/php/installation-tutorial-linux-mac)
+- Composer
+- Node.js & npm
+- SQL Server instance
+
+### Installation
+
+```bash
+# 1. Clone the repository
+git clone <repository-url>
+cd simrs/aplikasi_laravel
+
+# 2. Install PHP dependencies
+composer install
+
+# 3. Install Node.js dependencies
+npm install
+
+# 4. Environment setup
+cp .env.example .env
+php artisan key:generate
+```
+
+### Environment Configuration
+
+Edit `.env` with your SQL Server credentials:
+
+```env
+DB_CONNECTION=sqlsrv
+DB_HOST=localhost
+DB_PORT=1433
+DB_DATABASE=simrs
+DB_USERNAME=sa
+DB_PASSWORD=your_password
+DB_ENCRYPT=yes
+DB_TRUST_SERVER_CERTIFICATE=true   # set false in production with a valid cert
+```
+
+### Running the Application
+
+```bash
+# Terminal 1: Laravel dev server
+php artisan serve
+
+# Terminal 2: Vite hot-reload
+npm run dev
+```
+
+Visit `http://localhost:8000` — you'll be redirected to the login page.
+
+---
+
+## 💻 Development Commands
+
+### Laravel / PHP
+
+```bash
+php artisan serve                  # Start dev server
+php artisan migrate                # Run migrations
+php artisan migrate:rollback       # Rollback last migration batch
+php artisan tinker                 # Interactive REPL
+php artisan route:list              # List all registered routes
+php artisan cache:clear && php artisan config:clear && php artisan view:clear
+```
+
+### Frontend (Vite + React)
+
+```bash
+npm run dev      # Start Vite dev server with hot module replacement
+npm run build    # Production build
+npm run lint     # Run ESLint on resources/js
+```
+
+### Testing
+
+```bash
+php artisan test                           # Run all tests (SQLite in-memory)
+./vendor/bin/phpunit tests/Unit/ExampleTest.php  # Run specific file
+```
+
+### Code Quality
+
+```bash
+./vendor/bin/pint         # Auto-fix PHP code style (Laravel Pint)
+./vendor/bin/pint --test  # Check PHP code style without changes
+./vendor/bin/phpstan analyse --memory-limit=2G  # Static analysis (Level 5)
+```
+
+---
+
+## 📁 Project Structure
+
+```
+├── app/
+│   ├── Console/                  # Artisan commands
+│   ├── Exceptions/               # Error handlers
+│   ├── Helpers/                  # Legacy DB helpers (global scope)
+│   ├── Http/
+│   │   ├── Controllers/          # Request handlers
+│   │   │   ├── Registrasi/       # Registration sub-controllers
+│   │   │   ├── AuthController.php
+│   │   │   ├── DashboardController.php
+│   │   │   ├── ...               # 15+ feature controllers
+│   │   │   └── LegacyController.php
+│   │   └── Middleware/           # Auth, permissions, Inertia setup
+│   ├── Models/                   # Eloquent models
+│   └── Providers/                # Service providers
+├── bootstrap/
+├── config/                       # Application configuration (15 files)
+├── database/
+│   ├── migrations/               # 4,315+ migrations (legacy schema)
+│   ├── factories/
+│   └── seeders/
+├── deploy/                       # Docker deployment configurations
+│   ├── production/               # Planned, not yet implemented
+│   └── staging/                  # PHP-FPM + nginx setup
+├── resources/
+│   ├── css/                      # Application stylesheets
+│   ├── js/
+│   │   ├── Layouts/              # Shared React layouts
+│   │   │   └── DashboardLayout.jsx
+│   │   ├── Pages/                # React page components (30+)
+│   │   │   ├── Auth/
+│   │   │   ├── Registrasi/       # 25 registration pages
+│   │   │   ├── Laporan/
+│   │   │   ├── Poli/
+│   │   │   └── ...
+│   │   ├── app.js                # Inertia app bootstrap
+│   │   └── bootstrap.js
+│   └── views/                    # Blade templates
+│       ├── app.blade.php         # Root Inertia template
+│       ├── auth/
+│       └── laporan/
+├── routes/
+│   ├── web.php                   # All web routes
+│   ├── api.php                   # Sanctum-protected API routes
+│   ├── channels.php              # Broadcast channels
+│   └── console.php               # Artisan command routes
+├── tests/                        # PHPUnit test suites
+├── .docs/                        # Internal documentation
+│   └── eng-init/                 # Engineering improvement plans
+├── .github/workflows/            # CI pipeline
+├── CLAUDE.md                     # AI agent project guide
+├── AGENTS.md                     # Agent instructions
+├── composer.json
+├── package.json
+├── vite.config.js
+└── phpunit.xml
+```
+
+---
+
+## 🔐 Authentication & Authorization
+
+### Authentication
+
+The application uses a **custom session-based authentication** system against the legacy `dd_user` table:
+
+1. User submits credentials to `POST /login`
+2. Password is verified using MD5 hashing with case-sensitive SQL collation (`Latin1_General_CS_AS`)
+3. On success, user session data is stored and login is logged to `log_user_login` / `log_user_login_detail`
+4. Users are redirected to the module selection screen (or directly to their assigned module)
+
+### Authorization
+
+Access control is handled by the `CheckPermission` middleware (aliased as `check.permission` in `Kernel.php`), which:
+
+- Queries the `admin_hak_user_v` database view
+- Validates user access at the module, menu, and sub-menu levels
+- Redirects unauthorized users appropriately
+
+---
+
+## 🧪 Testing & CI
+
+### Test Environment
+
+Tests use an in-memory SQLite database (`DB_CONNECTION=array`), requiring no real database connection.
+
+### Continuous Integration
+
+The project uses **GitHub Actions** (`.github/workflows/ci.yml`) with three parallel jobs triggered on PRs and pushes to `main`:
+
+| Job | Tool | Scope |
+|-----|------|-------|
+| **PHP Static Analysis** | Laravel Pint + Larastan (Level 5) | `app/`, `routes/`, `tests/`, `config/` |
+| **JavaScript Lint** | ESLint | `resources/js/` |
+| **PHP Tests** | PHPUnit | Full test suite |
+
+---
+
+## 🐳 Deployment
+
+Docker-based deployment configurations are available in the `deploy/` directory:
+
+- **[Staging](deploy/staging/README.md)** — PHP-FPM + nginx with external SQL Server (ready to use)
+- **Production** — Planned, not yet implemented
+
+Each environment uses a multi-stage Dockerfile with the project root as the build context.
+
+---
+
+## 🤝 Contributing
+
+Please read [CLAUDE.md](CLAUDE.md) and [AGENTS.md](AGENTS.md) for project conventions and development workflow guidelines.
+
+### Development Workflow
+
+1. Run `./vendor/bin/pint --test` to check PHP code style
+2. Run `./vendor/bin/phpstan analyse --memory-limit=2G` for static analysis
+3. Run `php artisan test` to verify all tests pass
+
+All three checks **must** pass cleanly before changes are considered complete.
+
+---
+
+## 📄 License
+
+This project is open-sourced under the [MIT license](https://opensource.org/licenses/MIT).
