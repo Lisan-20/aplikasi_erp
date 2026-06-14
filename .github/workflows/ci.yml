@@ -6,6 +6,15 @@ on:
     branches: [main]
 
 jobs:
+  migration-versions:
+    name: Check duplicate migration versions
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check for duplicate migration timestamps
+        run: ./scripts/check-duplicate-migrations.sh
+
   php-static-analysis:
     name: PHP static analysis
     runs-on: ubuntu-latest
