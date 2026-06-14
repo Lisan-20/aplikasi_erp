@@ -15,14 +15,6 @@ php artisan storage:link || true
 
 chown -R www-data:www-data storage bootstrap/cache
 
-# Publish the built assets + storage symlink into a shared volume so the
-# nginx container can serve them without duplicating the app image. Do this
-# before the DB-dependent steps below so nginx always has something to serve
-# (the app shell), even if the external SQL Server is unreachable on startup.
-mkdir -p /shared-public
-cp -r /var/www/html/public/. /shared-public/
-chown -R www-data:www-data /shared-public
-
 # Clear any stale bootstrap/cache/config.php that may have been baked into
 # the Docker image or persisted across restarts via the bootstrap_cache volume.
 # This ensures the DB connection timeout (set via DB_TIMEOUT) is picked up
@@ -31,7 +23,7 @@ php artisan config:clear 2>/dev/null || true
 
 # Legacy DB already has 4300+ migrations applied; run any pending ones.
 # Don't let a DB outage abort the entrypoint - log it and keep going so
-# nginx can still serve the published assets above.
+# the app can still serve requests.
 if ! php artisan migrate --force; then
     echo "[entrypoint] WARNING: migrate failed (DB unreachable?). Continuing without it." >&2
 fi

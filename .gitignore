@@ -20,3 +20,7 @@ yarn-error.log
 
 deploy/**/.env.*
 !deploy/**/.env.*.example
+
+**/caddy
+/frankenphp
+.phpunit.result.cache

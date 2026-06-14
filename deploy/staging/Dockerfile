@@ -58,9 +58,9 @@ RUN npm run build
 
 
 #######################################
-# Stage 4: Runtime (php-fpm + sqlsrv)
+# Stage 4: Runtime (FrankenPHP + Octane + sqlsrv)
 #######################################
-FROM php:8.3-fpm-alpine3.20 AS runtime
+FROM dunglas/frankenphp:1-php8.3-alpine AS runtime
 
 ARG MSODBC_VERSION=18.6.2.1-1
 
@@ -74,6 +74,7 @@ RUN set -eux; \
     apk add --no-cache --virtual .build-deps ${PHPIZE_DEPS} unixodbc-dev; \
     pecl install sqlsrv pdo_sqlsrv; \
     docker-php-ext-enable sqlsrv pdo_sqlsrv; \
+    docker-php-ext-install pcntl; \
     apk del .build-deps
 
 COPY deploy/staging/php/conf.d/laravel.ini /usr/local/etc/php/conf.d/zz-laravel.ini
@@ -93,16 +94,12 @@ RUN mkdir -p storage/framework/cache/data \
     && chown -R www-data:www-data storage bootstrap/cache \
     && chmod -R ug+rwx storage bootstrap/cache
 
-# Allow the nginx container to reach php-fpm (default pool only binds 127.0.0.1)
-RUN sed -i 's/^listen = 127.0.0.1:9000/listen = 0.0.0.0:9000/' /usr/local/etc/php-fpm.d/www.conf
-
 COPY deploy/staging/docker/entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
-# Run as root: the entrypoint needs to chown shared volumes on startup, and
-# the php-fpm master process drops worker processes to www-data per
-# www.conf's `user`/`group` directives.
-EXPOSE 9000
+# Run as root: the entrypoint needs to chown shared volumes on startup.
+# FrankenPHP/Caddy binds to port 80 as root inside the container.
+EXPOSE 80
 
 ENTRYPOINT ["entrypoint.sh"]
-CMD ["php-fpm"]
+CMD ["php", "artisan", "octane:frankenphp", "--host=0.0.0.0", "--port=80", "--workers=auto", "--max-requests=500"]
