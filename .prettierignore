@@ -1,0 +1,39 @@
+# Dependencies
+node_modules/
+vendor/
+
+# Build artifacts
+public/build/
+public/hot
+public/storage/
+
+# Laravel/cache
+storage/
+bootstrap/cache/
+
+# Logs
+*.log
+
+# Environment
+.env
+.env.*
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Compiled assets
+public/css/
+public/js/
+public/mix-manifest.json
+
+# Database
+*.sqlite
+*.db
