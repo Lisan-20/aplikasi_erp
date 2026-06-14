@@ -261,7 +261,7 @@ php artisan test                           # Run all tests (SQLite in-memory)
 │   └── seeders/
 ├── deploy/                       # Docker deployment configurations
 │   ├── production/               # Planned, not yet implemented
-│   └── staging/                  # PHP-FPM + nginx setup
+│   └── staging/                  # Laravel Octane + FrankenPHP setup
 ├── resources/
 │   ├── css/                      # Application stylesheets
 │   ├── js/
@@ -341,7 +341,7 @@ The project uses **GitHub Actions** (`.github/workflows/ci.yml`) with three para
 
 Docker-based deployment configurations are available in the `deploy/` directory:
 
-- **[Staging](deploy/staging/README.md)** — PHP-FPM + nginx with external SQL Server (ready to use)
+- **[Staging](deploy/staging/README.md)** — Laravel Octane + FrankenPHP with external SQL Server (ready to use)
 - **Production** — Planned, not yet implemented
 
 Each environment uses a multi-stage Dockerfile with the project root as the build context.

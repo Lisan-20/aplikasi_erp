@@ -1,8 +1,10 @@
 # Staging Deployment
 
-Two containers: `app` (PHP-FPM 8.3 + sqlsrv) and `nginx` (serves static assets,
-proxies PHP requests to `app`). The application connects to an **external**
-SQL Server instance — no database container is included.
+A single `app` container running **Laravel Octane on FrankenPHP** (PHP 8.3 +
+sqlsrv, worker mode). FrankenPHP embeds both the web server (Caddy) and the
+PHP runtime, so there's no separate nginx/php-fpm split. The application
+connects to an **external** SQL Server instance — no database container is
+included.
 
 ## Setup
 
@@ -12,7 +14,7 @@ SQL Server instance — no database container is included.
    ```
    Edit `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD`, and `APP_URL`.
 
-2. Build the images:
+2. Build the image:
    ```bash
    docker compose -f deploy/staging/docker-compose.yml build
    ```
@@ -38,9 +40,11 @@ SQL Server instance — no database container is included.
   ```bash
   docker compose -f deploy/staging/docker-compose.yml exec app php artisan key:generate --show
   ```
-- Built frontend assets and the `public/storage` symlink are published into a
-  shared `app_public` volume so `nginx` can serve them without bundling
-  Node/Composer toolchains into the runtime image.
+- **Octane workers stay booted in memory** between requests for performance.
+  After deploying new code, recreate the container so workers pick it up:
+  ```bash
+  docker compose -f deploy/staging/docker-compose.yml up -d --build --force-recreate app
+  ```
 - View logs:
   ```bash
   docker compose -f deploy/staging/docker-compose.yml logs -f app
@@ -48,10 +52,9 @@ SQL Server instance — no database container is included.
 
 ## Troubleshooting
 
-- **`curl http://localhost:9091` returns `403 Forbidden`**: this means the
-  `app_public` shared volume is empty (nginx has no `index.php` to serve and
-  directory listing is disabled). Check `docker compose logs app` for SQL
-  Server connection errors. `DB_HOST` must be reachable from *inside* the
+- **`curl http://localhost:9091` returns an error or connection refused**:
+  check `docker compose logs app` for SQL Server connection errors or Octane
+  worker startup failures. `DB_HOST` must be reachable from *inside* the
   `app` container - `localhost` refers to the container itself, not your
   Docker host. If SQL Server runs on the Docker host, set
   `DB_HOST=host.docker.internal` (the compose file maps this via
