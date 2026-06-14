@@ -18,7 +18,5 @@ yarn-error.log
 /.idea
 /.vscode
 
-.docs/
-
 deploy/**/.env.*
 !deploy/**/.env.*.example
