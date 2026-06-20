@@ -116,7 +116,7 @@ export default function EditDataUmum({ auth, patient }) {
                                 <div className="card-body">
                                     <form onSubmit={handleSearch}>
                                         <div className="form-group">
-                                            <label>No. Rekam Medis</label>
+                                            <label className="form-label">No. Rekam Medis</label>
                                             <div className="flex space-x-2">
                                                 <input 
                                                     type="text" 
@@ -150,7 +150,7 @@ export default function EditDataUmum({ auth, patient }) {
                                                 <h4 className="text-sm font-semibold text-blue-300 uppercase tracking-wider mb-2">Identitas Utama</h4>
                                                 
                                                 <div className="form-group">
-                                                    <label>No. MR <span className="text-red-400">*</span></label>
+                                                    <label className="form-label">No. MR <span className="text-red-400">*</span></label>
                                                     <input 
                                                         type="text" 
                                                         className={`form-control bg-white/5 ${errors.no_mr ? 'is-invalid' : ''}`}
@@ -161,7 +161,7 @@ export default function EditDataUmum({ auth, patient }) {
                                                 </div>
 
                                                 <div className="form-group">
-                                                    <label>Nama Pasien <span className="text-red-400">*</span></label>
+                                                    <label className="form-label">Nama Pasien <span className="text-red-400">*</span></label>
                                                     <input 
                                                         type="text" 
                                                         className={`form-control ${errors.nama_pasien ? 'is-invalid' : ''}`}
@@ -171,7 +171,7 @@ export default function EditDataUmum({ auth, patient }) {
                                                 </div>
                                                 
                                                 <div className="form-group">
-                                                    <label>No KTP <span className="text-red-400">*</span></label>
+                                                    <label className="form-label">No KTP <span className="text-red-400">*</span></label>
                                                     <input 
                                                         type="text" 
                                                         className={`form-control ${errors.no_ktp ? 'is-invalid' : ''}`}
@@ -181,7 +181,7 @@ export default function EditDataUmum({ auth, patient }) {
                                                 </div>
 
                                                 <div className="form-group">
-                                                    <label>Nama Ibu Kandung <span className="text-red-400">*</span></label>
+                                                    <label className="form-label">Nama Ibu Kandung <span className="text-red-400">*</span></label>
                                                     <input 
                                                         type="text" 
                                                         className={`form-control ${errors.nama_ibu ? 'is-invalid' : ''}`}
@@ -191,7 +191,7 @@ export default function EditDataUmum({ auth, patient }) {
                                                 </div>
 
                                                 <div className="form-group">
-                                                    <label>Nama Kepala Keluarga</label>
+                                                    <label className="form-label">Nama Kepala Keluarga</label>
                                                     <input 
                                                         type="text" 
                                                         className="form-control"
@@ -201,7 +201,7 @@ export default function EditDataUmum({ auth, patient }) {
                                                 </div>
 
                                                 <div className="form-group">
-                                                    <label>Tempat Lahir</label>
+                                                    <label className="form-label">Tempat Lahir</label>
                                                     <input 
                                                         type="text" 
                                                         className="form-control"
@@ -211,7 +211,7 @@ export default function EditDataUmum({ auth, patient }) {
                                                 </div>
 
                                                 <div className="form-group">
-                                                    <label>Tanggal Lahir <span className="text-red-400">*</span></label>
+                                                    <label className="form-label">Tanggal Lahir <span className="text-red-400">*</span></label>
                                                     <div className="flex space-x-2">
                                                         <input type="text" className="form-control w-1/4" placeholder="DD" value={data.txt_tgl_lahir} onChange={e => setData('txt_tgl_lahir', e.target.value)} />
                                                         <input type="text" className="form-control w-1/4" placeholder="MM" value={data.txt_bln_lahir} onChange={e => setData('txt_bln_lahir', e.target.value)} />
@@ -220,7 +220,7 @@ export default function EditDataUmum({ auth, patient }) {
                                                 </div>
 
                                                 <div className="form-group">
-                                                    <label>Jenis Kelamin</label>
+                                                    <label className="form-label">Jenis Kelamin</label>
                                                     <select 
                                                         className="form-control"
                                                         value={data.jen_kelamin}
@@ -237,7 +237,7 @@ export default function EditDataUmum({ auth, patient }) {
                                                 <h4 className="text-sm font-semibold text-blue-300 uppercase tracking-wider mb-2">Kontak & Asuransi</h4>
                                                 
                                                 <div className="form-group">
-                                                    <label>Alamat Tetap</label>
+                                                    <label className="form-label">Alamat Tetap</label>
                                                     <textarea 
                                                         className="form-control"
                                                         rows="3"
@@ -247,7 +247,7 @@ export default function EditDataUmum({ auth, patient }) {
                                                 </div>
 
                                                 <div className="form-group">
-                                                    <label>Telepon</label>
+                                                    <label className="form-label">Telepon</label>
                                                     <input 
                                                         type="text" 
                                                         className="form-control"
@@ -257,7 +257,7 @@ export default function EditDataUmum({ auth, patient }) {
                                                 </div>
 
                                                 <div className="form-group">
-                                                    <label>Nasabah / Penjamin <span className="text-red-400">*</span></label>
+                                                    <label className="form-label">Nasabah / Penjamin <span className="text-red-400">*</span></label>
                                                     <select 
                                                         className="form-control"
                                                         value={data.kode_kelompok}
@@ -272,7 +272,7 @@ export default function EditDataUmum({ auth, patient }) {
                                                 </div>
 
                                                 <div className="form-group">
-                                                    <label>No Kartu / Surat Jaminan / NIK <span className="text-red-400">*</span></label>
+                                                    <label className="form-label">No Kartu / Surat Jaminan / NIK <span className="text-red-400">*</span></label>
                                                     <input 
                                                         type="text" 
                                                         className="form-control"
@@ -282,7 +282,7 @@ export default function EditDataUmum({ auth, patient }) {
                                                 </div>
 
                                                 <div className="form-group">
-                                                    <label>Jatah Kelas</label>
+                                                    <label className="form-label">Jatah Kelas</label>
                                                     <select 
                                                         className="form-control"
                                                         value={data.jth_kelas}

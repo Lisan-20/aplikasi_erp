@@ -1,0 +1,196 @@
+<html xmlns:o="urn:schemas-microsoft-com:office:office"
+      xmlns:w="urn:schemas-microsoft-com:office:word"
+      xmlns="http://www.w3.org/TR/REC-html40">
+<head>
+<meta charset="utf-8">
+<title>Panduan Arsitektur & Alur Kerja Aplikasi ERP</title>
+<style>
+    body { font-family: 'Calibri', sans-serif; }
+    h1 { color: #2C3E50; border-bottom: 2px solid #34495E; padding-bottom: 5px; }
+    h2 { color: #2980B9; margin-top: 20px; }
+    pre { background-color: #F8F9FA; padding: 15px; border-left: 4px solid #E74C3C; font-family: 'Consolas', monospace; font-size: 10.5pt; overflow-x: auto; white-space: pre-wrap; }
+    p { line-height: 1.5; font-size: 11pt; }
+    .note { background-color: #FEF9E7; padding: 10px; border-left: 4px solid #F1C40F; margin: 10px 0; }
+</style>
+</head>
+<body>
+
+<h1>Panduan Arsitektur &amp; Alur Kerja Aplikasi ERP</h1>
+<p>Aplikasi ini dibangun dengan tumpukan teknologi (stack) modern yang menggabungkan <strong>Laravel (Backend)</strong> dan <strong>React (Frontend)</strong> menggunakan jembatan <strong>Inertia.js</strong>. Dokumen ini menjelaskan bagaimana data dan antarmuka mengalir dari satu file ke file lainnya saat pengguna berinteraksi dengan aplikasi.</p>
+
+<hr>
+
+<h1>A. Konsep Dasar: Inertia.js</h1>
+<p>Inertia.js memungkinkan kita membangun aplikasi Single Page Application (SPA) penuh menggunakan React, tanpa harus membuat REST API terpisah untuk setiap halaman. Laravel mengontrol routing, mengambil data dari database, lalu <em>"melemparkan"</em> data tersebut secara otomatis ke komponen React sebagai <strong>props</strong>.</p>
+
+<hr>
+
+<h1>B. ALUR KERJA STANDAR (Routing &rarr; Controller &rarr; View JSX)</h1>
+
+<h2>Langkah 1: Routing (routes/web.php)</h2>
+<p>Setiap kali pengguna mengetikkan URL di browser atau mengklik tautan (menggunakan komponen <code>&lt;Link&gt;</code> Inertia), permintaan tersebut ditangkap oleh file <code>routes/web.php</code> di sisi Backend.</p>
+
+<pre>
+// File: routes/web.php
+
+// Menangkap request GET ke URL '/registrasi/rawat-jalan'
+Route::get('/registrasi/rawat-jalan', [RegistrasiController::class, 'rawatJalan'])
+    ->name('registrasi.rawat-jalan');
+</pre>
+<p><strong>Penjelasan:</strong> Skrip di atas menginstruksikan Laravel: "Jika ada pengguna yang meminta halaman <code>/registrasi/rawat-jalan</code>, teruskan permintaan tersebut ke fungsi bernama <code>rawatJalan</code> di dalam file <code>RegistrasiController.php</code>."</p>
+
+
+<h2>Langkah 2: Controller (app/Http/Controllers/...)</h2>
+<p>Controller bertugas memproses logika bisnis, mengambil data dari database, dan memanggil file tampilan Frontend (JSX).</p>
+
+<pre>
+// File: app/Http/Controllers/RegistrasiController.php
+use Inertia\Inertia;
+use Illuminate\Http\Request;
+
+public function rawatJalan(Request $request) {
+    // 1. Ambil data dari database (menggunakan Model atau Query Builder)
+    $pasien = DB::table('tc_mr')->where('no_mr', $request->no_mr)->first();
+    
+    // 2. Render tampilan JSX dan lemparkan datanya
+    return Inertia::render('Registrasi/RawatJalan', [
+        'patient' => $pasien,
+        'filters' => $request->only(['search'])
+    ]);
+}
+</pre>
+<p><strong>Penjelasan:</strong> Perintah <code>Inertia::render('Registrasi/RawatJalan', [...])</code> adalah kunci utamanya. Perintah ini memberi tahu Inertia untuk mencari file komponen React di path <code>resources/js/Pages/Registrasi/RawatJalan.jsx</code> dan memberikan array asosiatif (seperti <code>patient</code>) sebagai properti (props) ke dalam React.</p>
+
+
+<h2>Langkah 3: View (resources/js/Pages/...)</h2>
+<p>Ini adalah file antarmuka (Frontend) tempat pengguna berinteraksi. Komponen ini menerima data dari Controller secara instan tanpa perlu melakukan <code>fetch()</code> atau AJAX manual saat pertama dimuat.</p>
+
+<pre>
+// File: resources/js/Pages/Registrasi/RawatJalan.jsx
+import React, { useState } from 'react';
+import { Head, useForm } from '@inertiajs/react';
+import DashboardLayout from '@/Layouts/DashboardLayout';
+
+// 'patient' didapat langsung dari RegistrasiController.php di atas
+export default function RawatJalan({ patient, filters }) {
+    
+    // 1. STATE & FORM: Mengelola input pengguna
+    // Hook useForm dari Inertia mempermudah pengikatan data (data-binding)
+    const { data, setData, post } = useForm({
+        no_mr: patient?.no_mr || '',
+        keterangan: ''
+    });
+
+    // 2. FUNGSI SUBMIT: Mengirim data kembali ke server
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        // Mengirim data form via POST ke route tujuan tanpa reload browser
+        post(`/registrasi/rawat-jalan/simpan`);
+    };
+
+    // 3. RENDER UI: HTML/JSX yang tampil di layar
+    return (
+        &lt;DashboardLayout&gt;
+            &lt;Head title="Rawat Jalan" /&gt;
+            
+            &lt;div className="odoo-layout-wrapper"&gt;
+                {/* Form Sheet UI ala ERP */}
+                &lt;form onSubmit={handleSubmit} className="odoo-document-sheet"&gt;
+                    &lt;h1&gt;Nama: {patient.nama_pasien}&lt;/h1&gt;
+                    
+                    &lt;input 
+                        type="text" 
+                        value={data.keterangan} 
+                        onChange={(e) =&gt; setData('keterangan', e.target.value)} 
+                        className="premium-input"
+                    /&gt;
+                    
+                    &lt;button type="submit" className="btn btn-primary"&gt;Simpan&lt;/button&gt;
+                &lt;/form&gt;
+            &lt;/div&gt;
+        &lt;/DashboardLayout&gt;
+    );
+}
+</pre>
+<div class="note">
+<strong>Skrip JSX di atas menjalankan beberapa tugas penting:</strong><br>
+- <strong>DashboardLayout:</strong> Komponen wrapper yang kita impor untuk memastikan halaman memiliki Sidebar dan Topbar seragam.<br>
+- <strong>useForm:</strong> Hook bawaan Inertia. Saat <code>post()</code> dijalankan, data dikirim secara background (AJAX) ke Laravel. Jika Laravel merespons dengan Redirect, Inertia secara otomatis akan mengganti halaman tanpa melakukan <em>full page reload</em>.<br>
+- <strong>Head:</strong> Men-set tag <code>&lt;title&gt;</code> HTML secara dinamis.
+</div>
+
+<hr>
+
+<h1>C. ALUR KERJA API MURNI (Dashboard Kasir + Stored Procedure)</h1>
+<p>Selain alur Inertia standar di atas, aplikasi ini juga menggunakan pola <strong>API murni (Asynchronous Fetching)</strong> untuk area yang sangat berat datanya, contohnya: Dashboard Kasir dengan Stored Procedure. Hal ini mencegah halaman utama (shell) menjadi lambat saat dibuka.</p>
+
+<h2>1. React Meminta Data (DashboardKasir.jsx)</h2>
+<p>Saat halaman <em>Dashboard Kasir</em> dimuat, layar dan menu langsung tampil (instan). Kemudian, di balik layar, komponen menjalankan <code>useEffect</code> untuk meminta data berat.</p>
+
+<pre>
+// File: resources/js/Components/Dashboards/DashboardKasir.jsx
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+
+export default function DashboardKasir() {
+    const [metrics, setMetrics] = useState({ header: null, revenueTrend: [] });
+
+    useEffect(() => {
+        // Meminta data secara asinkron menggunakan Axios
+        axios.get('/api/dashboard/kasir')
+            .then(res => {
+                const responseData = res.data.data;
+                // Menyimpan data ke state React
+                setMetrics({
+                    header: responseData.header,
+                    revenueTrend: responseData.revenueTrend
+                });
+            });
+    }, []); // Array kosong berarti hanya jalan 1x saat pertama buka halaman
+
+    return (
+        // Menggunakan metrics.header untuk Recharts...
+    );
+}
+</pre>
+
+<h2>2. Route API (routes/web.php)</h2>
+<p>Laravel mendengarkan permintaan API tersebut:</p>
+<pre>
+// Menangkap request '/api/dashboard/kasir'
+Route::get('/api/dashboard/kasir', [DashboardController::class, 'getKasirMetrics']);
+</pre>
+
+<h2>3. Controller &amp; Stored Procedure (DashboardController.php)</h2>
+<p>Karena menggunakan SQL Server dan SP yang mengembalikan <strong>beberapa tabel sekaligus (multi-result set)</strong>, kita menggunakan objek PDO murni.</p>
+
+<pre>
+// File: app/Http/Controllers/DashboardController.php
+
+public function getKasirMetrics(Request $request) {
+    // 1. Dapatkan objek PDO murni untuk bypass Eloquent Builder
+    $pdo = DB::connection()->getPdo();
+    $stmt = $pdo->prepare("EXEC sp_DashboardKasir_GetMetrics ?, ?");
+    $stmt->execute([$startDate, $endDate]);
+
+    // 2. Mengambil tabel hasil PERTAMA (Header)
+    $header = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    
+    // 3. Berpindah ke tabel hasil KEDUA (Tren Pendapatan)
+    $stmt->nextRowset(); 
+    $revenueTrend = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+    // 4. Kirim balik ke React dalam bentuk JSON
+    return response()->json([
+        'status' => 'success',
+        'data' => [
+            'header' => $header[0],
+            'revenueTrend' => $revenueTrend
+        ]
+    ]);
+}
+</pre>
+<p><strong>Penutup Alur:</strong> Begitu JSON dikirim oleh Controller dan diterima oleh <code>axios.then()</code> di Frontend (Langkah 1), state <code>metrics</code> akan diperbarui (setMetrics). Perubahan state ini secara otomatis memicu React untuk me-render ulang grafik Recharts dengan data yang baru saja masuk secara interaktif.</p>
+
+</body>
+</html>

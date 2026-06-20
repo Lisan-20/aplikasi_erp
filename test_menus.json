@@ -1,0 +1,22 @@
+[
+    {
+        "id_dc_menu": "63",
+        "nama_menu": "LOKET",
+        "no_urut_menu": "6",
+        "id_dc_sub_menu": "240",
+        "nama_sub_menu": "Antrian Loket",
+        "url_sub_menu": "..\/mod_kasir\/antrian_loket_view.php",
+        "url_sub_menu_baru": "\/kasir\/antrian-loket",
+        "no_urut_sub_menu": "1"
+    },
+    {
+        "id_dc_menu": "86",
+        "nama_menu": "LAPORAN",
+        "no_urut_menu": "15",
+        "id_dc_sub_menu": "364",
+        "nama_sub_menu": "Laporan Kasir",
+        "url_sub_menu": "..\/mod_laporan\/ks_lap_kasir_form.php",
+        "url_sub_menu_baru": "\/laporan\/kasir",
+        "no_urut_sub_menu": "1"
+    }
+]

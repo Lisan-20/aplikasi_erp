@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Head, router } from '@inertiajs/react';
 import DashboardLayout from '@/Layouts/DashboardLayout';
 import { Search, XCircle, FileText } from 'lucide-react';
-import '../../../css/pasien-lama.css';
 
 export default function AntrianPoli({ data, poliklinik, filters }) {
     const [search, setSearch] = useState(filters.search || '');
@@ -74,18 +73,18 @@ export default function AntrianPoli({ data, poliklinik, filters }) {
                             </div>
                         </div>
 
-                        <button type="submit" className="btn btn-primary" style={{ padding: '8px 16px' }}>
+                        <button type="submit" className="dash-btn primary" style={{ padding: '8px 16px' }}>
                             Cari
                         </button>
                         {(filters.search || filters.kode_bagian) && (
-                            <button type="button" onClick={handleClear} className="btn btn-secondary" style={{ padding: '8px 16px' }}>
+                            <button type="button" onClick={handleClear} className="dash-btn secondary" style={{ padding: '8px 16px' }}>
                                 Reset
                             </button>
                         )}
                     </form>
 
-                    <div className="table-responsive" style={{ flex: 1, overflowY: 'auto' }}>
-                        <table className="pl-table">
+                    <div className="dash-table" style={{ flex: 1, overflowY: 'auto' }}>
+                        <table className="dash-table">
                             <thead>
                                 <tr>
                                     <th>No.</th>
@@ -125,10 +124,10 @@ export default function AntrianPoli({ data, poliklinik, filters }) {
                                             </td>
                                             <td style={{ color: '#ef4444', fontSize: '0.85rem' }}>{item.catatan_khusus || '-'}</td>
                                             <td style={{ whiteSpace: 'nowrap' }}>
-                                                <button className="btn btn-secondary" style={{ padding: '4px 8px', marginRight: '4px' }} title="Catatan Pasien">
+                                                <button className="dash-btn secondary" style={{ padding: '4px 8px', marginRight: '4px' }} title="Catatan Pasien">
                                                     <FileText style={{ width: '14px', height: '14px' }} />
                                                 </button>
-                                                <button className="btn btn-secondary" style={{ padding: '4px 8px', color: '#ef4444' }} title="Batal Registrasi">
+                                                <button className="dash-btn secondary" style={{ padding: '4px 8px', color: '#ef4444' }} title="Batal Registrasi">
                                                     <XCircle style={{ width: '14px', height: '14px' }} />
                                                 </button>
                                             </td>
@@ -153,7 +152,7 @@ export default function AntrianPoli({ data, poliklinik, filters }) {
                                     key={i}
                                     onClick={() => link.url && router.get(link.url)}
                                     disabled={!link.url}
-                                    className={`btn ${link.active ? 'btn-primary' : 'btn-secondary'}`}
+                                    className={`dash-btn ${link.active ? 'primary' : 'secondary'}`}
                                     style={{
                                         padding: '8px 12px',
                                         opacity: link.url ? 1 : 0.5,

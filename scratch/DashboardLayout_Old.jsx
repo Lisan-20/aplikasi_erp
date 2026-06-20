@@ -1,0 +1,790 @@
+import React, { useState, useEffect } from 'react';
+import { Head, Link, usePage } from '@inertiajs/react';
+import {
+Menu, X, ChevronDown, ChevronRight,
+Home, Users, Settings, Briefcase,
+FileText, LogOut, LayoutDashboard,
+Sun, Moon, Boxes, Database, Layers
+} from 'lucide-react';
+
+// A mapping function to guess an icon based on menu name
+const getMenuIcon = (name) => {
+const n = name?.toLowerCase() || '';
+if (n.includes('pasien') || n.includes('user') || n.includes('sdm') || n.includes('pegawai')) return <Users size={20} />;
+if (n.includes('rekam') || n.includes('laporan') || n.includes('dokumen')) return <FileText size={20} />;
+if (n.includes('setting') || n.includes('pengaturan')) return <Settings size={20} />;
+if (n.includes('medis') || n.includes('klinik') || n.includes('layanan') || n.includes('poli')) return <Briefcase size={20} />;
+if (n.includes('antrean') || n.includes('queue') || n.includes('transaksi') || n.includes('kasir')) return <Database size={20} />;
+if (n.includes('gudang') || n.includes('stok') || n.includes('inventori')) return <Boxes size={20} />;
+return <Layers size={20} />;
+};
+
+export default function DashboardLayout({ children, breadcrumbs, smartButtons }) {
+const { auth, dashboard, url: currentUrl } = usePage().props;
+// Alternative way to get url if it's not in props: const currentUrl = usePage().url;
+const activeUrl = currentUrl || usePage().url;
+const user = auth?.user || { username: 'User', role: 'Administrator' };
+const module_name = dashboard?.module_name || 'Dashboard';
+const menus = dashboard?.menus || [];
+
+const [isSidebarOpen, setSidebarOpen] = useState(() => {
+if (typeof window !== 'undefined') {
+const saved = localStorage.getItem('sidebarOpen');
+return saved !== null ? saved === 'true' : true;
+}
+return true;
+});
+
+useEffect(() => {
+if (typeof window !== 'undefined') {
+localStorage.setItem('sidebarOpen', isSidebarOpen);
+}
+}, [isSidebarOpen]);
+
+// Simpan status menu yang terbuka ke sessionStorage agar tidak tertutup saat ganti halaman
+const [openMenus, setOpenMenus] = useState(() => {
+try {
+const saved = sessionStorage.getItem('medilink_open_menus');
+return saved ? JSON.parse(saved) : {};
+} catch (e) {
+return {};
+}
+});
+
+useEffect(() => {
+sessionStorage.setItem('medilink_open_menus', JSON.stringify(openMenus));
+}, [openMenus]);
+
+const [currentTime, setCurrentTime] = useState(new Date());
+const [theme, setTheme] = useState('dark');
+
+useEffect(() => {
+const savedTheme = localStorage.getItem('medilink-theme');
+if (savedTheme) {
+setTheme(savedTheme);
+} else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
+setTheme('light');
+}
+
+const timer = setInterval(() => setCurrentTime(new Date()), 1000);
+return () => clearInterval(timer);
+}, []);
+
+const toggleTheme = () => {
+const newTheme = theme === 'dark' ? 'light' : 'dark';
+setTheme(newTheme);
+localStorage.setItem('medilink-theme', newTheme);
+};
+
+const toggleSidebar = () => setSidebarOpen(!isSidebarOpen);
+
+const toggleMenu = (menuId) => {
+setOpenMenus(prev => ({
+...prev,
+[menuId]: !prev[menuId]
+}));
+};
+
+const isPopup = typeof window !== 'undefined' && window.location.search.includes('popup=1');
+
+if (isPopup) {
+return (
+<div className="dash-layout popup-mode" data-theme={theme} style={{ display: 'block', height: 'auto', overflow: 'auto' }}>
+<Head title={`${module_name || 'Dashboard'} - ERP`} />
+<div className="dash-body" style={{ height: 'auto', overflow: 'visible', padding: '20px' }}>
+<main className="dash-content" style={{ width: '100%', maxWidth: '100%', margin: 0, padding: 0 }}>
+{children}
+</main>
+</div>
+</div>
+);
+}
+
+return (
+<div className="dash-layout" data-theme={theme}>
+<Head title={`${module_name || 'Dashboard'} - ERP`} />
+
+{/* Top Navbar */}
+<header className="dash-navbar dash-glass-panel">
+<div className="dash-nav-left">
+<button onClick={toggleSidebar} className="dash-icon-btn">
+{isSidebarOpen ? <X size={24} /> : <Menu size={24} />}
+</button>
+<div className="dash-brand">
+<Boxes size={28} className="dash-brand-icon" />
+<div>
+<h2>SISTEM ERP</h2>
+<span className="dash-tag">{module_name || 'Enterprise Edition'}</span>
+</div>
+</div>
+</div>
+
+<div className="dash-nav-right">
+<div className="dash-clock">
+{currentTime.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' })} WIB
+</div>
+
+<button onClick={toggleTheme} className="dash-icon-btn theme-toggle" title="Ubah Tema">
+{theme === 'dark' ? <Sun size={20} className="text-yellow-400" /> : <Moon size={20} className="text-blue-600" />}
+</button>
+
+<div className="dash-user">
+<div className="dash-user-info">
+<span className="dash-user-name">{user.username || user.name}</span>
+<span className="dash-user-role">{user.role || 'Staff'}</span>
+</div>
+<div className="dash-avatar">
+{(user.username || user.name || 'U').charAt(0).toUpperCase()}
+</div>
+<Link href="/logout" className="dash-logout-btn" title="Keluar">
+<LogOut size={20} />
+</Link>
+</div>
+</div>
+</header>
+
+<div className="dash-body">
+{/* Overlay Backdrop for Mobile */}
+<div
+className={`dash-sidebar-overlay ${isSidebarOpen ? 'show' : ''}`}
+onClick={toggleSidebar}
+></div><main className="dash-main-content">{children}</main></div></div>);}
+
+{/* Sidebar */}
+<aside className={`dash-sidebar dash-glass-panel ${isSidebarOpen ? 'open' : 'closed'}`}>
+<div className="dash-sidebar-inner">
+<div className="dash-menu-section">
+<span className="dash-menu-label">Main Menu</span>
+<ul className="dash-menu-list">
+{menus.map((menu, idx) => {
+const menuId = menu.id_menu || menu.id || idx;
+const submenus = menu.sub_menus || menu.submenus || menu.children || [];
+const isOpen = openMenus[menuId];
+const menuName = menu.nama_menu || menu.name || 'Menu';
+
+return (
+<li key={menuId} className="dash-menu-group">
+<button
+className={`dash-menu-item ${isOpen ? 'active' : ''}`}
+onClick={() => toggleMenu(menuId)}
+>
+{getMenuIcon(menuName)}
+<span className="dash-menu-text">{menuName}</span>
+{submenus.length > 0 && (
+isOpen ? <ChevronDown size={16} className="dash-menu-arrow" /> : <ChevronRight size={16} className="dash-menu-arrow" />
+)}
+</button>
+
+{submenus.length > 0 && (
+<ul className={`dash-submenu-list ${isOpen ? 'open' : ''}`}>
+{submenus.map((sub, sIdx) => {
+let subUrl = sub.url_sub_menu_baru ? sub.url_sub_menu_baru.trim() : '/404';
+
+const isUnhandledExternal = subUrl.startsWith('http');
+const subName = sub.nama_sub_menu || sub.name || 'Submenu';
+
+const isActive = activeUrl === subUrl || activeUrl.startsWith(subUrl + '?');
+
+return (
+<li key={sub.id_sub_menu || sub.id || sIdx}>
+{isUnhandledExternal ? (
+<a href={subUrl} className={`dash-submenu-item ${isActive ? 'active' : ''}`} target="_blank" rel="noreferrer">
+{subName}
+</a>
+) : (
+<Link href={subUrl} className={`dash-submenu-item ${isActive ? 'active' : ''}`}>
+{subName}
+</Link>
+)}
+</li>
+);
+})}
+</ul>
+)}
+</li>
+);
+})}
+</ul>
+</div>
+</div>
+
+<div className="dash-sidebar-footer">
+<Link href="/modul" className="dash-back-btn">
+&larr; <span className="dash-menu-text">Ganti Modul</span>
+</Link>
+</div>
+</aside>
+
+{/* Main Content Area */}
+<main className={`dash-content ${!isSidebarOpen ? 'expanded' : ''}`}>
+{/* ODOO CONTROL PANEL (Breadcrumbs & Smart Buttons) */}
+{(breadcrumbs || smartButtons || usePage().props.breadcrumbs) && (
+<div className="odoo-control-panel">
+<div className="odoo-breadcrumbs">
+{(breadcrumbs || usePage().props.breadcrumbs || []).map((crumb, i, arr) => (
+<React.Fragment key={i}>
+<span className={i === arr.length - 1 ? 'active' : ''}>{crumb}</span>
+{i < arr.length - 1 && <ChevronRight size={14} className="crumb-separator" />}
+</React.Fragment>
+))}
+</div>
+<div className="odoo-smart-buttons">
+{smartButtons || usePage().props.smartButtons}
+</div>
+</div>
+)}
+
+{children ? children : (
+<>
+<div className="dash-welcome dash-glass-panel">
+<h1>Selamat Datang di {module_name || 'Modul Sistem'}</h1>
+<p>Silakan gunakan menu navigasi di sebelah kiri untuk mengakses fitur yang tersedia dalam modul ini.</p>
+</div>
+
+<div className="dash-widgets">
+<div className="dash-widget dash-glass-panel">
+<Activity size={32} className="widget-icon primary" />
+<h3>Status Sistem</h3>
+<p>Sistem berjalan optimal. Semua layanan terhubung.</p>
+</div>
+<div className="dash-widget dash-glass-panel">
+<Users size={32} className="widget-icon success" />
+<h3>Sesi Pengguna</h3>
+<p>Anda login sebagai <strong>{user.username || user.name}</strong> dengan hak akses modul saat ini.</p>
+</div>
+</div>
+</>
+)}
+</main>
+</div>
+
+<style>{`
+/* Inline CSS for ERP Style Dashboard */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+/* Main background */
+--bg-dark: #0b0f19;
+
+/* Glass Panels */
+--glass-bg: rgba(17, 24, 39, 0.7);
+--glass-border: rgba(255, 255, 255, 0.06);
+--glass-hover: rgba(31, 41, 55, 0.8);
+
+/* Primary brand color */
+--primary: #3b82f6;
+--primary-glow: rgba(59, 130, 246, 0.15);
+--primary-hover: #2563eb;
+
+/* Text colors */
+--text-main: #f3f4f6;
+--text-muted: #9ca3af;
+
+/* Layout */
+--sidebar-width: 260px;
+--sidebar-collapsed: 72px;
+
+/* Shadows */
+--shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+--shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.dash-layout[data-theme="light"] {
+--bg-dark: #f3f4f6;
+--glass-bg: #ffffff;
+--glass-border: #e5e7eb;
+--glass-hover: #f9fafb;
+--primary: #2563eb;
+--text-main: #111827;
+--text-muted: #4b5563;
+}
+)}
+</main>
+</div>
+
+<style>{`
+/* Inline CSS for ERP Style Dashboard */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+/* Main background */
+--bg-dark: #0b0f19;
+
+/* Glass Panels */
+--glass-bg: rgba(17, 24, 39, 0.7);
+--glass-border: rgba(255, 255, 255, 0.06);
+--glass-hover: rgba(31, 41, 55, 0.8);
+
+/* Primary brand color */
+--primary: #3b82f6;
+--primary-glow: rgba(59, 130, 246, 0.15);
+--primary-hover: #2563eb;
+
+/* Text colors */
+--text-main: #f3f4f6;
+--text-muted: #9ca3af;
+
+/* Layout */
+--sidebar-width: 260px;
+--sidebar-collapsed: 72px;
+
+/* Shadows */
+--shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+--shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.dash-layout[data-theme="light"] {
+--bg-dark: #f3f4f6;
+--glass-bg: #ffffff;
+--glass-border: #e5e7eb;
+--glass-hover: #f9fafb;
+--primary: #2563eb;
+--text-main: #111827;
+--text-muted: #4b5563;
+}
+
+/* Keep dark mode intact but make it solid instead of glass */
+.dash-layout[data-theme="dark"] {
+--bg-dark: #111827;
+--glass-bg: #1f2937;
+--glass-border: #374151;
+--glass-hover: #374151;
+--primary: #3b82f6;
+--text-main: #f9fafb;
+--text-muted: #9ca3af;
+}
+
+.dash-layout, .dash-layout *, .dash-layout *::before, .dash-layout *::after {
+box-sizing: border-box;
+}
+
+.dash-layout {
+height: 100vh;
+background-color: var(--bg-dark);
+color: var(--text-main);
+font-family: 'Inter', system-ui, -apple-system, sans-serif;
+display: flex;
+flex-direction: column;
+overflow: hidden;
+position: relative;
+}
+
+/* Glass Panel for generic use */
+.glass-panel {
+background: var(--glass-bg);
+backdrop-filter: blur(16px);
+-webkit-backdrop-filter: blur(16px);
+border: 1px solid var(--glass-border);
+box-shadow: var(--shadow-md);
+border-radius: 12px;
+.dash-tag { font-size: 0.75rem; color: var(--primary); background: var(--primary-glow); padding: 2px 8px; border-radius: 4px; font-weight: 600; }
+
+.dash-nav-right {
+display: flex;
+align-items: center;
+gap: 24px;
+}
+.dash-clock { font-size: 0.85rem; color: var(--text-muted); font-weight: 500; }
+.dash-user { display: flex; align-items: center; gap: 12px; }
+.dash-user-info { display: flex; flex-direction: column; align-items: flex-end; }
+.dash-user-name { font-weight: 600; font-size: 0.85rem; color: var(--text-main); }
+.dash-user-role { font-size: 0.75rem; color: var(--text-muted); }
+.dash-avatar { width: 34px; height: 34px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.9rem; }
+.dash-logout-btn { color: var(--text-muted); transition: color 0.2s; margin-left: 8px; }
+.dash-logout-btn:hover { color: #ef4444; }
+
+/* Body Layout */
+.dash-body {
+display: flex;
+flex: 1;
+overflow: hidden;
+min-height: 0;
+position: relative;
+}
+
+/* Sidebar */
+.dash-sidebar {
+width: var(--sidebar-width);
+border-right: 1px solid var(--glass-border);
+display: flex;
+flex-direction: column;
+transition: width 0.3s ease;
+overflow-x: hidden;
+min-height: 0;
+border-radius: 0;
+box-shadow: none; /* Let the border do the work */
+}
+.dash-sidebar.closed {
+width: var(--sidebar-collapsed);
+}
+.dash-sidebar.closed .dash-menu-text,
+.dash-sidebar.closed .dash-menu-arrow,
+.dash-sidebar.closed .dash-menu-label {
+display: none;
+}
+
+.dash-sidebar-inner {
+flex: 1;
+overflow-y: auto;
+padding: 20px 12px;
+min-height: 0;
+}
+
+.dash-sidebar-inner::-webkit-scrollbar { width: 6px; }
+.dash-sidebar-inner::-webkit-scrollbar-track { background: transparent; }
+.dash-sidebar-inner::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 4px; }
+.dash-sidebar-inner:hover::-webkit-scrollbar-thumb { background: #9ca3af; }
+
+.dash-menu-label {
+font-size: 0.7rem;
+text-transform: uppercase;
+color: var(--text-muted);
+font-weight: 700;
+letter-spacing: 1px;
+margin-left: 12px;
+margin-bottom: 12px;
+margin-top: 10px;
+display: block;
+}
+
+.dash-menu-list {
+list-style: none;
+padding: 0;
+margin: 0;
+display: flex;
+flex-direction: column;
+gap: 4px;
+}
+
+.dash-menu-item {
+display: flex;
+align-items: center;
+width: 100%;
+padding: 10px 12px;
+border-radius: 6px;
+border: none;
+background: transparent;
+color: var(--text-main);
+font-size: 0.9rem;
+font-weight: 500;
+cursor: pointer;
+text-decoration: none;
+transition: all 0.2s;
+}
+.dash-menu-item:hover {
+background: var(--glass-hover);
+}
+.dash-menu-item.active {
+background: var(--primary-glow);
+color: var(--primary);
+font-weight: 600;
+}
+
+.dash-menu-icon { min-width: 20px; margin-right: 12px; color: var(--text-muted); }
+.dash-menu-item.active .dash-menu-icon { color: var(--primary); }
+
+.dash-sidebar.closed .dash-menu-icon { margin-right: 0; margin-left: 4px; }
+.dash-menu-text { flex: 1; text-align: left; white-space: nowrap; }
+.dash-menu-arrow { margin-left: auto; transition: transform 0.2s; color: var(--text-muted); }
+
+.dash-submenu-list {
+list-style: none;
+padding: 0;
+margin: 0;
+max-height: 0;
+overflow: hidden;
+transition: max-height 0.3s ease;
+}
+.dash-submenu-list.open {
+max-height: 1000px;
+margin-top: 4px;
+margin-bottom: 8px;
+}
+.dash-submenu-item {
+display: block;
+padding: 8px 12px 8px 44px;
+color: var(--text-muted);
+text-decoration: none;
+font-size: 0.85rem;
+border-radius: 6px;
+transition: all 0.2s;
+white-space: nowrap;
+position: relative;
+}
+
+/* Submenu indentation line indicator */
+.dash-submenu-item::before {
+content: '';
+position: absolute;
+left: 20px;
+top: 0;
+bottom: 0;
+width: 1px;
+background: var(--glass-border);
+}
+/* Dot on the line */
+.dash-submenu-item::after {
+content: '';
+position: absolute;
+left: 18.5px;
+top: 50%;
+transform: translateY(-50%);
+width: 4px;
+height: 4px;
+border-radius: 50%;
+background: var(--text-muted);
+transition: all 0.2s;
+}
+
+.dash-submenu-item:hover {
+color: var(--text-main);
+background: var(--glass-hover);
+}
+.dash-submenu-item:hover::after {
+background: var(--text-main);
+transform: translateY(-50%) scale(1.5);
+}
+
+.dash-submenu-item.active {
+color: var(--primary);
+font-weight: 600;
+background: var(--primary-glow);
+}
+.dash-submenu-item.active::before {
+background: var(--primary);
+}
+.dash-submenu-item.active::after {
+background: var(--primary);
+transform: translateY(-50%) scale(1.5);
+}
+
+.dash-sidebar-footer {
+padding: 15px;
+border-top: 1px solid var(--glass-border);
+background: var(--glass-bg);
+}
+.dash-back-btn {
+display: flex;
+align-items: center;
+gap: 8px;
+color: var(--text-muted);
+text-decoration: none;
+font-size: 0.85rem;
+font-weight: 500;
+padding: 10px;
+border-radius: 6px;
+transition: all 0.2s;
+justify-content: center;
+border: 1px solid var(--glass-border);
+background: var(--bg-dark);
+}
+.dash-back-btn:hover { background: var(--glass-hover); color: var(--text-main); border-color: #d1d5db; }
+.dash-sidebar.closed .dash-back-btn { padding: 10px 0; }
+
+/* Main Content Area */
+.dash-content {
+flex: 1;
+overflow: hidden;
+position: relative;
+z-index: 1;
+min-width: 0;
+min-height: 0;
+display: flex;
+flex-direction: column;
+}
+
+.dash-content-inner {
+flex: 1;
+padding: 24px;
+overflow: hidden;
+min-height: 0;
+display: flex;
+flex-direction: column;
+position: relative;
+}
+
+.dash-welcome {
+padding: 30px;
+border-radius: 8px;
+margin-bottom: 24px;
+border-left: 4px solid var(--primary);
+background: var(--glass-bg);
+}
+.dash-welcome h1 { margin-top: 0; font-size: 1.5rem; margin-bottom: 8px; color: var(--text-main); }
+.dash-welcome p { color: var(--text-muted); margin: 0; font-size: 0.95rem; }
+
+.dash-widgets {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+gap: 20px;
+}
+
+.dash-widget {
+padding: 24px;
+border-radius: 8px;
+transition: box-shadow 0.2s;
+}
+.dash-widget:hover { box-shadow: var(--shadow-md); }
+.widget-icon { margin-bottom: 16px; }
+.widget-icon.primary { color: var(--primary); }
+.widget-icon.success { color: #10b981; }
+.dash-widget h3 { margin: 0 0 8px 0; font-size: 1.1rem; color: var(--text-main); }
+.dash-widget p { margin: 0; color: var(--text-muted); font-size: 0.85rem; line-height: 1.5; }
+
+/* Mobile Sidebar Overlay */
+.dash-sidebar-overlay {
+display: none;
+position: fixed;
+top: 0;
+left: 0;
+right: 0;
+bottom: 0;
+background: rgba(0, 0, 0, 0.5);
+z-index: 5;
+opacity: 0;
+transition: opacity 0.3s;
+}
+
+/* ODOO STYLES */
+.odoo-control-panel {
+padding: 10px 24px;
+border-bottom: 1px solid var(--glass-border);
+display: flex;
+align-items: center;
+justify-content: space-between;
+background: var(--glass-bg);
+min-height: 50px;
+}
+.odoo-breadcrumbs {
+display: flex;
+align-items: center;
+gap: 8px;
+font-size: 1.1rem;
+color: var(--text-muted);
+}
+.odoo-breadcrumbs span.active {
+color: var(--text-main);
+font-weight: 600;
+}
+.crumb-separator {
+color: var(--text-muted);
+opacity: 0.5;
+}
+.odoo-smart-buttons {
+display: flex;
+gap: 8px;
+}
+.odoo-smart-btn {
+background: var(--glass-bg);
+border: 1px solid var(--glass-border);
+padding: 6px 12px;
+border-radius: 6px;
+color: var(--text-main);
+font-size: 0.85rem;
+cursor: pointer;
+display: flex;
+align-items: center;
+gap: 6px;
+transition: all 0.2s;
+}
+.odoo-smart-btn:hover {
+background: var(--glass-hover);
+}
+
+.odoo-view-container {
+display: flex;
+flex: 1;
+height: calc(100vh - 120px);
+background: transparent;
+}
+
+.odoo-document-wrapper {
+flex: 1;
+overflow-y: auto;
+padding: 24px;
+display: flex;
+justify-content: center;
+}
+
+.odoo-document-sheet {
+background: var(--glass-bg);
+border: 1px solid var(--glass-border);
+box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+border-radius: 4px;
+width: 100%;
+max-width: 900px;
+min-height: 800px;
+position: relative;
+}
+
+.odoo-pipeline {
+display: flex;
+background: rgba(0,0,0,0.1);
+border-bottom: 1px solid var(--glass-border);
+padding: 10px 20px;
+justify-content: flex-end;
+}
+
+.odoo-pipeline-status {
+padding: 6px 16px;
+background: var(--glass-border);
+color: var(--text-muted);
+font-size: 0.85rem;
+font-weight: 600;
+margin-left: -5px;
+clip-path: polygon(0% 0%, 95% 0%, 100% 50%, 95% 100%, 0% 100%, 5% 50%);
+}
+.odoo-pipeline-status.active {
+background: var(--primary);
+color: #fff;
+}
+
+.odoo-chatter {
+width: 350px;
+border-left: 1px solid var(--glass-border);
+background: rgba(0,0,0,0.02);
+display: flex;
+flex-direction: column;
+}
+.odoo-chatter-header {
+padding: 15px;
+border-bottom: 1px solid var(--glass-border);
+font-weight: 600;
+color: var(--text-main);
+}
+.odoo-chatter-body {
+padding: 15px;
+flex: 1;
+overflow-y: auto;
+font-size: 0.85rem;
+color: var(--text-muted);
+}
+.odoo-log-item {
+display: flex;
+gap: 10px;
+margin-bottom: 15px;
+}
+.odoo-log-avatar {
+width: 32px;
+height: 32px;
+border-radius: 50%;
+background: var(--primary);
+color: #fff;
+display: flex;
+align-items: center;
+justify-content: center;
+font-weight: bold;
+}
+.odoo-log-content {
+flex: 1;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+.dash-sidebar { position: absolute; top: 0; left: 0; bottom: 0; height: 100%; z-index: 10; background: var(--glass-bg); }
+.dash-sidebar.closed { transform: translateX(-100%); width: var(--sidebar-width); }
+.dash-sidebar-overlay.show { display: block; opacity: 1; }
+.dash-content { overflow-y: auto; } /* Biarkan konten bisa di-scroll di mobile */
+.dash-content-inner { padding: 12px; }
+.dash-nav-right .dash-clock, .dash-nav-right .dash-user-info { display: none; }
+.dash-brand h2 { font-size: 1rem; }

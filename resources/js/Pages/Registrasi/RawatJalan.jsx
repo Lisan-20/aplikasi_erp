@@ -85,7 +85,7 @@ export default function RawatJalan({
             return (
                 <>
                     <div className="form-group">
-                        <label>Perusahaan</label>
+                        <label className="form-label">Perusahaan</label>
                         <select className="premium-input" value={data.kode_perusahaan} onChange={e => setData('kode_perusahaan', e.target.value)}>
                             <option value="">-- Pilih Perusahaan --</option>
                             {perusahaan.map(p => (
@@ -94,7 +94,7 @@ export default function RawatJalan({
                         </select>
                     </div>
                     <div className="form-group">
-                        <label>Kepemilikan</label>
+                        <label className="form-label">Kepemilikan</label>
                         <select className="premium-input" value={data.kode_milik} onChange={e => setData('kode_milik', e.target.value)}>
                             <option value="">-- Pilih Kepemilikan --</option>
                             {milik.map(m => (
@@ -103,7 +103,7 @@ export default function RawatJalan({
                         </select>
                     </div>
                     <div className="form-group">
-                        <label>N I K / No. Kartu</label>
+                        <label className="form-label">N I K / No. Kartu</label>
                         <input type="text" className="premium-input" value={data.no_jaminan} onChange={e => setData('no_jaminan', e.target.value)} />
                     </div>
                 </>
@@ -114,7 +114,7 @@ export default function RawatJalan({
             return (
                 <>
                     <div className="form-group">
-                        <label>Asuransi</label>
+                        <label className="form-label">Asuransi</label>
                         <select className="premium-input" value={data.kode_perusahaan} onChange={e => setData('kode_perusahaan', e.target.value)}>
                             <option value="">-- Pilih Asuransi --</option>
                             {perusahaan.map(p => (
@@ -123,7 +123,7 @@ export default function RawatJalan({
                         </select>
                     </div>
                     <div className="form-group">
-                        <label>Perusahaan Penanggung</label>
+                        <label className="form-label">Perusahaan Penanggung</label>
                         <select className="premium-input" value={data.kode_penanggung} onChange={e => setData('kode_penanggung', e.target.value)}>
                             <option value="">-- Pilih Perusahaan --</option>
                             {perusahaan.map(p => (
@@ -132,7 +132,7 @@ export default function RawatJalan({
                         </select>
                     </div>
                     <div className="form-group">
-                        <label>Kepemilikan</label>
+                        <label className="form-label">Kepemilikan</label>
                         <select className="premium-input" value={data.kode_milik} onChange={e => setData('kode_milik', e.target.value)}>
                             <option value="">-- Pilih Kepemilikan --</option>
                             {milik.map(m => (
@@ -141,15 +141,15 @@ export default function RawatJalan({
                         </select>
                     </div>
                     <div className="form-group">
-                        <label>No. Kartu</label>
+                        <label className="form-label">No. Kartu</label>
                         <input type="text" className="premium-input" value={data.no_jaminan} onChange={e => setData('no_jaminan', e.target.value)} />
                     </div>
                     <div className="form-group">
-                        <label>No. Peserta</label>
+                        <label className="form-label">No. Peserta</label>
                         <input type="text" className="premium-input" value={data.no_peserta} onChange={e => setData('no_peserta', e.target.value)} />
                     </div>
                     <div className="form-group">
-                        <label>No. Polis</label>
+                        <label className="form-label">No. Polis</label>
                         <input type="text" className="premium-input" value={data.no_polis} onChange={e => setData('no_polis', e.target.value)} />
                     </div>
                 </>
@@ -160,7 +160,7 @@ export default function RawatJalan({
             return (
                 <>
                     <div className="form-group">
-                        <label>Perusahaan</label>
+                        <label className="form-label">Perusahaan</label>
                         <select className="premium-input" value={data.kode_perusahaan} onChange={e => setData('kode_perusahaan', e.target.value)}>
                             <option value="">-- Pilih Perusahaan --</option>
                             {perusahaan.map(p => (
@@ -169,7 +169,7 @@ export default function RawatJalan({
                         </select>
                     </div>
                     <div className="form-group">
-                        <label>Kepemilikan</label>
+                        <label className="form-label">Kepemilikan</label>
                         <select className="premium-input" value={data.kode_milik} onChange={e => setData('kode_milik', e.target.value)}>
                             <option value="">-- Pilih Kepemilikan --</option>
                             {milik.map(m => (
@@ -178,15 +178,15 @@ export default function RawatJalan({
                         </select>
                     </div>
                     <div className="form-group">
-                        <label>No. Jaminan</label>
+                        <label className="form-label">No. Jaminan</label>
                         <input type="text" className="premium-input" value={data.no_jaminan} onChange={e => setData('no_jaminan', e.target.value)} />
                     </div>
                     <div className="form-group">
-                        <label>No. SEP</label>
+                        <label className="form-label">No. SEP</label>
                         <input type="text" className="premium-input" value={data.noSep} onChange={e => setData('noSep', e.target.value)} />
                     </div>
                     <div className="form-group">
-                        <label>No. Rujukan/No SRK</label>
+                        <label className="form-label">No. Rujukan/No SRK</label>
                         <input type="text" className="premium-input" value={data.no_rjk} onChange={e => setData('no_rjk', e.target.value)} />
                     </div>
                 </>
@@ -197,7 +197,7 @@ export default function RawatJalan({
             return (
                 <>
                     <div className="form-group">
-                        <label>Kepemilikan</label>
+                        <label className="form-label">Kepemilikan</label>
                         <select className="premium-input" value={data.kode_milik} onChange={e => setData('kode_milik', e.target.value)}>
                             <option value="">-- Pilih Kepemilikan --</option>
                             {milik.map(m => (
@@ -206,11 +206,11 @@ export default function RawatJalan({
                         </select>
                     </div>
                     <div className="form-group">
-                        <label>No. SJP</label>
+                        <label className="form-label">No. SJP</label>
                         <input type="text" className="premium-input" value={data.txt_no_jkn} onChange={e => setData('txt_no_jkn', e.target.value)} />
                     </div>
                     <div className="form-group">
-                        <label>No. Kartu Jamkesda</label>
+                        <label className="form-label">No. Kartu Jamkesda</label>
                         <input type="text" className="premium-input" value={data.no_jaminan} onChange={e => setData('no_jaminan', e.target.value)} />
                     </div>
                 </>
@@ -243,11 +243,11 @@ export default function RawatJalan({
                                 Data pendaftaran pasien telah berhasil dicatat ke dalam sistem pendaftaran rumah sakit.
                             </p>
                             <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', justifyContent: 'center' }}>
-                                <Link href="/registrasi/cari-pasien" className="btn btn-secondary" style={{ padding: '0.75rem 2rem', backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '0.75rem', color: 'white', textDecoration: 'none', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}>
+                                <Link href="/registrasi/cari-pasien" className="dash-btn secondary" style={{ padding: '0.75rem 2rem', backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '0.75rem', color: 'white', textDecoration: 'none', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}>
                                     <svg style={{ width: '20px', height: '20px' }} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
                                     Kembali Cari Pasien
                                 </Link>
-                                <button type="button" onClick={() => window.location.reload()} className="btn btn-primary" style={{ padding: '0.75rem 2rem', backgroundColor: '#3b82f6', border: 'none', borderRadius: '0.75rem', color: 'white', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
+                                <button type="button" onClick={() => window.location.reload()} className="dash-btn primary" style={{ padding: '0.75rem 2rem', backgroundColor: '#3b82f6', border: 'none', borderRadius: '0.75rem', color: 'white', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
                                     <svg style={{ width: '20px', height: '20px' }} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>
                                     Daftarkan Pasien Ini Lagi
                                 </button>
@@ -334,7 +334,7 @@ export default function RawatJalan({
                                                     <h3 style={{ fontSize: '1.125rem', fontWeight: 600, color: 'rgba(255,255,255,0.9)', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '0.5rem', marginBottom: '1rem', position: 'sticky', top: '-24px', backgroundColor: '#0f172a', zIndex: 10, paddingTop: '0.5rem' }}>Informasi Pasien & Jaminan</h3>
                                                     
                                                     <div className="form-group">
-                                                        <label>Nasabah <span style={{ color: '#f87171' }}>*</span></label>
+                                                        <label className="form-label">Nasabah <span style={{ color: '#f87171' }}>*</span></label>
                                                         <select
                                                             className={`premium-input ${errors.kode_kelompok ? 'is-invalid' : ''}`}
                                                             value={data.kode_kelompok}
@@ -351,7 +351,7 @@ export default function RawatJalan({
                                                     {renderNasabahFields()}
 
                                                     <div className="form-group">
-                                                        <label>NIK KTP <span style={{ color: '#f87171' }}>*</span></label>
+                                                        <label className="form-label">NIK KTP <span style={{ color: '#f87171' }}>*</span></label>
                                                         <input
                                                             type="text"
                                                             className={`premium-input ${errors.no_ktp ? 'is-invalid' : ''}`}
@@ -362,7 +362,7 @@ export default function RawatJalan({
                                                     </div>
 
                                                     <div className="form-group">
-                                                        <label>No. Telp <span style={{ color: '#f87171' }}>*</span></label>
+                                                        <label className="form-label">No. Telp <span style={{ color: '#f87171' }}>*</span></label>
                                                         <input
                                                             type="text"
                                                             className={`premium-input ${errors.tlp_almt_ttp ? 'is-invalid' : ''}`}
@@ -373,7 +373,7 @@ export default function RawatJalan({
                                                     </div>
 
                                                     <div className="form-group">
-                                                        <label>Status Pasien <span style={{ color: '#f87171' }}>*</span></label>
+                                                        <label className="form-label">Status Pasien <span style={{ color: '#f87171' }}>*</span></label>
                                                         <select
                                                             className="premium-input"
                                                             value={data.stat_pasien}
@@ -390,7 +390,7 @@ export default function RawatJalan({
                                                     <h3 style={{ fontSize: '1.125rem', fontWeight: 600, color: 'rgba(255,255,255,0.9)', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '0.5rem', marginBottom: '1rem', position: 'sticky', top: '-24px', backgroundColor: '#0f172a', zIndex: 10, paddingTop: '0.5rem' }}>Informasi Kunjungan</h3>
 
                                                     <div className="form-group">
-                                                        <label>Asal Pasien</label>
+                                                        <label className="form-label">Asal Pasien</label>
                                                         <select
                                                             className="premium-input"
                                                             value={data.id_dc_asal_pasien}
@@ -404,7 +404,7 @@ export default function RawatJalan({
                                                     </div>
 
                                                     <div className="form-group">
-                                                        <label>Poliklinik Tujuan <span style={{ color: '#f87171' }}>*</span></label>
+                                                        <label className="form-label">Poliklinik Tujuan <span style={{ color: '#f87171' }}>*</span></label>
                                                         <select
                                                             className={`premium-input ${errors.kode_bagian ? 'is-invalid' : ''}`}
                                                             value={data.kode_bagian}
@@ -419,7 +419,7 @@ export default function RawatJalan({
                                                     </div>
 
                                                     <div className="form-group">
-                                                        <label>Dokter Pemeriksa <span style={{ color: '#f87171' }}>*</span></label>
+                                                        <label className="form-label">Dokter Pemeriksa <span style={{ color: '#f87171' }}>*</span></label>
                                                         <select
                                                             className={`premium-input ${errors.kode_dokter ? 'is-invalid' : ''}`}
                                                             value={data.kode_dokter}
@@ -434,7 +434,7 @@ export default function RawatJalan({
                                                     </div>
 
                                                     <div className="form-group">
-                                                        <label>Jadwal Praktek <span style={{ color: '#f87171' }}>*</span></label>
+                                                        <label className="form-label">Jadwal Praktek <span style={{ color: '#f87171' }}>*</span></label>
                                                         <select
                                                             className={`premium-input ${errors.kode_jadwal ? 'is-invalid' : ''}`}
                                                             value={data.kode_jadwal}
@@ -449,7 +449,7 @@ export default function RawatJalan({
                                                     </div>
 
                                                     <div className="form-group">
-                                                        <label>Tanggal & Jam Masuk <span style={{ color: '#f87171' }}>*</span></label>
+                                                        <label className="form-label">Tanggal & Jam Masuk <span style={{ color: '#f87171' }}>*</span></label>
                                                         <input
                                                             type="datetime-local"
                                                             className={`premium-input ${errors.tgl_masuk ? 'is-invalid' : ''}`}
@@ -460,7 +460,7 @@ export default function RawatJalan({
                                                     </div>
 
                                                     <div className="form-group">
-                                                        <label>Prioritas</label>
+                                                        <label className="form-label">Prioritas</label>
                                                         <select
                                                             className="premium-input"
                                                             value={data.prioritas}
@@ -472,7 +472,7 @@ export default function RawatJalan({
                                                     </div>
 
                                                     <div className="form-group">
-                                                        <label>Memo</label>
+                                                        <label className="form-label">Memo</label>
                                                         <textarea
                                                             className="premium-input"
                                                             rows="2"
@@ -482,7 +482,7 @@ export default function RawatJalan({
                                                     </div>
 
                                                     <div className="form-group">
-                                                        <label>Keterangan</label>
+                                                        <label className="form-label">Keterangan</label>
                                                         <textarea
                                                             className="premium-input"
                                                             rows="3"
@@ -497,7 +497,7 @@ export default function RawatJalan({
                                         <div style={{ flex: 'none', padding: '1rem', display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', borderTop: '1px solid rgba(255,255,255,0.1)', backgroundColor: 'var(--bg-dark, #0f172a)', borderBottomLeftRadius: '16px', borderBottomRightRadius: '16px' }}>
                                             <button
                                                 type="button"
-                                                className="btn btn-secondary"
+                                                className="dash-btn secondary"
                                                 style={{ padding: '0.5rem 1.5rem', backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '0.5rem', cursor: 'pointer', color: 'white' }}
                                                 onClick={() => reset()}
                                             >
@@ -505,7 +505,7 @@ export default function RawatJalan({
                                             </button>
                                             <button
                                                 type="submit"
-                                                className="btn btn-primary"
+                                                className="dash-btn primary"
                                                 style={{ padding: '0.5rem 1.5rem', backgroundColor: '#3b82f6', border: 'none', borderRadius: '0.5rem', cursor: 'pointer', color: 'white', fontWeight: 600 }}
                                                 disabled={processing || !data.no_mr}
                                             >

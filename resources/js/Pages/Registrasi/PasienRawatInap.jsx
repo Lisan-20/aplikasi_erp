@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Head, Link, router } from '@inertiajs/react';
 import { Search, ArrowLeft, Activity, Printer, XCircle, FileText, FileSignature, Edit } from 'lucide-react';
-import '../../../css/pasien-lama.css';
 
 export default function PasienRawatInap({ data, filters }) {
     const [search, setSearch] = useState(filters.search || '');
@@ -29,7 +28,7 @@ export default function PasienRawatInap({ data, filters }) {
                         <p>Daftar pasien yang sedang dirawat inap</p>
                     </div>
                     <div className="pl-actions">
-                        <Link href="/dashboard/2" className="btn btn-secondary">
+                        <Link href="/dashboard/2" className="dash-btn secondary">
                             <ArrowLeft size={16} />
                             Kembali
                         </Link>
@@ -61,18 +60,18 @@ export default function PasienRawatInap({ data, filters }) {
                                 onChange={(e) => setSearch(e.target.value)}
                             />
                         </div>
-                        <button type="submit" className="btn btn-primary">
+                        <button type="submit" className="dash-btn primary">
                             Cari
                         </button>
                         {filters.search && (
-                            <button type="button" onClick={handleClear} className="btn btn-secondary">
+                            <button type="button" onClick={handleClear} className="dash-btn secondary">
                                 Reset
                             </button>
                         )}
                     </form>
 
                     <div className="table-responsive">
-                        <table className="pl-table" style={{ fontSize: '0.85rem' }}>
+                        <table className="dash-table" style={{ fontSize: '0.85rem' }}>
                             <thead>
                                 <tr>
                                     <th>Aksi Print</th>
@@ -96,17 +95,17 @@ export default function PasienRawatInap({ data, filters }) {
                                     data.data.map((item, index) => (
                                         <tr key={item.no_registrasi}>
                                             <td style={{ whiteSpace: 'nowrap' }}>
-                                                <button className="btn btn-secondary" style={{ padding: '0.25rem', marginRight: '2px' }} title="Cetak Label">
+                                                <button className="dash-btn secondary" style={{ padding: '0.25rem', marginRight: '2px' }} title="Cetak Label">
                                                     <Printer size={14} />
                                                 </button>
-                                                <button className="btn btn-secondary" style={{ padding: '0.25rem', marginRight: '2px' }} title="Cetak Kartu Masuk">
+                                                <button className="dash-btn secondary" style={{ padding: '0.25rem', marginRight: '2px' }} title="Cetak Kartu Masuk">
                                                     <FileText size={14} />
                                                 </button>
-                                                <button className="btn btn-secondary" style={{ padding: '0.25rem', marginRight: '2px' }} title="Cetak Visite">
+                                                <button className="dash-btn secondary" style={{ padding: '0.25rem', marginRight: '2px' }} title="Cetak Visite">
                                                     <Edit size={14} />
                                                 </button>
                                                 {item.noSep && (
-                                                    <button className="btn btn-secondary" style={{ padding: '0.25rem' }} title="Cetak SEP">
+                                                    <button className="dash-btn secondary" style={{ padding: '0.25rem' }} title="Cetak SEP">
                                                         <Printer size={14} color="blue" />
                                                     </button>
                                                 )}
@@ -143,7 +142,7 @@ export default function PasienRawatInap({ data, filters }) {
                                             <td>{item.dpjp}</td>
                                             <td style={{ textAlign: 'center' }}>
                                                 {item.can_batal ? (
-                                                    <button className="btn btn-danger" style={{ padding: '0.25rem' }} title="Batal Registrasi">
+                                                    <button className="dash-btn danger" style={{ padding: '0.25rem' }} title="Batal Registrasi">
                                                         <XCircle size={14} />
                                                     </button>
                                                 ) : null}

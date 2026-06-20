@@ -37,8 +37,8 @@ export default function PasienBaru({ auth }) {
                     
                     <div className="panel-card glass-card">
                         <div className="panel-header" style={{ marginBottom: '20px', borderBottom: '1px solid var(--border-color)', paddingBottom: '15px' }}>
-                            <h3 style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>Entry Pasien Baru</h3>
-                            <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginTop: '5px' }}>Lengkapi formulir di bawah ini untuk mendaftarkan pasien baru ke sistem.</p>
+                            <h3>Entry Pasien Baru</h3>
+                            <p>Lengkapi formulir di bawah ini untuk mendaftarkan pasien baru ke sistem.</p>
                         </div>
 
                         {flash?.success && (
@@ -53,16 +53,15 @@ export default function PasienBaru({ auth }) {
                             </div>
                         )}
 
-                        <form onSubmit={handleSubmit} style={{ display: 'grid', gap: '20px' }}>
+                        <form onSubmit={handleSubmit} className="grid-form">
                             
                             {/* Baris 1: Nama & KTP */}
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+                            <div className="grid-2-cols">
                                 <div className="form-group">
-                                    <label style={{ display: 'block', marginBottom: '8px', color: 'var(--text-secondary)' }}>Nama Pasien <span style={{ color: 'red' }}>*</span></label>
+                                    <label className="form-label">Nama Pasien <span style={{ color: 'red' }}>*</span></label>
                                     <input 
                                         type="text" 
                                         className="premium-input" 
-                                        style={{ width: '100%', padding: '10px 15px', borderRadius: '8px', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--border-color)', color: 'white' }}
                                         value={data.nama_pasien} 
                                         onChange={e => setData('nama_pasien', e.target.value)} 
                                         placeholder="Nama Lengkap Pasien"
@@ -72,11 +71,10 @@ export default function PasienBaru({ auth }) {
                                 </div>
                                 
                                 <div className="form-group">
-                                    <label style={{ display: 'block', marginBottom: '8px', color: 'var(--text-secondary)' }}>Nomor KTP / NIK</label>
+                                    <label className="form-label">Nomor KTP / NIK</label>
                                     <input 
                                         type="text" 
                                         className="premium-input" 
-                                        style={{ width: '100%', padding: '10px 15px', borderRadius: '8px', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--border-color)', color: 'white' }}
                                         value={data.no_ktp} 
                                         onChange={e => setData('no_ktp', e.target.value)} 
                                         placeholder="16 Digit NIK"
@@ -86,13 +84,12 @@ export default function PasienBaru({ auth }) {
                             </div>
 
                             {/* Baris 2: Tempat & Tanggal Lahir */}
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+                            <div className="grid-2-cols">
                                 <div className="form-group">
-                                    <label style={{ display: 'block', marginBottom: '8px', color: 'var(--text-secondary)' }}>Tempat Lahir <span style={{ color: 'red' }}>*</span></label>
+                                    <label className="form-label">Tempat Lahir <span style={{ color: 'red' }}>*</span></label>
                                     <input 
                                         type="text" 
                                         className="premium-input" 
-                                        style={{ width: '100%', padding: '10px 15px', borderRadius: '8px', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--border-color)', color: 'white' }}
                                         value={data.tempat_lahir} 
                                         onChange={e => setData('tempat_lahir', e.target.value)} 
                                         placeholder="Kota Kelahiran"
@@ -102,11 +99,10 @@ export default function PasienBaru({ auth }) {
                                 </div>
                                 
                                 <div className="form-group">
-                                    <label style={{ display: 'block', marginBottom: '8px', color: 'var(--text-secondary)' }}>Tanggal Lahir <span style={{ color: 'red' }}>*</span></label>
+                                    <label className="form-label">Tanggal Lahir <span style={{ color: 'red' }}>*</span></label>
                                     <input 
                                         type="date" 
                                         className="premium-input" 
-                                        style={{ width: '100%', padding: '10px 15px', borderRadius: '8px', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--border-color)', color: 'white', colorScheme: 'dark' }}
                                         value={data.tgl_lhr} 
                                         onChange={e => setData('tgl_lhr', e.target.value)} 
                                         required 
@@ -116,12 +112,11 @@ export default function PasienBaru({ auth }) {
                             </div>
 
                             {/* Baris 3: Jenis Kelamin & Agama */}
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+                            <div className="grid-2-cols">
                                 <div className="form-group">
-                                    <label style={{ display: 'block', marginBottom: '8px', color: 'var(--text-secondary)' }}>Jenis Kelamin <span style={{ color: 'red' }}>*</span></label>
+                                    <label className="form-label">Jenis Kelamin <span style={{ color: 'red' }}>*</span></label>
                                     <select 
                                         className="premium-input" 
-                                        style={{ width: '100%', padding: '10px 15px', borderRadius: '8px', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--border-color)', color: 'white', backgroundColor: '#1e293b' }}
                                         value={data.jen_kelamin} 
                                         onChange={e => setData('jen_kelamin', e.target.value)} 
                                         required
@@ -134,10 +129,9 @@ export default function PasienBaru({ auth }) {
                                 </div>
                                 
                                 <div className="form-group">
-                                    <label style={{ display: 'block', marginBottom: '8px', color: 'var(--text-secondary)' }}>Agama</label>
+                                    <label className="form-label">Agama</label>
                                     <select 
                                         className="premium-input" 
-                                        style={{ width: '100%', padding: '10px 15px', borderRadius: '8px', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--border-color)', color: 'white', backgroundColor: '#1e293b' }}
                                         value={data.kode_agama} 
                                         onChange={e => setData('kode_agama', e.target.value)} 
                                     >
@@ -155,11 +149,10 @@ export default function PasienBaru({ auth }) {
 
                             {/* Baris 4: Telepon */}
                             <div className="form-group">
-                                <label style={{ display: 'block', marginBottom: '8px', color: 'var(--text-secondary)' }}>Nomor Telepon / HP</label>
+                                <label className="form-label">Nomor Telepon / HP</label>
                                 <input 
                                     type="text" 
                                     className="premium-input" 
-                                    style={{ width: '100%', padding: '10px 15px', borderRadius: '8px', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--border-color)', color: 'white' }}
                                     value={data.tlp_almt_ttp} 
                                     onChange={e => setData('tlp_almt_ttp', e.target.value)} 
                                     placeholder="Contoh: 081234567890"
@@ -169,10 +162,9 @@ export default function PasienBaru({ auth }) {
 
                             {/* Baris 5: Alamat Lengkap */}
                             <div className="form-group">
-                                <label style={{ display: 'block', marginBottom: '8px', color: 'var(--text-secondary)' }}>Alamat Tetap <span style={{ color: 'red' }}>*</span></label>
+                                <label className="form-label">Alamat Tetap <span style={{ color: 'red' }}>*</span></label>
                                 <textarea 
                                     className="premium-input" 
-                                    style={{ width: '100%', padding: '10px 15px', borderRadius: '8px', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--border-color)', color: 'white', minHeight: '80px', resize: 'vertical' }}
                                     value={data.almt_ttp_pasien} 
                                     onChange={e => setData('almt_ttp_pasien', e.target.value)} 
                                     placeholder="Alamat lengkap sesuai KTP"
@@ -182,13 +174,12 @@ export default function PasienBaru({ auth }) {
                             </div>
 
                             {/* Baris 6: Nama Ibu & Ayah */}
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+                            <div className="grid-2-cols">
                                 <div className="form-group">
-                                    <label style={{ display: 'block', marginBottom: '8px', color: 'var(--text-secondary)' }}>Nama Ibu Kandung</label>
+                                    <label className="form-label">Nama Ibu Kandung</label>
                                     <input 
                                         type="text" 
                                         className="premium-input" 
-                                        style={{ width: '100%', padding: '10px 15px', borderRadius: '8px', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--border-color)', color: 'white' }}
                                         value={data.nama_ibu} 
                                         onChange={e => setData('nama_ibu', e.target.value)} 
                                         placeholder="Nama Ibu Kandung"
@@ -197,11 +188,10 @@ export default function PasienBaru({ auth }) {
                                 </div>
                                 
                                 <div className="form-group">
-                                    <label style={{ display: 'block', marginBottom: '8px', color: 'var(--text-secondary)' }}>Nama Ayah Kandung</label>
+                                    <label className="form-label">Nama Ayah Kandung</label>
                                     <input 
                                         type="text" 
                                         className="premium-input" 
-                                        style={{ width: '100%', padding: '10px 15px', borderRadius: '8px', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--border-color)', color: 'white' }}
                                         value={data.nama_ayah} 
                                         onChange={e => setData('nama_ayah', e.target.value)} 
                                         placeholder="Nama Ayah Kandung"
@@ -214,14 +204,13 @@ export default function PasienBaru({ auth }) {
                                 <button 
                                     type="button" 
                                     onClick={() => reset()}
-                                    className="btn-action"
-                                    style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid var(--border-color)' }}
+                                    className="dash-btn danger"
                                 >
                                     Reset Form
                                 </button>
                                 <button 
                                     type="submit" 
-                                    className="btn-action primary-action"
+                                    className="dash-btn primary"
                                     disabled={processing}
                                 >
                                     {processing ? 'Menyimpan...' : 'Simpan Data Pasien'}

@@ -1,0 +1,40 @@
+2026-06-20T14:29:06Z
+Created At: 2026-06-20T14:29:06Z
+Completed At: 2026-06-20T14:29:06Z
+File Path: `file:///d:/001_Aplikasi/aplikasi_erp_laravel/routes/web.php`
+Total Lines: 290
+Total Bytes: 21149
+Showing lines 250 to 280
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+250:         Route::delete('/barang/{id}', [BarangController::class, 'destroy'])->name('barang.destroy');
+251:     });
+252: 
+253:     Route::prefix('manajemen')->name('manajemen.')->group(function () {
+254:         Route::get('/acc-purchasing', [AccPurchasingController::class, 'index']);
+255:         Route::post('/acc-purchasing/{id}/approve', [AccPurchasingController::class, 'approve']);
+256:     });
+257: 
+258:     Route::prefix('pengadaan')->name('pengadaan.')->group(function () {
+259:         Route::get('/po', [PengadaanController::class, 'index'])->name('po.index');
+260:         Route::get('/po/create', [PengadaanController::class, 'create'])->name('po.create');
+261:         Route::post('/po', [PengadaanController::class, 'store'])->name('po.store');
+262:         Route::get('/api/search-supplier', [PengadaanController::class, 'searchSupplier'])->name('api.search-supplier');
+263:         Route::get('/api/search-pr', [PengadaanController::class, 'searchPR'])->name('api.search-pr');
+264:     });
+265: 
+266:     Route::prefix('gudang')->name('gudang.')->group(function () {
+267:         Route::get('/permintaan-pembelian', [PermintaanPembelianController::class, 'index']);
+268:         Route::get('/permintaan-pembelian/create', [PermintaanPembelianController::class, 'create'])->name('permintaan-pembelian.create');
+269:         Route::post('/permintaan-pembelian', [PermintaanPembelianController::class, 'store'])->name('permintaan-pembelian.store');
+270: 
+271:         Route::get('/penerimaan', [PenerimaanBarangController::class, 'index'])->name('penerimaan.index');
+272:         Route::get('/penerimaan/create', [PenerimaanBarangController::class, 'create'])->name('penerimaan.create');
+273:         Route::post('/penerimaan', [PenerimaanBarangController::class, 'store'])->name('penerimaan.store');
+274:         Route::get('/api/search-po', [PenerimaanBarangController::class, 'searchPo'])->name('api.search-po');
+275:     });
+276: 
+277:     // Helper API
+278:     Route::get('/api/search-barang-nm', [PenerimaanBarangController::class, 'searchBarangNm'])->name('api.search-barang-nm');
+279: 
+280:     // Legacy Route Catcher
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

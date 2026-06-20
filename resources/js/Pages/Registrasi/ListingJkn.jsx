@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Head, Link } from '@inertiajs/react';
 import { Search, ArrowLeft, CheckCircle, XCircle, Clock, Trash2, Edit } from 'lucide-react';
 import axios from 'axios';
-import '../../../css/pasien-lama.css';
 
 export default function ListingJkn() {
     const [tab, setTab] = useState('baru');
@@ -58,7 +57,7 @@ export default function ListingJkn() {
                         <p>Listing pasien baru dari JKN Mobile</p>
                     </div>
                     <div className="pl-actions">
-                        <Link href="/dashboard/2" className="btn btn-secondary">
+                        <Link href="/dashboard/2" className="dash-btn secondary">
                             <ArrowLeft size={16} />
                             Kembali
                         </Link>
@@ -112,7 +111,7 @@ export default function ListingJkn() {
                                 onChange={(e) => setSearch(e.target.value)}
                             />
                         </div>
-                        <button type="submit" className="btn btn-primary">
+                        <button type="submit" className="dash-btn primary">
                             Cari
                         </button>
                     </form>
@@ -125,7 +124,7 @@ export default function ListingJkn() {
                         </div>
                     ) : (
                         <div className="table-responsive">
-                            <table className="pl-table w-full text-left">
+                            <table className="dash-table">
                                 <thead>
                                     <tr>
                                         <th>No</th>

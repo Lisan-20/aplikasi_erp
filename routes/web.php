@@ -12,6 +12,21 @@ use App\Http\Controllers\PasienRawatInapController;
 use App\Http\Controllers\PendaftaranLanjutan2Controller;
 use App\Http\Controllers\PendaftaranLanjutan3Controller;
 use App\Http\Controllers\PendaftaranLanjutan1Controller;
+use App\Http\Controllers\ConsentController;
+use App\Http\Controllers\Kasir\PosController;
+use App\Http\Controllers\Laporan\LaporanKasirController;
+use App\Http\Controllers\Pengadaan\PengadaanController;
+use App\Http\Controllers\Manajemen\AccPurchasingController;
+use App\Http\Controllers\Gudang\PermintaanPembelianController;
+use App\Http\Controllers\Gudang\PenerimaanBarangController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\ModulController;
+use App\Http\Controllers\Admin\MenuController;
+use App\Http\Controllers\Admin\SubMenuController;
+use App\Http\Controllers\Admin\ModularController;
+use App\Http\Controllers\AdminPrivilegesController;
+use App\Http\Controllers\Master\SupplierController;
+use App\Http\Controllers\Master\BarangController;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,7 +48,9 @@ Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::middleware(['web', 'check.permission'])->group(function () {
     Route::get('/modul', [ModuleController::class, 'index'])->name('modul.index');
     Route::post('/modul/{id}/enter', [ModuleController::class, 'enterModule'])->name('modul.enter');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
     Route::get('/dashboard/{modul}', [DashboardController::class, 'show'])->name('dashboard');
+    Route::get('/api/dashboard/kasir', [DashboardController::class, 'getKasirMetrics']);
     Route::get('/debug/menus/{modul}', function($modul) {
         $c = new DashboardController();
         $r = $c->show($modul);
@@ -94,16 +111,118 @@ Route::middleware(['web', 'check.permission'])->group(function () {
         Route::get('/legacy-ext', [\App\Http\Controllers\LegacyController::class, 'showExternal'])->name('registrasi.legacy-ext');
     });
 
-    Route::prefix('laporan')->group(function () {
-        Route::get('/kinerja', [\App\Http\Controllers\LaporanController::class, 'kinerjaIndex'])->name('laporan.kinerja');
-        Route::get('/kinerja/cetak-registrasi', [\App\Http\Controllers\LaporanController::class, 'cetakKinerjaRegistrasi'])->name('laporan.kinerja.cetak-registrasi');
-        Route::get('/kinerja/cetak-batal', [\App\Http\Controllers\LaporanController::class, 'cetakKinerjaBatal'])->name('laporan.kinerja.cetak-batal');
-        Route::get('/kinerja/cetak-rujukan', [\App\Http\Controllers\LaporanController::class, 'cetakKinerjaRujukan'])->name('laporan.kinerja.cetak-rujukan');
-    });
-
     Route::prefix('poli')->group(function () {
         Route::get('/antrian-poli', [\App\Http\Controllers\PoliController::class, 'antrianPoli'])->name('poli.antrian-poli');
+
+        Route::get('/general-consent', [ConsentController::class, 'generalConsent'])->name('poli.general-consent');
+        Route::get('/pasien-dashboard/{no_mr}', [\App\Http\Controllers\PasienPoliController::class, 'dashboard'])->name('poli.pasien-dashboard');
+        
+        Route::get('/entry-pasien-luar', [\App\Http\Controllers\PasienLuarController::class, 'entryLuar'])->name('poli.entry-pasien-luar');
+        Route::post('/entry-pasien-luar', [\App\Http\Controllers\PasienLuarController::class, 'storeLuar'])->name('poli.entry-pasien-luar.store');
     });
+
+    Route::prefix('kasir')->name('kasir.')->group(function () {
+        Route::get('/pos', [PosController::class, 'index'])->name('pos');
+        Route::get('/api/barang-nm', [PosController::class, 'searchBarang'])->name('api.barang');
+        Route::post('/api/gemini-recommendations', [\App\Http\Controllers\Kasir\AiController::class, 'getAiRecommendations'])->name('api.recommendations');
+        Route::post('/checkout', [PosController::class, 'checkout'])->name('checkout');
+        Route::get('/struk/{no_registrasi}', [PosController::class, 'printStruk'])->name('struk');
+        
+        // Riwayat Kasir
+        Route::get('/riwayat', [PosController::class, 'getRiwayat'])->name('riwayat');
+        Route::delete('/batal/{no_registrasi}', [PosController::class, 'batalTransaksi'])->name('batal');
+        Route::get('/detail/{no_registrasi}', [PosController::class, 'getTransaksiDetail'])->name('detail');
+        Route::post('/retur-parsial/{no_registrasi}', [PosController::class, 'returParsial'])->name('retur');
+    });
+
+    Route::prefix('laporan')->name('laporan.')->group(function () {
+        Route::get('/kasir', [LaporanKasirController::class, 'index'])->name('kasir');
+        Route::get('/kasir/print', [LaporanKasirController::class, 'print'])->name('kasir.print');
+        
+        Route::get('/kinerja', [\App\Http\Controllers\LaporanController::class, 'kinerjaIndex'])->name('kinerja');
+        Route::get('/kinerja/cetak-registrasi', [\App\Http\Controllers\LaporanController::class, 'cetakKinerjaRegistrasi'])->name('kinerja.cetak-registrasi');
+        Route::get('/kinerja/cetak-batal', [\App\Http\Controllers\LaporanController::class, 'cetakKinerjaBatal'])->name('kinerja.cetak-batal');
+        Route::get('/kinerja/cetak-rujukan', [\App\Http\Controllers\LaporanController::class, 'cetakKinerjaRujukan'])->name('kinerja.cetak-rujukan');
+    });
+
+    Route::prefix('admin')->name('admin.')->group(function () {
+        Route::get('/user', [UserController::class, 'index'])->name('user');
+        Route::post('/user', [UserController::class, 'store'])->name('user.store');
+        Route::put('/user/{id}', [UserController::class, 'update'])->name('user.update');
+        Route::delete('/user/{id}', [UserController::class, 'destroy'])->name('user.destroy');
+        Route::get('/user/search-pegawai', [UserController::class, 'searchPegawai'])->name('user.search-pegawai');
+
+        Route::get('/modul', [ModulController::class, 'index'])->name('modul');
+        Route::post('/modul', [ModulController::class, 'store'])->name('modul.store');
+        Route::put('/modul/{id}', [ModulController::class, 'update'])->name('modul.update');
+        Route::delete('/modul/{id}', [ModulController::class, 'destroy'])->name('modul.destroy');
+        Route::post('/modul/sort', [ModulController::class, 'sort'])->name('modul.sort');
+
+        Route::get('/menu', [MenuController::class, 'index'])->name('menu');
+        Route::post('/menu', [MenuController::class, 'store'])->name('menu.store');
+        Route::put('/menu/{id}', [MenuController::class, 'update'])->name('menu.update');
+        Route::delete('/menu/{id}', [MenuController::class, 'destroy'])->name('menu.destroy');
+        Route::post('/menu/sort', [MenuController::class, 'sort'])->name('menu.sort');
+
+        Route::get('/submenu', [SubMenuController::class, 'index'])->name('submenu');
+        Route::post('/submenu', [SubMenuController::class, 'store'])->name('submenu.store');
+        Route::put('/submenu/{id}', [SubMenuController::class, 'update'])->name('submenu.update');
+        Route::delete('/submenu/{id}', [SubMenuController::class, 'destroy'])->name('submenu.destroy');
+        Route::post('/submenu/sort', [SubMenuController::class, 'sort'])->name('submenu.sort');
+
+        Route::get('/modular', [ModularController::class, 'index'])->name('modular');
+        Route::post('/modular', [ModularController::class, 'store'])->name('modular.store');
+        Route::put('/modular/{id}', [ModularController::class, 'update'])->name('modular.update');
+        Route::delete('/modular/{id}', [ModularController::class, 'destroy'])->name('modular.destroy');
+        Route::post('/modular/sort', [ModularController::class, 'sort'])->name('modular.sort');
+
+        Route::get('/privileges', [AdminPrivilegesController::class, 'index'])->name('privileges');
+        Route::post('/privileges/group', [AdminPrivilegesController::class, 'storeGroup'])->name('privileges.group.store');
+        Route::put('/privileges/group/{id}', [AdminPrivilegesController::class, 'updateGroup'])->name('privileges.group.update');
+        Route::delete('/privileges/group/{id}', [AdminPrivilegesController::class, 'destroyGroup'])->name('privileges.group.destroy');
+        Route::get('/privileges/matrix', [AdminPrivilegesController::class, 'matrix'])->name('privileges.matrix');
+        Route::post('/privileges/matrix', [AdminPrivilegesController::class, 'updateMatrix'])->name('privileges.matrix.update');
+    });
+
+    Route::prefix('master')->name('master.')->group(function () {
+        Route::get('/supplier', [SupplierController::class, 'index'])->name('supplier');
+        Route::post('/supplier', [SupplierController::class, 'store'])->name('supplier.store');
+        Route::put('/supplier/{id}', [SupplierController::class, 'update'])->name('supplier.update');
+        Route::delete('/supplier/{id}', [SupplierController::class, 'destroy'])->name('supplier.destroy');
+
+        Route::get('/barang', [BarangController::class, 'index'])->name('barang');
+        Route::post('/barang', [BarangController::class, 'store'])->name('barang.store');
+        Route::put('/barang/{id}', [BarangController::class, 'update'])->name('barang.update');
+        Route::delete('/barang/{id}', [BarangController::class, 'destroy'])->name('barang.destroy');
+    });
+
+    Route::prefix('manajemen')->name('manajemen.')->group(function () {
+        Route::get('/acc-purchasing', [AccPurchasingController::class, 'index']);
+        Route::post('/acc-purchasing/{id}/approve', [AccPurchasingController::class, 'approve']);
+    });
+
+    Route::prefix('pengadaan')->name('pengadaan.')->group(function () {
+        Route::get('/po', [PengadaanController::class, 'index'])->name('po.index');
+        Route::get('/po/create', [PengadaanController::class, 'create'])->name('po.create');
+        Route::post('/po', [PengadaanController::class, 'store'])->name('po.store');
+        Route::get('/api/search-supplier', [PengadaanController::class, 'searchSupplier'])->name('api.search-supplier');
+        Route::get('/api/search-pr', [PengadaanController::class, 'searchPR'])->name('api.search-pr');
+        Route::get('/api/search-barang', [PengadaanController::class, 'searchBarang'])->name('api.search-barang');
+    });
+
+    Route::prefix('gudang')->name('gudang.')->group(function () {
+        Route::get('/permintaan-pembelian', [PermintaanPembelianController::class, 'index']);
+        Route::get('/permintaan-pembelian/create', [PermintaanPembelianController::class, 'create'])->name('permintaan-pembelian.create');
+        Route::post('/permintaan-pembelian', [PermintaanPembelianController::class, 'store'])->name('permintaan-pembelian.store');
+
+        Route::get('/penerimaan', [PenerimaanBarangController::class, 'index'])->name('penerimaan.index');
+        Route::get('/penerimaan/create', [PenerimaanBarangController::class, 'create'])->name('penerimaan.create');
+        Route::post('/penerimaan', [PenerimaanBarangController::class, 'store'])->name('penerimaan.store');
+        Route::get('/api/search-po', [PenerimaanBarangController::class, 'searchPo'])->name('api.search-po');
+    });
+
+    // Helper API
+    Route::get('/api/search-barang-nm', [PenerimaanBarangController::class, 'searchBarangNm'])->name('api.search-barang-nm');
 
     // Legacy Route Catcher
     Route::get('/{legacy_dir}/{legacy_file}', [LegacyController::class, 'show'])
@@ -115,3 +234,4 @@ Route::middleware(['web', 'check.permission'])->group(function () {
 Route::get('/', function () {
     return redirect()->route('login');
 });
+

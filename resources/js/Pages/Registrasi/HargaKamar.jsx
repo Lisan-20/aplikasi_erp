@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Head, Link, router } from '@inertiajs/react';
 import { Search, ArrowLeft, LayoutList } from 'lucide-react';
-import '../../../css/pasien-lama.css';
 
 export default function HargaKamar({ data, filters }) {
     const [filter, setFilter] = useState(filters.filter || '');
@@ -29,7 +28,7 @@ export default function HargaKamar({ data, filters }) {
                         <p>Daftar harga dan tarif kamar</p>
                     </div>
                     <div className="pl-actions">
-                        <Link href="/dashboard/2" className="btn btn-secondary">
+                        <Link href="/dashboard/2" className="dash-btn secondary">
                             <ArrowLeft size={16} />
                             Kembali
                         </Link>
@@ -59,18 +58,18 @@ export default function HargaKamar({ data, filters }) {
                                 onChange={(e) => setFilter(e.target.value)}
                             />
                         </div>
-                        <button type="submit" className="btn btn-primary">
+                        <button type="submit" className="dash-btn primary">
                             Cari
                         </button>
                         {filters.filter && (
-                            <button type="button" onClick={handleClear} className="btn btn-secondary">
+                            <button type="button" onClick={handleClear} className="dash-btn secondary">
                                 Reset
                             </button>
                         )}
                     </form>
 
                     <div className="table-responsive">
-                        <table className="pl-table">
+                        <table className="dash-table">
                             <thead>
                                 <tr>
                                     <th>No.</th>

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Head, Link, router } from '@inertiajs/react';
 import { Search, ArrowLeft, Activity, Trash2 } from 'lucide-react';
-import '../../../css/pasien-lama.css';
 
 export default function ListingOnline({ dataPasien, filters }) {
     const [search, setSearch] = useState(filters.search || '');
@@ -32,7 +31,7 @@ export default function ListingOnline({ dataPasien, filters }) {
                         <p>Daftar pasien yang mendaftar secara online</p>
                     </div>
                     <div className="pl-actions">
-                        <Link href="/dashboard/2" className="btn btn-secondary">
+                        <Link href="/dashboard/2" className="dash-btn secondary">
                             <ArrowLeft size={16} />
                             Kembali
                         </Link>
@@ -42,19 +41,19 @@ export default function ListingOnline({ dataPasien, filters }) {
                 <div className="glass-panel table-wrap">
                     <div style={{ display: 'flex', gap: '10px', marginBottom: '20px', flexWrap: 'wrap' }}>
                         <button 
-                            className={`btn ${filters.tab === 'baru' ? 'btn-primary' : 'btn-secondary'}`} 
+                            className={`dash-btn ${filters.tab === 'baru' ? 'primary' : 'secondary'}`} 
                             onClick={() => changeTab('baru')}
                         >
                             VER. PASIEN BARU
                         </button>
                         <button 
-                            className={`btn ${filters.tab === 'verifikasi' ? 'btn-primary' : 'btn-secondary'}`} 
+                            className={`dash-btn ${filters.tab === 'verifikasi' ? 'primary' : 'secondary'}`} 
                             onClick={() => changeTab('verifikasi')}
                         >
                             HASIL TERVERIFIKASI
                         </button>
                         <button 
-                            className={`btn ${filters.tab === 'reject' ? 'btn-primary' : 'btn-secondary'}`} 
+                            className={`dash-btn ${filters.tab === 'reject' ? 'primary' : 'secondary'}`} 
                             onClick={() => changeTab('reject')}
                         >
                             REJECT
@@ -86,18 +85,18 @@ export default function ListingOnline({ dataPasien, filters }) {
                                 onChange={(e) => setSearch(e.target.value)}
                             />
                         </div>
-                        <button type="submit" className="btn btn-primary">
+                        <button type="submit" className="dash-btn primary">
                             Cari
                         </button>
                         {filters.search && (
-                            <button type="button" onClick={handleClear} className="btn btn-secondary">
+                            <button type="button" onClick={handleClear} className="dash-btn secondary">
                                 Reset
                             </button>
                         )}
                     </form>
 
                     <div className="table-responsive">
-                        <table className="pl-table">
+                        <table className="dash-table">
                             <thead>
                                 <tr>
                                     <th>No. Daftar</th>
@@ -141,7 +140,7 @@ export default function ListingOnline({ dataPasien, filters }) {
 
                                             {filters.tab === 'baru' && (
                                                 <td style={{ whiteSpace: 'nowrap' }}>
-                                                    <button className="btn btn-secondary" style={{ padding: '0.25rem 0.5rem', fontSize: '0.75rem', color: '#ef4444' }} title="Batal/Reject">
+                                                    <button className="dash-btn secondary" style={{ padding: '0.25rem 0.5rem', fontSize: '0.75rem', color: '#ef4444' }} title="Batal/Reject">
                                                         <Trash2 size={14} />
                                                     </button>
                                                 </td>

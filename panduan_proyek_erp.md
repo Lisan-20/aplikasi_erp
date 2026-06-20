@@ -1,0 +1,143 @@
+# Panduan Proyek (Rulebook) Aplikasi ERP
+
+Dokumen ini berfungsi sebagai **Ingatan Jangka Panjang (Long-Term Memory)** bagi Agen AI. Di setiap sesi percakapan baru, Agen wajib membaca dokumen ini terlebih dahulu untuk memastikan konsistensi pemahaman, arsitektur, dan konteks bisnis proyek.
+
+---
+
+## 1. Identitas & Konteks Bisnis
+> [!IMPORTANT]
+> **Konteks Utama:** Aplikasi ini adalah **Sistem ERP (Enterprise Resource Planning)** generik untuk perusahaan/bisnis, **BUKAN** Sistem Informasi Manajemen Rumah Sakit (SIMRS).
+
+**Aturan Penamaan & Istilah Dasar:**
+Dilarang keras menggunakan istilah-istilah medis pada antarmuka pengguna (UI) maupun respons diskusi, kecuali ada modul spesifik yang mengharuskannya. Gunakan pemetaan berikut:
+- ❌ `Pasien` ➔ ✅ `Pelanggan` / `Klien`
+- ❌ `No. RM (Rekam Medis)` ➔ ✅ `ID Pelanggan`
+- ❌ `Poli / Poliklinik` ➔ ✅ `Departemen` / `Divisi` / `Outlet`
+- ❌ `Dokter / Perawat` ➔ ✅ `Staf` / `PIC` / `Sales`
+- ❌ `Rumah Sakit / RS Fikri Medika` ➔ ✅ `Perusahaan` / `Sistem ERP`
+- ❌ `Registrasi Pasien` ➔ ✅ `Pendaftaran Klien` / `Reservasi`
+
+**Path & Identitas Sistem:**
+- Folder *root* proyek lokal adalah `aplikasi_erp_laravel`.
+- Konteks URL dan *routing* aplikasi lama (*Legacy*) menggunakan `/aplikasi_erp/...`.
+- Container Docker menggunakan nama `aplikasi_erp_app`, `aplikasi_erp_nginx`, `aplikasi_erp_redis`.
+
+---
+
+## 2. Standar Visual & UI/UX (Glassmorphism)
+> [!WARNING]
+> **PELARANGAN TAILWIND CSS:** Proyek ini **TIDAK MENGGUNAKAN** Tailwind CSS. Dilarang keras menggunakan *utility classes* bergaya Tailwind (seperti `bg-white`, `p-6`, `flex`, dll.) karena tidak akan terbaca oleh browser dan hanya akan merusak tata letak (menjadi HTML polos). Semua tata letak **wajib** menggunakan kelas CSS kustom (Legacy) yang sudah didefinisikan secara matang di `resources/css/app.css`.
+
+Seluruh komponen UI harus mengikuti panduan estetika *Glassmorphism* yang terlihat futuristik dan mewah:
+- **Layout Halaman Standar (Index):** WAJIB menggunakan struktur pembungkus `<div className="pl-container">`. Di dalamnya, bagi menjadi dua area utama:
+  1. `<div className="pl-header glass-panel">` untuk judul (`pl-title`) dan tombol aksi (`pl-actions`).
+  2. `<div className="glass-panel table-wrap">` sebagai kontainer tabel utama dan kolom pencarian.
+- **Tabel Data:** WAJIB menggunakan kelas `<table className="pl-table">` di dalam `<div className="table-responsive">` (yang berada di dalam `table-wrap` di atas). Jika tidak menggunakan struktur ini, alternatif lama adalah `premium-table`, namun dianjurkan mengikuti standar `pl-table`.
+- **Search Header:** Gunakan kombinasi `<div className="search-bar">` dan `<div className="search-input-wrapper">` dipasangkan dengan input `<input className="search-input">` yang diletakkan di dalam `table-wrap`. Pastikan state `searchTerm` menggunakan *debounce*, dengan logika penangkal *bug reset*: `if (searchTerm !== (filters?.search || ''))`. Jangan gunakan perbandingan yang tidak stabil dengan `undefined` karena dapat mereset URL (dan menghilangkan paginasi) saat berpindah halaman.
+- **Form & Input Component:** **DILARANG KERAS** menggunakan *inline styling* dengan warna statis, dan **DILARANG** menggunakan kelas bawaan lama seperti `form-control` pada *input*, *select*, atau modal, karena kelas lama tersebut akan merusak kontras *Dark Mode*. Sebagai gantinya, WAJIB menggunakan kelas **`premium-input`** yang sudah didefinisikan secara khusus di `app.css` untuk menangani latar belakang transparan dan kontras font putih secara sempurna.
+- **Library Eksternal (contoh: react-select):** Wajib menimpa (*override*) konfigurasi gaya (*styles*) bawaannya dengan memasukkan warna *solid* khusus mode gelap (seperti `#1f2937` untuk *dropdown menu* dan teks putih `#fff`) agar daftar opsi yang dihasilkan memiliki lapisan belakang tebal dan tidak menimpa tulisan di bawahnya (*unreadable transparent overlap*).
+- **Micro-animations:** Semua tombol (`btn-primary`, `btn-secondary`) dan baris tabel harus memiliki transisi warna/hover yang lembut.
+- **Paginasi & Penomoran Baris:** Penomoran baris pada tabel *wajib* menggunakan rumus `{(data.current_page - 1) * data.per_page + index + 1}` agar nomor urut berlanjut di halaman berikutnya. Paginasi WAJIB diletakkan **DI LUAR** `<div className="glass-panel table-wrap">` (yakni tepat di bawahnya, sebagai *child* langsung dari `pl-container`). Gunakan struktur `<div className="pagination">` yang berisikan tombol-tombol `<Link className="page-link active">` dan `<span className="page-link disabled">`.
+- **Form Laporan (Report UI):** **JANGAN** membuat laporan yang memuat (kueri) seluruh data tabel secara otomatis di layar utama saat halaman baru dibuka (hal ini memberatkan server). Gunakan pola *Filter Form* (Pilih Tanggal, Pilih Shift, Pilih User) dengan *sidebar* minimalis, lalu sediakan tombol **Cetak Laporan** atau **Export Excel/CSV** di-*freeze* (disematkan) pada bagian *footer*.
+- **Tabel Transaksional:** Untuk tabel dengan banyak kolom atau data, *wrap* tabel di dalam `<div className="table-responsive">` dan gunakan *sticky header* atau *frozen footer* (seperti yang dilakukan pada Modul Kasir).
+
+---
+
+## 3. Technology Stack & Eksekusi Koding
+- **Frontend:** React (JSX) yang diintegrasikan melalui **Inertia.js** dan di-*build* menggunakan **Vite** (`npm run build`).
+- **Backend:** Laravel (PHP). Di lingkungan *production* atau lokal tingkat lanjut, aplikasi ini berjalan menggunakan **Laravel Octane (Swoole)**. Server dijalankan via Docker (`docker-compose`).
+- **Pembaruan UI:** Setiap kali Agen AI melakukan modifikasi pada *file* `.jsx`, Agen **wajib** menjalankan perintah `npm run build` di *background* agar perubahan terlihat oleh pengguna.
+- **Pembaruan Backend:** Setiap kali Agen AI melakukan modifikasi pada logika Laravel (Controller, Route, dll), Agen **wajib** menjalankan perintah `docker exec aplikasi_erp_app php artisan octane:reload` agar perubahan kode terdeteksi oleh server Octane di dalam kontainer Docker.
+
+---
+
+## 4. Aturan Database & Query (SQL Server)
+> [!WARNING]
+> Proyek ini menggunakan **Microsoft SQL Server (ODBC Driver 17)**. Perhatikan baik-baik pembatasan dan karakteristik *query* agar tidak terjadi *timeout* atau *Syntax Error*.
+
+- **Penanganan Timeout:** Setiap kueri laporan yang membaca tabel transaksional besar **wajib** menyertakan filter rentang waktu (`tgl_awal` dan `tgl_akhir`). Dilarang melakukan *query* `SELECT *` tanpa filter waktu atau `LIMIT/TAKE`.
+- **Sensitivitas Kolom (Case & Naming):** 
+  - Pada tabel `dd_user`, kolom nama pengguna adalah `nama_lengkap` atau `username` (BUKAN `nama_user`).
+  - Pencarian string di SQL Server bawaan mungkin *case-sensitive* (bergantung pengaturan *Collation* seperti `Latin1_General_CS_AS`).
+- **Eksekusi Stored Procedure (Multi-Result Set):** Saat mengeksekusi SP kompleks yang mengembalikan lebih dari satu tabel (*multiple SELECTs*), **DILARANG** menggunakan Eloquent Builder biasa. WAJIB menggunakan objek PDO murni milik Laravel (`DB::connection()->getPdo()`) dikombinasikan dengan `$stmt->nextRowset()` untuk melompat antar tabel (*result set*). Hal ini sangat penting untuk pelaporan/dashboard dengan efisiensi tinggi (menarik banyak data dengan 1 kali koneksi *network*).
+
+## 5. Konvensi Penamaan (Naming Conventions)
+- **Session Key:** WAJIB menggunakan ejaan bahasa Indonesia/lokal yang sudah ada untuk menjaga kompatibilitas dengan Middleware lama. Contoh: gunakan `Session::put('active_modul', ...)` (tanpa huruf 'e'), **BUKAN** `active_module`. Begitu pula dengan `id_dd_user`, `id_dc_modul`, dsb.
+- **File Legacy:** File `.php` dari CodeIgniter/Native tidak boleh dihapus sampai seluruh halamannya selesai di-*rewrite* ke React Inertia.
+- **Routing:** Gunakan penamaan rute bergaya *dot notation* (misal: `admin.user.index`).
+
+---
+
+## Cara Menggunakan Dokumen Ini di Sesi Baru
+Setiap kali Pengguna memulai jendela obrolan (*chat*) yang benar-benar baru dan kosong, Pengguna cukup mengetik:
+`"Tolong baca panduan_proyek_erp.md sebelum mulai bekerja."`
+Maka Agen AI akan memuat dokumen ini dan langsung memiliki ingatan yang seragam.
+
+---
+
+## 6. Ringkasan Eksekusi Antigravity (Master Changelog)
+> [!NOTE]
+> Daftar ini merupakan rangkuman (summary) dari seluruh pencapaian, perombakan, dan penambahan fitur yang telah diselesaikan oleh Agen AI (Antigravity) sejak awal proyek hingga saat ini.
+
+### Tahap 1: Rebranding & Fondasi Sistem Baru
+- **Transisi Sistem (SIMRS ➔ ERP):** Mengubah seluruh identitas aplikasi dari basis "Sistem Informasi Rumah Sakit" (`aplikasi_rs_laravel`) menjadi **Sistem ERP Generik** (`aplikasi_erp_laravel`).
+- **Pembersihan Istilah:** Menghilangkan seluruh jejak penamaan medis di UI/UX (seperti mengganti "Pasien" menjadi "Pelanggan/Klien", "Poli" menjadi "Outlet", dsb).
+- **Pembaruan Lingkungan:** Menyesuaikan *path* komponen *React*, nama kontainer Docker (`aplikasi_erp_app`), serta konfigurasi NPM (`package.json`) dan Vite agar selaras dengan nama proyek baru.
+
+### Tahap 2: Modernisasi & Desain Premium (Glassmorphism)
+- **Refactoring UI/UX:** Bermigrasi dari antarmuka Native/Legacy ke *Single Page Application* berbasis React.js dan Inertia.js.
+- **Glassmorphism:** Mengimplementasikan tema premium berbasis latar transparan bergaya kaca (Glass), *dark mode*, serta kontrol UI modern yang bersih dan futuristik.
+
+### Tahap 3: Pembaruan Modul Admin & Keamanan
+- **Admin User Management:** Menulis ulang antarmuka manajemen pengguna (`dd_user`) menggunakan React.
+- **Asynchronous Search Dropdown:** Mengimplementasikan elemen *Select2/Async* modern (pencarian langsung dari *database*) tanpa mengorbankan keamanan sistem lama (tetap mendukung enkripsi algoritma MD5 warisan).
+
+### Tahap 4: Sistem Point of Sales (POS) & Kasir Terpadu
+- **Desain Layar Kasir:** Membuat panel kasir interaktif dengan tata letak *Split-view* (Daftar Barang vs Keranjang).
+- **Live Search & Pagination:** Meniadakan kewajiban tombol "Enter" dengan sistem *Debounce* pada pencarian barang, serta menggunakan `.paginate(30)` untuk mengontrol performa RAM server saat memuat jutaan data inventaris.
+- **Retur Parsial:** Melengkapi sistem kasir dengan algoritma yang mengizinkan pembatalan/pengembalian (*retur*) sebagian barang dan memastikan stok gudang dikalkulasi secara presisi.
+- **Cetak Struk:** Menambahkan fitur cetak struk termal mini yang rapi (`StrukKasir.jsx`).
+
+### Tahap 5: Modul Laporan Transaksi Kasir
+- **Form Filter Sidebar:** Meningkatkan kecepatan muat (loading) halaman laporan secara signifikan dengan membuang pola *Auto-load Table*. Laporan sekarang menggunakan *Sidebar Filter* sebelum memuat kueri.
+- **Export & Print:** Menambahkan fungsionalitas tombol **Export Excel (CSV)** dan pencetakan riwayat pembayaran (*Print-friendly view*) lengkap dengan kalkulasi jumlah "Uang Diterima" dan "Kembalian".
+
+### Tahap 6: Integrasi Kecerdasan Buatan (AI Agnostic)
+- **Ollama & Gemini:** Membekali Kasir dengan Asisten AI pintar yang bisa memberikan saran/rekomendasi otomatis berdasarkan input. Mendukung sistem *Agnostic* di mana *user* bisa beralih dari API Cloud (Google Gemini) ke AI Lokal (Ollama) lewat berkas `.env`.
+- **Fuzzy Search & Parser:** Memperkuat AI dengan sistem *RegEx* canggih untuk membersihkan sampah *Markdown Tag* dari respons LLM, serta menanamkan sistem *Fuzzy Search* (`LIKE '%KATA%'`) agar barang tetap ditemukan meski AI mengalami kesalahan kecil pada pengejaan nama barang.
+
+### Tahap 7: Optimasi Responsif Mobile (UI/UX)
+- Menangani *bug* layar hitam saat mengakses aplikasi dari HP (*Mobile Web*).
+- Menata ulang komponen *DashboardLayout* agar *Sidebar Menu* dan halaman Kasir bisa berinteraksi secara mulus (bebas digulir) dengan tinggi yang dinamis di ukuran layar kecil.
+
+### Tahap 8: Eksperimen Arsitektur Microservices & REST API
+- **Node.js API Server:** Membuat proyek eksperimental `erp_node_api` berbasis Express.js yang berjalan di port 3000 sebagai peladen (server) REST API mandiri (Microservice).
+- **Direct Database Connectivity:** Menghubungkan Node.js langsung ke SQL Server (`mssql`) secara terpisah dari *backend* utama Laravel.
+- **Client-Side Fetching (React):** Membangun antarmuka eksperimen `/belajar-api` pada React untuk melakukan ekstraksi data asinkron (*asynchronous fetch*) langsung ke Node.js, mem-Bypass struktur Inertia.js untuk keperluan pemahaman komunikasi REST murni.
+
+### Tahap 9: Perombakan Struktur Odoo ("Sihir Odoo") & High-Performance Dashboard
+- **Pemisahan Layout Tegas (Form View vs List View):** Mengadaptasi standarisasi antarmuka bergaya Odoo ERP.
+  - **Form Views:** Halaman entri atau rincian dokumen tunggal (seperti `PendaftaranRi`, `RawatJalan`) dibungkus menggunakan antarmuka Kertas Putih (`odoo-document-sheet`) di tengah, dan Panel Riwayat/Log (`odoo-chatter`) di sisi kanan.
+  - **List Views:** Halaman yang memuat tabel master/pencarian data massal (seperti `ListingPoli`, `DaftarPerjanjian`) dioptimalkan menggunakan tata letak *Full Width* tanpa *chatter*, dengan sistem *grid overflow* agar tampilan layar digunakan sepenuhnya oleh tabel.
+- **Data Riil via Stored Procedure (SP):** Mengganti data statis/dummy di Dashboard Kasir dengan data riil tanpa mengorbankan kecepatan. Seluruh kalkulasi metrik berat (Tren Pendapatan Harian, Akumulasi Piutang, Distribusi Metode Pembayaran) kini dikerjakan secara super-cepat di *Database Engine* melalui `sp_DashboardKasir_GetMetrics` dan disalurkan ke React (Recharts) via API Controller tunggal.
+- **Perbaikan Bug JSX:** Memastikan integritas HTML/JSX tertutup rapi setelah perombakan massal struktur div (`npm run build` sukses).
+
+### Tahap 10: Dokumentasi Arsitektur Lanjutan & Sesi Troubleshooting AI
+- **Pembuatan Panduan Arsitektur Murni:** Menulis dan men-generate dokumen `Panduan_Alur_Kerja_ERP.doc` yang berisi bedah kodingan dan aliran data (Routing -> Controller -> JSX) baik menggunakan pola *Inertia props* maupun pola *Asynchronous Fetching (AJAX)*.
+- **Konsep Keamanan AJAX & Axios:** Mendefinisikan secara tegas dalam *Rulebook* bahwa AJAX/Frontend DILARANG memuat kueri SQL mentah untuk mencegah celah peretasan. Seluruh kueri wajib dieksekusi di ranah Backend (Laravel Controller).
+- **Troubleshooting Laravel Octane (State Bleed):** Mengarsipkan pengetahuan krusial terkait "Memory Leak" di mana penggunaan variabel `static` atau data *Singleton* yang terkait dengan spesifik *User* akan menyebabkan data tertukar antar-pengguna karena siklus PHP yang tidak pernah mati di ekosistem Swoole.
+- **Kasus Sensitivitas OS (Windows vs Linux):** Mendiagnosis *blank screen* pada React saat tahap `npm run build` di Docker/Linux yang diakibatkan oleh perbedaan perlakuan huruf besar-kecil pada jalur *import file* di Windows (sistem pengembang) dan Linux (server produksi).
+- **Mencegah Memory Exhaustion:** Melarang penggunaan metode `.get()` secara vulgar pada tabel raksasa (jutaan baris) untuk fitur seperti *Export Excel*. Wajib diganti dengan pendekatan mencicil menggunakan metode `.chunk()`, `.cursor()`, atau melalui pekerjaan layar belakang (*Background Queue Jobs*).
+
+### Tahap 11: Pemahaman Arsitektur REST API & Komparasi Sistem Legacy
+- **Analisis Komparatif:** Membedah arsitektur aplikasi lama (`aplikasi_erp`) yang murni menggunakan *Native PHP*, *ADODB*, dan *jQuery AJAX* tanpa *framework* modern, untuk membandingkannya dengan aplikasi baru yang berbasis *Laravel + React (Inertia.js)*.
+- **Konsep Modern Monolith (Inertia.js):** Menegaskan bahwa aplikasi baru adalah sistem *Hybrid*. Alih-alih membuat *full* REST API untuk setiap perpindahan halaman, aplikasi menggunakan **Inertia.js** (Server-driven SPA) untuk data inti, dan hanya menggunakan **REST API (Axios/Fetch)** untuk komponen yang butuh kecepatan asinkron (seperti *Live Search* dan AI).
+- **Standar Pengambilan Keputusan Kueri (Axios vs Fetch):** Mendokumentasikan alasan penggunaan *Fetch API* (bawaan *browser* ringan) untuk *GET Request* sederhana, dan penggunaan **Axios** untuk *POST Request* berat (seperti mengirim objek Keranjang Belanja), karena Axios otomatis menangani konversi JSON dan penyisipan *CSRF Token* Laravel untuk keamanan.
+- **Standarisasi Metode HTTP (GET vs POST):** Menegaskan aturan penggunaan metode HTTP: Metode **GET** dilarang digunakan jika mengirim kumpulan data besar (seperti isi array *cart*) karena batasan panjang URL. Metode **POST** diwajibkan untuk pengiriman data berstruktur (JSON) agar aman dari *log server* dan tidak memutus koneksi.
+- **Saklar AI Agnostik (Agnostic AI Provider):** Mencatat teknik *Design Pattern* menggunakan *Environment Variable* (`.env`) untuk memindahkan eksekusi logika (*switch*) dari Google Gemini ke Ollama Local AI secara instan tanpa perlu membongkar atau *hardcode* berkas `AiController.php`.
+
+### Tahap 12: Manajemen Routing & Resolusi Konflik CSS Global
+- **Aturan Ketat Penambahan Routing (Anti-Overwrite):** Menetapkan SOP baru bahwa penambahan menu atau rute baru di `routes/web.php` DILARANG KERAS menimpa (*overwrite*) blok fungsi `Route::prefix` yang sudah ada (misalnya menggunakan fungsi pencarian dan penggantian yang ceroboh). Penambahan rute harus selalu di-*append* (disisipkan) di dalam grup yang relevan, atau membuat grup baru untuk menghindari hilangnya ratusan *endpoint* lain secara fatal yang dapat menyebabkan gagalnya `php artisan octane:reload`.
+- **Penanganan CSS Leak (Kebocoran CSS Global):** Mendokumentasikan insiden "CSS Leak" di mana *file* CSS bawaan halaman lama (seperti `pasien-lama.css`) mendefinisikan ulang *class* global bergaya generik seperti `.glass-panel` atau `body`, yang secara tidak sengaja merusak struktur utama `DashboardLayout.jsx`.
+- **Isolasi Namespace CSS (Scoping):** Mewajibkan penggunaan nama *class* yang unik dan ber-awalan spesifik (seperti `.dash-glass-panel` alih-alih `.glass-panel`) pada komponen *layout* utama (Root Layout) untuk melindunginya dari modifikasi CSS sub-halaman yang ditarik via rute Inertia.
+- **Kewajiban Rebuild Frontend (Vite):** Mengingatkan bahwa di lingkungan *production* atau saat tidak menjalankan `npm run dev`, segala bentuk perubahan pada kode React (`.jsx`) atau *Layout* tidak akan terefleksikan di *browser* meskipun *server backend* (Laravel Octane) sudah di-restart. Perintah `npm run build` MUTLAK harus dieksekusi agar aset-aset statis (JS/CSS) terbaru dikompilasi ulang oleh Vite ke dalam folder `public/build/assets/`.

@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dokumentasi Q&A - Optimasi Aplikasi RS Laravel</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Calibri', 'Inter', Arial, sans-serif;
+    font-size: 11pt;
+    line-height: 1.6;
+    color: #1a1a2e;
+    background: #fff;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px;
+  }
+
+  h1.doc-title {
+    font-size: 22pt;
+    color: #1e3a5f;
+    border-bottom: 3px solid #1e3a5f;
+    padding-bottom: 10px;
+    margin-bottom: 6px;
+  }
+
+  .subtitle {
+    font-size: 9pt;
+    color: #666;
+    margin-bottom: 30px;
+    font-style: italic;
+  }
+
+  .separator { border: none; border-top: 1px solid #ccc; margin: 25px 0; }
+
+  .qa-block {
+    margin-bottom: 30px;
+    page-break-inside: avoid;
+  }
+
+  h2.section-title {
+    font-size: 14pt;
+    color: #1e3a5f;
+    background: #eef4fb;
+    padding: 8px 14px;
+    border-left: 5px solid #1e3a5f;
+    margin-bottom: 14px;
+    border-radius: 0 4px 4px 0;
+  }
+
+  .question-label {
+    font-size: 9pt;
+    font-weight: 700;
+    color: #fff;
+    background: #2563eb;
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 3px;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .question-text {
+    font-size: 11pt;
+    font-style: italic;
+    color: #1e3a5f;
+    background: #f0f6ff;
+    padding: 10px 14px;
+    border-left: 3px solid #2563eb;
+    border-radius: 0 4px 4px 0;
+    margin-bottom: 14px;
+  }
+
+  .answer-label {
+    font-size: 9pt;
+    font-weight: 700;
+    color: #fff;
+    background: #16a34a;
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 3px;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .answer-text {
+    font-size: 10.5pt;
+    color: #222;
+    background: #f9fafb;
+    padding: 12px 16px;
+    border-left: 3px solid #16a34a;
+    border-radius: 0 4px 4px 0;
+    white-space: pre-wrap;
+    font-family: 'Calibri', Arial, sans-serif;
+  }
+
+  .summary-box {
+    background: #1e3a5f;
+    color: #fff;
+    padding: 20px 24px;
+    border-radius: 6px;
+    margin-top: 30px;
+  }
+
+  .summary-box h2 {
+    font-size: 14pt;
+    border-bottom: 1px solid rgba(255,255,255,0.3);
+    padding-bottom: 8px;
+    margin-bottom: 12px;
+  }
+
+  .summary-box .stack-item {
+    padding: 4px 0;
+    font-size: 10.5pt;
+  }
+
+  .arch-box {
+    background: #0f172a;
+    color: #4ade80;
+    font-family: 'Courier New', monospace;
+    font-size: 9.5pt;
+    padding: 14px 18px;
+    border-radius: 4px;
+    margin-top: 12px;
+    white-space: pre;
+  }
+
+  .footer {
+    margin-top: 30px;
+    font-size: 9pt;
+    color: #999;
+    text-align: center;
+    font-style: italic;
+  }
+
+  @media print {
+    body { padding: 20px; }
+    .qa-block { page-break-inside: avoid; }
+    h2.section-title { page-break-after: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<h1 class="doc-title">Dokumentasi Q&amp;A &mdash; Optimasi Aplikasi RS Laravel</h1>
+<p class="subtitle">Stack: Laravel + Docker + Nginx + Redis + Swoole/Octane + SQL Server &nbsp;|&nbsp; Dibuat: 14 Juni 2026</p>
+
+<hr class="separator">
+
+<!-- Q1 -->
+<div class="qa-block">
+  <h2 class="section-title">Q1 &mdash; Optimasi Performa Nginx di Docker</h2>
+  <div class="question-label">Pertanyaan</div>
+  <div class="question-text">Bisakah performa Nginx di Docker itu di-optimalkan lagi? Karena kalau sebelumnya saat pakai XAMPP Apache lokal lebih cepat tampil datanya.</div>
+  <div class="answer-label">Jawaban</div>
+  <div class="answer-text">Docker terasa lebih lambat dari XAMPP karena beberapa alasan:
+1. OVERHEAD DOCKER: Setiap request melewati layer network virtualisasi (bridge network)
+2. VOLUME MOUNT: File di-mount dari Windows ke Linux via Hyper-V/WSL2, I/O lebih lambat
+3. KONFIGURASI DEFAULT: Nginx dan PHP-FPM di Docker pakai konfigurasi minimal
+
+Yang sudah diimplementasikan untuk mengatasi ini:
+[OK] Gzip compression di Nginx - mengurangi ukuran transfer data
+[OK] Cache static assets (CSS, JS, gambar) dengan expires 6 bulan
+[OK] OPcache PHP aktif - bytecode di-cache, tidak compile ulang setiap request
+[OK] Redis untuk cache dan session - mengurangi query ke database
+[OK] Laravel Octane + Swoole - persistent server, tidak bootstrap ulang tiap request (upgrade terbesar)</div>
+</div>
+<hr class="separator">
+
+<!-- Q2 -->
+<div class="qa-block">
+  <h2 class="section-title">Q2 &mdash; Panduan Redis dari Awal Sampai Akhir</h2>
+  <div class="question-label">Pertanyaan</div>
+  <div class="question-text">Sekarang kalau saya mau menggunakan metode Redis di database bagaimana guidenya dari awal sampai akhir?</div>
+  <div class="answer-label">Jawaban</div>
+  <div class="answer-text">FASE 1 - Tambahkan Redis Service di docker-compose.yml:
+  redis:
+    image: redis:alpine
+    container_name: aplikasi_rs_redis
+    ports: ['6379:6379']
+    volumes: [redis_data:/data]
+
+FASE 2 - Install PHP Extension Redis di Dockerfile:
+  RUN pecl install redis &amp;&amp; docker-php-ext-enable redis
+
+FASE 3 - Konfigurasi .env:
+  CACHE_DRIVER=redis
+  SESSION_DRIVER=redis
+  QUEUE_CONNECTION=redis
+  REDIS_HOST=redis
+  REDIS_PORT=6379
+
+FASE 4 - Build ulang container:
+  docker-compose up -d --build
+
+FASE 5 - Verifikasi Redis berjalan:
+  docker-compose exec app php artisan tinker
+  &gt; Cache::put('test', 'redis_ok', 60);
+  &gt; Cache::get('test');  // harus return 'redis_ok'
+
+FASE 6 - Gunakan Cache di Controller:
+  $data = Cache::remember('key_unik', 3600, function() {
+      return DB::table('tabel')->get();
+  });</div>
+</div>
+<hr class="separator">
+
+<!-- Q3 -->
+<div class="qa-block">
+  <h2 class="section-title">Q3 &mdash; Perbedaan yang Dirasakan Sebelum dan Sesudah Redis</h2>
+  <div class="question-label">Pertanyaan</div>
+  <div class="question-text">Apa bedanya yang bisa saya rasakan tanpa Redis sebelumnya?</div>
+  <div class="answer-label">Jawaban</div>
+  <div class="answer-text">TANPA REDIS (sebelumnya):
+- Setiap halaman dibuka = query ke SQL Server remote (ada latensi jaringan)
+- Session disimpan di file = lambat saat banyak user concurrent
+- Data yang sama di-query berulang kali setiap request
+- Jika SQL Server sibuk = semua user menunggu
+
+DENGAN REDIS (sesudah):
+- Data sering diakses tersimpan di RAM = response &lt;1ms
+- Session di Redis = lebih cepat dan aman untuk multi-server
+- Query ke SQL Server hanya saat cache expired (misal tiap 5 menit)
+- Bisa handle 10.000+ concurrent session tanpa beban ke database
+
+CONTOH NYATA YANG TERASA:
+- Dashboard load statistik: dari ~800ms menjadi ~50ms
+- Halaman yang sama dibuka 100 user = hanya 1x query ke SQL Server
+- Login/logout lebih cepat (session di RAM bukan file)
+- Dropdown data master (dokter, kamar, poli) jauh lebih responsif</div>
+</div>
+<hr class="separator">
+
+<!-- Q4 -->
+<div class="qa-block">
+  <h2 class="section-title">Q4 &mdash; Apakah Stack Sudah Bagus untuk Aplikasi RS Traffic Besar?</h2>
+  <div class="question-label">Pertanyaan</div>
+  <div class="question-text">Apakah stack yang saya gunakan saat ini sudah sangat bagus untuk aplikasi rumah sakit yang trafik datanya besar dan non stop?</div>
+  <div class="answer-label">Jawaban</div>
+  <div class="answer-text">Stack yang digunakan sudah SANGAT BAIK dan production-grade untuk skala rumah sakit.
+
+EVALUASI STACK SAAT INI:
+[OK] PHP 8.2 + Laravel   - Framework modern, ekosistem lengkap, performa tinggi
+[OK] Nginx               - Web server terbaik untuk high concurrency (ribuan koneksi)
+[OK] Docker              - Isolasi environment, reproducible, mudah di-scale
+[OK] Redis               - In-memory cache, ideal untuk hospital real-time data
+[OK] SQL Server          - Database enterprise yang kuat, cocok untuk data medis
+[OK] OPcache             - PHP bytecode cache, request lebih cepat
+[OK] Laravel Octane + Swoole - Persistent server, 3-10x lebih cepat dari php-fpm
+
+UNTUK SKALA LEBIH BESAR (future roadmap):
+- Queue Worker untuk proses background (laporan PDF, notifikasi SMS/WA)
+- Database read replica untuk query laporan historis berat
+- CDN untuk static assets
+- Load Balancer jika multi-server
+- Monitoring: Telescope, Grafana + Prometheus
+
+KESIMPULAN: Stack saat ini bisa handle ratusan concurrent user dengan nyaman.
+Untuk ribuan user perlu tambahkan Queue dan Load Balancer.</div>
+</div>
+<hr class="separator">
+
+<!-- Q5 -->
+<div class="qa-block">
+  <h2 class="section-title">Q5 &mdash; Menangani SQL Server Windows dari Aplikasi Linux</h2>
+  <div class="question-label">Pertanyaan</div>
+  <div class="question-text">Bagaimana menangani database yang menggunakan SQL Server tetapi aplikasi di Linux? Karena kalau mau linked server, install SQL Server di Linux itu tidak optimal sama sekali.</div>
+  <div class="answer-label">Jawaban</div>
+  <div class="answer-text">Solusi terbaik: KONEKSI REMOTE via TCP/IP (tidak perlu install SQL Server di Linux sama sekali)
+
+ARSITEKTUR:
+[Linux Server / Docker]  ----port 1433 TCP---->  [Windows Server SQL Server]
+
+KONFIGURASI .env DI LARAVEL:
+DB_CONNECTION=sqlsrv
+DB_HOST=192.168.1.100       (IP Windows Server SQL Server)
+DB_PORT=1433
+DB_DATABASE=nama_database
+DB_USERNAME=sa
+DB_PASSWORD=password_anda
+
+KONFIGURASI DI WINDOWS SQL SERVER:
+1. SQL Server Configuration Manager
+   - Protocols for MSSQLSERVER - TCP/IP - Enable
+   - IP Addresses - IPAll - TCP Port = 1433
+
+2. Windows Firewall
+   - Inbound Rules - New Rule - Port 1433 - Allow
+
+3. Mode Autentikasi
+   - Server Properties - Security - SQL Server and Windows Authentication mode
+
+PHP EXTENSIONS (sudah diinstall di Dockerfile via PECL):
+- sqlsrv      (driver utama SQL Server)
+- pdo_sqlsrv  (PDO driver untuk Laravel)
+
+Verifikasi extension: docker-compose exec app php -m | grep sqlsrv</div>
+</div>
+<hr class="separator">
+
+<!-- Q6 -->
+<div class="qa-block">
+  <h2 class="section-title">Q6 &mdash; Apakah Ada Delay Aplikasi Linux ke Database Windows?</h2>
+  <div class="question-label">Pertanyaan</div>
+  <div class="question-text">Apakah kalau begitu aplikasi di Linux dan database di Windows akan terjadi delay saat munculin data atau insert data? Atau tidak terasa bedanya?</div>
+  <div class="answer-label">Jawaban</div>
+  <div class="answer-text">JAWABANNYA: Tergantung di mana server ditempatkan.
+
+SKENARIO 1 - SATU JARINGAN LAN (kondisi ideal untuk rumah sakit):
+  Latensi  : 0.1ms - 1ms
+  Dampak   : TIDAK TERASA sama sekali oleh pengguna
+  Keterangan: Server app dan SQL Server di gedung yang sama (ruang server)
+
+SKENARIO 2 - BEDA GEDUNG / WIFI:
+  Latensi  : 1ms - 10ms
+  Dampak   : Hampir tidak terasa, apalagi dengan Redis cache aktif
+
+SKENARIO 3 - VIA INTERNET / VPN:
+  Latensi  : 20ms - 100ms ke atas
+  Dampak   : Bisa terasa untuk query berat yang tidak di-cache
+
+SOLUSI UNTUK MEMINIMALKAN DELAY:
+1. Redis Cache
+   - Data yang sering dibaca di-cache di RAM
+   - Query ke SQL Server hanya saat cache expired
+   
+2. Connection Pooling
+   - Laravel handle otomatis, tidak connect ulang setiap request
+   
+3. Eager Loading - hindari N+1 query
+   - Contoh: Patient::with(['dokter', 'kamar', 'diagnosa'])->get()
+   
+4. Database Index
+   - Pastikan kolom WHERE sudah di-index: no_rm, tgl_masuk, id_dokter, id_poli
+
+KESIMPULAN: Dalam jaringan LAN rumah sakit, delay koneksi
+Linux (Docker) ke Windows (SQL Server) praktis tidak terasa.</div>
+</div>
+<hr class="separator">
+
+<!-- Q7 -->
+<div class="qa-block">
+  <h2 class="section-title">Q7 &mdash; Optimasi Lanjutan yang Bisa Dilakukan</h2>
+  <div class="question-label">Pertanyaan</div>
+  <div class="question-text">Lalu apa lagi yang bisa saya lakukan untuk mengoptimalkan stack aplikasi_rs_laravel saya ini selanjutnya?</div>
+  <div class="answer-label">Jawaban</div>
+  <div class="answer-text">DAFTAR OPTIMASI (urutan prioritas):
+
+1. LARAVEL OCTANE + SWOOLE [SUDAH DIIMPLEMENTASI]
+   - PHP persistent server, tidak bootstrap ulang tiap request
+   - Efek: 3-10x lebih cepat dari php-fpm biasa
+
+2. DATABASE OPTIMIZATION:
+   - Tambah INDEX pada kolom: no_rm, tgl_masuk, id_dokter, id_poli, status
+   - Gunakan Eager Loading (with()) untuk menghindari N+1 query
+   - Hindari SELECT * - pilih kolom yang dibutuhkan saja
+   - Query berat (laporan bulanan) gunakan Stored Procedure di SQL Server
+   - Pagination untuk data besar, jangan load semua sekaligus
+
+3. QUEUE &amp; BACKGROUND JOBS:
+   - Laporan PDF besar - proses di background dengan Laravel Queue
+   - Notifikasi SMS/WhatsApp ke pasien - queue
+   - Export Excel data besar - queue (tidak block user)
+   - Email blast - queue
+
+4. FRONTEND OPTIMIZATION:
+   - Lazy loading komponen React yang tidak langsung dibutuhkan
+   - Image compression dan konversi ke WebP
+   - HTTP/2 di Nginx untuk multiplexing request
+   - Bundle splitting Vite (hanya load JS yang diperlukan per halaman)
+
+5. MONITORING &amp; OBSERVABILITY:
+   - Laravel Telescope - debug query lambat dan request berat
+   - Redis Insight - monitor cache hit/miss rate
+   - Docker stats - monitor CPU dan memory container</div>
+</div>
+<hr class="separator">
+
+<!-- Q8 -->
+<div class="qa-block">
+  <h2 class="section-title">Q8 &mdash; Implementasi Laravel Octane + Swoole</h2>
+  <div class="question-label">Pertanyaan</div>
+  <div class="question-text">Saya ingin kita mengimplementasikan salah satu dari optimasi di atas sekarang, yaitu "The Ultimate Boost": Menggunakan Laravel Octane.</div>
+  <div class="answer-label">Jawaban</div>
+  <div class="answer-text">PROSES IMPLEMENTASI LARAVEL OCTANE + SWOOLE (sudah selesai):
+
+LANGKAH 1 - Update Dockerfile (tambah dependencies Swoole):
+  RUN apt-get install -y libbrotli-dev libssl-dev
+  RUN pecl install swoole &amp;&amp; docker-php-ext-enable swoole
+
+LANGKAH 2 - Update docker-compose.yml (ganti php-fpm dengan Octane):
+  command: php artisan octane:start --server=swoole --host=0.0.0.0
+           --port=8000 --workers=4 --task-workers=4 --max-requests=10000
+
+LANGKAH 3 - Update Nginx default.conf (proxy ke Octane, bukan fastcgi):
+  location / {
+      proxy_http_version 1.1;
+      proxy_set_header Host $host;
+      proxy_pass http://app:8000;
+  }
+
+LANGKAH 4 - Build ulang Docker:
+  docker-compose up -d --build  (proses ~15 menit pertama kali)
+
+LANGKAH 5 - Install package Octane:
+  docker-compose exec app composer require laravel/octane
+  docker-compose exec app php artisan octane:install --server=swoole
+
+HASIL VERIFIKASI:
+  docker-compose exec app php artisan octane:status
+  OUTPUT: INFO Octane server is running.
+
+  docker-compose exec app php -m | grep -E "swoole|redis|sqlsrv|opcache"
+  OUTPUT: pdo_sqlsrv, redis, sqlsrv, swoole, Zend OPcache  [semua aktif]
+
+PERBEDAAN SEBELUM vs SESUDAH OCTANE:
+  Sebelum (php-fpm): Setiap request = bootstrap Laravel dari awal
+                     (load config, routes, service providers, dll)
+  Sesudah (Octane):  Bootstrap hanya SEKALI, request berikutnya
+                     langsung diproses = 3-10x lebih cepat</div>
+</div>
+<hr class="separator">
+
+<!-- Q9 -->
+<div class="qa-block">
+  <h2 class="section-title">Q9 &mdash; Deploy ke Komputer Lain &mdash; Perlu Konfigurasi Ulang?</h2>
+  <div class="question-label">Pertanyaan</div>
+  <div class="question-text">Apakah hasil dari konfigurasi barusan kalau saya pakai project aplikasi_rs_laravel di komputer lain untuk di-publish akan langsung terasa atau konfigurasi ulang semuanya dari Redis sampai Laravel Octane?</div>
+  <div class="answer-label">Jawaban</div>
+  <div class="answer-text">JAWABAN: Sebagian besar OTOMATIS karena semua konfigurasi tersimpan di file yang di-commit ke Git.
+
+YANG OTOMATIS (ada di file repository):
+[OK] Dockerfile          - build Swoole, Redis ext, sqlsrv, OPcache dari source
+[OK] docker-compose.yml  - Redis service + Octane start command
+[OK] docker/nginx/default.conf - Nginx proxy ke Octane port 8000
+[OK] docker/php/opcache.ini    - OPcache configuration
+[OK] config/octane.php         - Octane configuration (dibuat saat octane:install)
+[OK] composer.json             - dependency laravel/octane sudah terdaftar
+
+YANG PERLU MANUAL (tidak boleh di-commit karena berisi credential rahasia):
+1. cp .env.example .env
+2. Edit .env: isi DB_HOST, DB_DATABASE, DB_USERNAME, DB_PASSWORD
+3. docker-compose up -d --build    (±15 menit pertama kali - compile Swoole)
+4. docker-compose exec app composer install
+5. docker-compose exec app php artisan key:generate
+6. docker-compose exec app npm install &amp;&amp; npm run build
+7. docker-compose exec app php artisan storage:link
+
+YANG TIDAK PERLU DIKERJAKAN LAGI:
+[SKIP] Install PHP manual
+[SKIP] Install Swoole manual
+[SKIP] Install Redis manual
+[SKIP] Install Nginx manual
+[SKIP] Konfigurasi Nginx manual
+[SKIP] php artisan octane:install (sudah ada config/octane.php di repo)</div>
+</div>
+<hr class="separator">
+
+<!-- Q10 -->
+<div class="qa-block">
+  <h2 class="section-title">Q10 &mdash; Tanpa Docker, Fresh Docker, atau Pindah Docker</h2>
+  <div class="question-label">Pertanyaan</div>
+  <div class="question-text">Bagaimana kalau tidak menggunakan Docker atau baru di-install Docker atau pindah Docker-nya?</div>
+  <div class="answer-label">Jawaban</div>
+  <div class="answer-text">ADA 3 SKENARIO BERBEDA:
+
+===========================================================
+SKENARIO 1: TANPA DOCKER (Native / XAMPP / Laragon)
+===========================================================
+Semua konfigurasi Docker TIDAK BERLAKU. Harus setup manual:
+
+A. Install Swoole:
+   Windows: download .dll dari pecl.php.net sesuai versi PHP
+            tambahkan di php.ini: extension=php_swoole.dll
+   Linux  : pecl install swoole
+            echo "extension=swoole.so" >> /etc/php/8.2/cli/php.ini
+
+B. Install Redis:
+   Windows: download Memurai atau Redis for Windows
+   Linux  : sudo apt install redis-server
+            sudo systemctl enable --now redis
+
+C. Install sqlsrv (driver SQL Server):
+   Download dari: learn.microsoft.com/en-us/sql/connect/php
+   Tambahkan di php.ini: extension=php_sqlsrv.dll
+                         extension=php_pdo_sqlsrv.dll
+
+D. Edit .env untuk Native (bukan Docker):
+   REDIS_HOST=127.0.0.1    (bukan 'redis' yang hanya berlaku di Docker)
+   REDIS_PORT=6379
+
+E. Jalankan Octane langsung (tanpa Docker):
+   php artisan octane:start --server=swoole --host=0.0.0.0 --port=8000
+
+F. Konfigurasi Nginx di sistem (bukan di Docker):
+   Salin isi docker/nginx/default.conf ke /etc/nginx/sites-available/
+
+Waktu setup: 1-2 jam | Tingkat kesulitan: SULIT (banyak langkah manual)
+
+===========================================================
+SKENARIO 2: DOCKER BARU DI-INSTALL (Fresh Docker)
+===========================================================
+Ini PALING MUDAH - semua sudah ada di file:
+
+   git clone &lt;repo_url&gt;
+   cd aplikasi_rs_laravel
+   cp .env.example .env
+   (edit .env: isi DB_HOST, DB_USERNAME, DB_PASSWORD)
+   docker-compose up -d --build
+
+Build pertama sekitar 15 menit (compile Swoole dari source).
+Docker baca Dockerfile dan docker-compose.yml secara otomatis.
+
+Setelah build:
+   docker-compose exec app composer install
+   docker-compose exec app php artisan key:generate
+   docker-compose exec app npm install &amp;&amp; npm run build
+
+Waktu setup: ~15 menit | Tingkat kesulitan: MUDAH
+
+===========================================================
+SKENARIO 3: PINDAH DOCKER (Migrasi antar Komputer/Server)
+===========================================================
+CARA A - Via Git (Direkomendasikan untuk developer):
+   git clone &lt;repo&gt; di komputer baru
+   cp .env.example .env  (isi credential)
+   docker-compose up -d --build
+   (build ulang otomatis, hasilnya identik - 15 menit)
+
+CARA B - Export Image (Tanpa Internet, Tanpa Build Ulang):
+   Di komputer LAMA:
+     docker save aplikasi_rs_laravel-app:latest -o aplikasi_rs_app.tar
+     (pindahkan file .tar via USB/LAN ke komputer baru)
+   
+   Di komputer BARU:
+     docker load -i aplikasi_rs_app.tar
+     docker-compose up -d   (tidak perlu --build!)
+   
+   Keuntungan: Tidak perlu compile Swoole lagi (hemat 15 menit)
+   Cocok untuk: pindah ke server production tanpa internet
+
+Waktu Cara B: ~5 menit | Tingkat kesulitan: SANGAT MUDAH
+
+===========================================================
+PERBANDINGAN RINGKAS:
+===========================================================
+Tanpa Docker       : 1-2 jam setup, semua langkah manual
+Docker Fresh       : ~15 menit, otomatis dari Dockerfile
+Pindah via Git     : ~15 menit, build ulang otomatis
+Pindah via Export  : ~5 menit, langsung jalan tanpa build
+
+REKOMENDASI: Gunakan Docker selalu.
+Setup di server production Linux pun prosesnya SAMA PERSIS
+dengan development di Windows.</div>
+</div>
+
+<hr class="separator">
+
+<!-- Summary -->
+<div class="summary-box">
+  <h2>Ringkasan Stack Akhir yang Berhasil Diimplementasikan</h2>
+  <div class="stack-item">&#x2705; Laravel Octane + Swoole &nbsp;&mdash;&nbsp; PHP persistent server (3-10x lebih cepat dari php-fpm)</div>
+  <div class="stack-item">&#x26A1; Redis &nbsp;&mdash;&nbsp; Cache, Session, Queue (in-memory, sub-millisecond response)</div>
+  <div class="stack-item">&#x1F527; Zend OPcache &nbsp;&mdash;&nbsp; PHP bytecode cache (tidak compile ulang setiap request)</div>
+  <div class="stack-item">&#x1F310; Nginx &nbsp;&mdash;&nbsp; Reverse proxy + Gzip compression + Static asset cache</div>
+  <div class="stack-item">&#x1F5C4;&#xFE0F; SQL Server &nbsp;&mdash;&nbsp; Remote database via TCP/IP (sqlsrv + pdo_sqlsrv)</div>
+  <div class="stack-item">&#x1F433; Docker &nbsp;&mdash;&nbsp; Containerized, reproducible environment</div>
+  <div class="arch-box">Browser ──&gt; Nginx (port 80) ──&gt; Octane/Swoole (port 8000) ──&gt; Laravel App
+                                                                    │
+                                                          Redis (cache/session) / SQL Server</div>
+</div>
+
+<p class="footer">Dokumen ini dibuat secara otomatis oleh Antigravity AI Assistant &nbsp;|&nbsp; 14 Juni 2026</p>
+
+</body>
+</html>

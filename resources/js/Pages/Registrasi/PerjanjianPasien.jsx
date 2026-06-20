@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Head, Link, router } from '@inertiajs/react';
 import { Search, ArrowLeft, Users, Trash2, Calendar } from 'lucide-react';
-import '../../../css/pasien-lama.css';
 
 export default function PerjanjianPasien({ perjanjian, filters }) {
     const [topik, setTopik] = useState(filters.topik || 'nama');
@@ -40,11 +39,11 @@ export default function PerjanjianPasien({ perjanjian, filters }) {
                         <p>Daftar pasien yang memiliki perjanjian</p>
                     </div>
                     <div className="pl-actions">
-                        <Link href="/dashboard/2" className="btn btn-secondary">
+                        <Link href="/dashboard/2" className="dash-btn secondary">
                             <ArrowLeft size={16} />
                             Kembali
                         </Link>
-                        <Link href="/registrasi/daftar-perjanjian" className="btn btn-primary">
+                        <Link href="/registrasi/daftar-perjanjian" className="dash-btn primary">
                             <Calendar size={16} />
                             Daftar Perjanjian
                         </Link>
@@ -74,18 +73,18 @@ export default function PerjanjianPasien({ perjanjian, filters }) {
                                 onChange={(e) => setFilterVal(e.target.value)}
                             />
                         </div>
-                        <button type="submit" className="btn btn-primary">
+                        <button type="submit" className="dash-btn primary">
                             Cari
                         </button>
                         {filters.filter && (
-                            <button type="button" onClick={handleClear} className="btn btn-secondary">
+                            <button type="button" onClick={handleClear} className="dash-btn secondary">
                                 Reset
                             </button>
                         )}
                     </form>
 
                     <div className="table-responsive">
-                        <table className="pl-table">
+                        <table className="dash-table">
                             <thead>
                                 <tr>
                                     <th style={{ width: '50px' }}>Aksi</th>
@@ -102,7 +101,7 @@ export default function PerjanjianPasien({ perjanjian, filters }) {
                                     perjanjian.data.map((item) => (
                                         <tr key={item.id_tc_pesanan}>
                                             <td>
-                                                <button className="btn btn-secondary" style={{ padding: '0.25rem 0.5rem', fontSize: '0.75rem', color: '#ef4444', borderColor: '#fca5a5' }} title="Hapus">
+                                                <button className="dash-btn secondary" style={{ padding: '0.25rem 0.5rem', fontSize: '0.75rem', color: '#ef4444', borderColor: '#fca5a5' }} title="Hapus">
                                                     <Trash2 size={14} />
                                                 </button>
                                             </td>

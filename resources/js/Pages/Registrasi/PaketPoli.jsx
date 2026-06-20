@@ -60,7 +60,7 @@ export default function PaketPoli({ auth, patient, bagian, dokter }) {
                 </div>
                 
                 <div className="navbar-actions">
-                    <Link href="/dashboard/2" className="btn btn-secondary">
+                    <Link href="/dashboard/2" className="dash-btn secondary">
                         <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                         </svg>
@@ -100,7 +100,7 @@ export default function PaketPoli({ auth, patient, bagian, dokter }) {
                             </h2>
                             <form onSubmit={handleSearch} className="space-y-4">
                                 <div className="form-group">
-                                    <label>No. Medical Record</label>
+                                    <label className="form-label">No. Medical Record</label>
                                     <div className="flex space-x-2">
                                         <input 
                                             type="text" 
@@ -154,7 +154,7 @@ export default function PaketPoli({ auth, patient, bagian, dokter }) {
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div className="space-y-5">
                                         <div className="form-group">
-                                            <label>Poliklinik Tujuan <span className="text-red-400">*</span></label>
+                                            <label className="form-label">Poliklinik Tujuan <span className="text-red-400">*</span></label>
                                             <select 
                                                 className={`form-control ${errors.kode_bagian ? 'is-invalid' : ''}`}
                                                 value={data.kode_bagian}
@@ -169,7 +169,7 @@ export default function PaketPoli({ auth, patient, bagian, dokter }) {
                                         </div>
 
                                         <div className="form-group">
-                                            <label>Dokter Pemeriksa <span className="text-red-400">*</span></label>
+                                            <label className="form-label">Dokter Pemeriksa <span className="text-red-400">*</span></label>
                                             <select 
                                                 className={`form-control ${errors.kode_dokter ? 'is-invalid' : ''}`}
                                                 value={data.kode_dokter}
@@ -184,7 +184,7 @@ export default function PaketPoli({ auth, patient, bagian, dokter }) {
                                         </div>
                                         
                                         <div className="form-group">
-                                            <label>Tanggal & Jam Masuk <span className="text-red-400">*</span></label>
+                                            <label className="form-label">Tanggal & Jam Masuk <span className="text-red-400">*</span></label>
                                             <input 
                                                 type="datetime-local" 
                                                 className={`form-control ${errors.tgl_masuk ? 'is-invalid' : ''}`}
@@ -197,7 +197,7 @@ export default function PaketPoli({ auth, patient, bagian, dokter }) {
 
                                     <div className="space-y-5">
                                         <div className="form-group">
-                                            <label>Status Pasien</label>
+                                            <label className="form-label">Status Pasien</label>
                                             <select 
                                                 className="form-control"
                                                 value={data.stat_pasien}
@@ -209,7 +209,7 @@ export default function PaketPoli({ auth, patient, bagian, dokter }) {
                                         </div>
 
                                         <div className="form-group">
-                                            <label>Prioritas</label>
+                                            <label className="form-label">Prioritas</label>
                                             <select 
                                                 className="form-control"
                                                 value={data.prioritas}
@@ -221,7 +221,7 @@ export default function PaketPoli({ auth, patient, bagian, dokter }) {
                                         </div>
 
                                         <div className="form-group">
-                                            <label>No Jaminan / Asuransi / BPJS</label>
+                                            <label className="form-label">No Jaminan / Asuransi / BPJS</label>
                                             <input 
                                                 type="text" 
                                                 className="form-control"
@@ -232,7 +232,7 @@ export default function PaketPoli({ auth, patient, bagian, dokter }) {
                                         </div>
                                         
                                         <div className="form-group">
-                                            <label>Keterangan</label>
+                                            <label className="form-label">Keterangan</label>
                                             <textarea 
                                                 className="form-control"
                                                 rows="3"
@@ -246,14 +246,14 @@ export default function PaketPoli({ auth, patient, bagian, dokter }) {
                                 <div className="form-actions mt-8 flex justify-end space-x-3">
                                     <button 
                                         type="button" 
-                                        className="btn btn-secondary"
+                                        className="dash-btn secondary"
                                         onClick={() => reset()}
                                     >
                                         Reset
                                     </button>
                                     <button 
                                         type="submit" 
-                                        className="btn btn-primary"
+                                        className="dash-btn primary"
                                         disabled={processing || !data.no_mr}
                                     >
                                         {processing ? 'Menyimpan...' : 'Daftarkan Pasien'}

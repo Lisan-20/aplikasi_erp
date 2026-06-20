@@ -65,7 +65,7 @@ export default function IgdMalam({ auth, pasien, nasabahList, perusahaanList, ke
                 </div>
                 
                 <div className="navbar-actions">
-                    <Link href="/dashboard/2" className="btn btn-secondary">
+                    <Link href="/dashboard/2" className="dash-btn secondary">
                         <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                         </svg>
@@ -95,7 +95,7 @@ export default function IgdMalam({ auth, pasien, nasabahList, perusahaanList, ke
                             </h2>
                             <form onSubmit={handleSearch} className="space-y-4">
                                 <div className="form-group">
-                                    <label>No. Medical Record</label>
+                                    <label className="form-label">No. Medical Record</label>
                                     <div className="flex space-x-2">
                                         <input 
                                             type="text" 
@@ -141,7 +141,7 @@ export default function IgdMalam({ auth, pasien, nasabahList, perusahaanList, ke
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div className="space-y-5">
                                         <div className="form-group">
-                                            <label>Status Pasien</label>
+                                            <label className="form-label">Status Pasien</label>
                                             <select 
                                                 className="form-control"
                                                 value={data.txt_pasien}
@@ -153,7 +153,7 @@ export default function IgdMalam({ auth, pasien, nasabahList, perusahaanList, ke
                                         </div>
 
                                         <div className="form-group">
-                                            <label>Tanggal Daftar</label>
+                                            <label className="form-label">Tanggal Daftar</label>
                                             <input 
                                                 type="datetime-local" 
                                                 className="form-control"
@@ -163,7 +163,7 @@ export default function IgdMalam({ auth, pasien, nasabahList, perusahaanList, ke
                                         </div>
 
                                         <div className="form-group">
-                                            <label>Jenis Kejadian <span className="text-red-400">*</span></label>
+                                            <label className="form-label">Jenis Kejadian <span className="text-red-400">*</span></label>
                                             <input 
                                                 type="text" 
                                                 className="form-control"
@@ -173,7 +173,7 @@ export default function IgdMalam({ auth, pasien, nasabahList, perusahaanList, ke
                                         </div>
 
                                         <div className="form-group">
-                                            <label>Tanggal Kejadian</label>
+                                            <label className="form-label">Tanggal Kejadian</label>
                                             <input 
                                                 type="date" 
                                                 className="form-control"
@@ -183,7 +183,7 @@ export default function IgdMalam({ auth, pasien, nasabahList, perusahaanList, ke
                                         </div>
 
                                         <div className="form-group">
-                                            <label>Tempat Kejadian</label>
+                                            <label className="form-label">Tempat Kejadian</label>
                                             <input 
                                                 type="text" 
                                                 className="form-control"
@@ -193,7 +193,7 @@ export default function IgdMalam({ auth, pasien, nasabahList, perusahaanList, ke
                                         </div>
                                         
                                         <div className="form-group">
-                                            <label>Kasus Polisi</label>
+                                            <label className="form-label">Kasus Polisi</label>
                                             <input 
                                                 type="text" 
                                                 className="form-control"
@@ -205,7 +205,7 @@ export default function IgdMalam({ auth, pasien, nasabahList, perusahaanList, ke
 
                                     <div className="space-y-5">
                                         <div className="form-group">
-                                            <label>Dikirim Oleh</label>
+                                            <label className="form-label">Dikirim Oleh</label>
                                             <input 
                                                 type="text" 
                                                 className="form-control"
@@ -215,7 +215,7 @@ export default function IgdMalam({ auth, pasien, nasabahList, perusahaanList, ke
                                         </div>
 
                                         <div className="form-group">
-                                            <label>Diantar Oleh</label>
+                                            <label className="form-label">Diantar Oleh</label>
                                             <input 
                                                 type="text" 
                                                 className="form-control"
@@ -225,7 +225,7 @@ export default function IgdMalam({ auth, pasien, nasabahList, perusahaanList, ke
                                         </div>
 
                                         <div className="form-group">
-                                            <label>Dibawa RS Dengan</label>
+                                            <label className="form-label">Dibawa RS Dengan</label>
                                             <input 
                                                 type="text" 
                                                 className="form-control"
@@ -235,7 +235,7 @@ export default function IgdMalam({ auth, pasien, nasabahList, perusahaanList, ke
                                         </div>
 
                                         <div className="form-group">
-                                            <label>Status Diterima</label>
+                                            <label className="form-label">Status Diterima</label>
                                             <select 
                                                 className="form-control"
                                                 value={data.status_diterima}
@@ -247,7 +247,7 @@ export default function IgdMalam({ auth, pasien, nasabahList, perusahaanList, ke
                                         </div>
 
                                         <div className="form-group">
-                                            <label>Dokter Jaga <span className="text-red-400">*</span></label>
+                                            <label className="form-label">Dokter Jaga <span className="text-red-400">*</span></label>
                                             <select 
                                                 className="form-control"
                                                 value={data.kode_dokter}
@@ -264,7 +264,7 @@ export default function IgdMalam({ auth, pasien, nasabahList, perusahaanList, ke
                                             <h3 className="text-sm font-medium text-white mb-3">Keluarga Terdekat</h3>
                                             <div className="space-y-4">
                                                 <div className="form-group">
-                                                    <label>Nama</label>
+                                                    <label className="form-label">Nama</label>
                                                     <input 
                                                         type="text" 
                                                         className="form-control"
@@ -273,7 +273,7 @@ export default function IgdMalam({ auth, pasien, nasabahList, perusahaanList, ke
                                                     />
                                                 </div>
                                                 <div className="form-group">
-                                                    <label>Telepon</label>
+                                                    <label className="form-label">Telepon</label>
                                                     <input 
                                                         type="text" 
                                                         className="form-control"
@@ -282,7 +282,7 @@ export default function IgdMalam({ auth, pasien, nasabahList, perusahaanList, ke
                                                     />
                                                 </div>
                                                 <div className="form-group">
-                                                    <label>Alamat</label>
+                                                    <label className="form-label">Alamat</label>
                                                     <textarea 
                                                         className="form-control"
                                                         rows="2"
@@ -298,14 +298,14 @@ export default function IgdMalam({ auth, pasien, nasabahList, perusahaanList, ke
                                 <div className="form-actions mt-8 flex justify-end space-x-3">
                                     <button 
                                         type="button" 
-                                        className="btn btn-secondary"
+                                        className="dash-btn secondary"
                                         onClick={() => reset()}
                                     >
                                         Reset
                                     </button>
                                     <button 
                                         type="submit" 
-                                        className="btn btn-primary"
+                                        className="dash-btn primary"
                                         disabled={processing || !data.no_mr}
                                     >
                                         {processing ? 'Menyimpan...' : 'Submit'}

@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Head, Link, router } from '@inertiajs/react';
 import { Search, UserPlus, ArrowLeft, Users, FileText, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-react';
 import DashboardLayout from '@/Layouts/DashboardLayout';
-import '../../../css/pasien-lama.css';
 
 export default function PasienLama({ patients, filters }) {
     const [search, setSearch] = useState(filters.search || '');
@@ -21,82 +20,85 @@ export default function PasienLama({ patients, filters }) {
         <DashboardLayout>
             <Head title="Data Pasien Lama" />
             
-            <div style={{ flex: 1, minHeight: 0, padding: '1rem', display: 'grid', gap: '1rem', gridTemplateRows: 'auto auto 1fr', color: 'var(--text-main)', overflow: 'hidden' }}>
-                <div className="pl-header glass-panel shrink-0" style={{ minWidth: 0 }}>
-                    <div className="pl-title">
-                        <h1>Data Pasien Lama</h1>
-                        <p>Pencarian data master pasien berdasarkan No. MR atau Nama Pasien</p>
-                    </div>
-                    <div className="pl-actions">
-                        <Link href="/modul/101/enter" className="btn btn-secondary">
-                            <ArrowLeft size={16} />
-                            Kembali
-                        </Link>
-                        <Link href="/registrasi/pasien-baru" className="btn btn-primary">
-                            <UserPlus size={16} />
-                            Daftar Pasien Baru
-                        </Link>
-                    </div>
-                </div>
-
-                <div className="glass-panel flex flex-col shrink-0 p-3" style={{ minWidth: 0 }}>
-                    <form onSubmit={handleSearch} className="search-bar w-full">
-                        <div className="search-input-wrapper flex-1">
-                            <Search className="search-icon" />
-                            <input
-                                type="text"
-                                className="search-input"
-                                placeholder="Cari No. MR atau Nama Pasien..."
-                                value={search}
-                                onChange={(e) => setSearch(e.target.value)}
-                            />
+            <div className="dashboard-container" style={{ padding: '20px' }}>
+                <main className="dashboard-content" style={{ width: '100%', maxWidth: '100%' }}>
+                    
+                    <div className="panel-card glass-card" style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                        <div className="panel-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--border-color)', paddingBottom: '15px' }}>
+                            <div>
+                                <h3 style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>Data Pasien Lama</h3>
+                                <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginTop: '5px' }}>Pencarian data master pasien berdasarkan No. MR atau Nama Pasien</p>
+                            </div>
+                            <div style={{ display: 'flex', gap: '10px' }}>
+                                <Link href="/modul/101/enter" className="dash-btn danger">
+                                    <ArrowLeft size={16} />
+                                    Kembali
+                                </Link>
+                                <Link href="/registrasi/pasien-baru" className="dash-btn primary">
+                                    <UserPlus size={16} />
+                                    Daftar Pasien Baru
+                                </Link>
+                            </div>
                         </div>
-                        <button type="submit" className="btn btn-primary">
-                            Cari
-                        </button>
-                        {filters.search && (
-                            <button type="button" onClick={handleClear} className="btn btn-secondary">
-                                Reset
-                            </button>
-                        )}
-                    </form>
-                </div>
 
-                <div className="glass-panel" style={{ minWidth: 0, padding: 0, minHeight: 0, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-                    <div style={{ flex: 1, minHeight: 0, overflow: 'auto' }}>
-                            <table className="pl-table whitespace-nowrap min-w-max w-full border-collapse">
-                                <thead style={{ position: 'sticky', top: 0, zIndex: 10, background: 'var(--bg-color)', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
+                        <div className="search-filter-container" style={{ display: 'flex', gap: '10px' }}>
+                            <form onSubmit={handleSearch} style={{ display: 'flex', gap: '10px', width: '100%' }}>
+                                <div style={{ flex: 1, position: 'relative' }}>
+                                    <Search size={18} style={{ position: 'absolute', left: '15px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+                                    <input
+                                        type="text"
+                                        className="premium-input"
+                                        style={{ width: '100%', paddingLeft: '45px' }}
+                                        placeholder="Cari No. MR atau Nama Pasien..."
+                                        value={search}
+                                        onChange={(e) => setSearch(e.target.value)}
+                                    />
+                                </div>
+                                <button type="submit" className="dash-btn primary">
+                                    Cari
+                                </button>
+                                {filters.search && (
+                                    <button type="button" onClick={handleClear} className="dash-btn danger">
+                                        Reset
+                                    </button>
+                                )}
+                            </form>
+                        </div>
+
+                        <div className="table-responsive">
+                            <table className="dash-table">
+                                <thead>
                                 <tr>
-                                    <th className="px-4 py-4 text-left border" style={{ borderColor: 'var(--glass-border)' }}>No. MR</th>
-                                    <th className="px-4 py-4 text-left border" style={{ borderColor: 'var(--glass-border)' }}>Nama Pasien</th>
-                                    <th className="px-4 py-4 text-left border" style={{ borderColor: 'var(--glass-border)' }}>No. KTP</th>
-                                    <th className="px-4 py-4 text-left border" style={{ borderColor: 'var(--glass-border)' }}>Jenis Kelamin</th>
-                                    <th className="px-4 py-4 text-left border" style={{ borderColor: 'var(--glass-border)' }}>Tanggal Lahir</th>
-                                    <th className="px-4 py-4 text-left border" style={{ borderColor: 'var(--glass-border)' }}>Alamat</th>
-                                    <th className="px-4 py-4 text-left border" style={{ borderColor: 'var(--glass-border)' }}>No. Telepon</th>
-                                    <th className="px-4 py-4 text-left border" style={{ borderColor: 'var(--glass-border)' }}>Aksi</th>
+                                    <th>No. MR</th>
+                                    <th>Nama Pasien</th>
+                                    <th>No. KTP</th>
+                                    <th>Jenis Kelamin</th>
+                                    <th>Tanggal Lahir</th>
+                                    <th>Alamat</th>
+                                    <th>No. Telepon</th>
+                                    <th>Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {patients.data.length > 0 ? (
                                     patients.data.map((patient) => (
                                         <tr key={patient.no_mr}>
-                                            <td className="px-4 py-3 border" style={{ borderColor: 'var(--glass-border)' }}><strong>{patient.no_mr}</strong></td>
-                                            <td className="px-4 py-3 border" style={{ borderColor: 'var(--glass-border)' }}>{patient.nama_pasien}</td>
-                                            <td className="px-4 py-3 border" style={{ borderColor: 'var(--glass-border)' }}>{patient.no_ktp || '-'}</td>
-                                            <td className="px-4 py-3 border" style={{ borderColor: 'var(--glass-border)' }}>
-                                                <span className={`badge ${patient.jen_kelamin === 'L' ? 'badge-blue' : 'badge-pink'}`}>
+                                            <td><strong>{patient.no_mr}</strong></td>
+                                            <td>{patient.nama_pasien}</td>
+                                            <td>{patient.no_ktp || '-'}</td>
+                                            <td>
+                                                <span className={`status-badge ${patient.jen_kelamin === 'L' ? 'on-duty' : 'cuti'}`}>
                                                     {patient.jen_kelamin === 'L' ? 'Laki-laki' : 'Perempuan'}
                                                 </span>
                                             </td>
-                                            <td className="px-4 py-3 border" style={{ borderColor: 'var(--glass-border)' }}>{patient.tgl_lhr ? new Date(patient.tgl_lhr).toLocaleDateString('id-ID') : '-'}</td>
-                                            <td className="px-4 py-3 border" style={{ borderColor: 'var(--glass-border)' }}>{patient.almt_ttp_pasien}</td>
-                                            <td className="px-4 py-3 border" style={{ borderColor: 'var(--glass-border)' }}>{patient.tlp_almt_ttp || '-'}</td>
-                                            <td className="px-4 py-3 border" style={{ borderColor: 'var(--glass-border)' }}>
+                                            <td>{patient.tgl_lhr ? new Date(patient.tgl_lhr).toLocaleDateString('id-ID') : '-'}</td>
+                                            <td>{patient.almt_ttp_pasien}</td>
+                                            <td>{patient.tlp_almt_ttp || '-'}</td>
+                                            <td>
                                                 <Link 
                                                     href={`/registrasi/edit-data?mr_number=${patient.no_mr}`}
-                                                    className="btn btn-secondary" 
-                                                    style={{ padding: '0.25rem 0.5rem', fontSize: '0.75rem' }}
+                                                    className="dash-btn primary" 
+                                                    style={{ padding: '5px 10px', fontSize: '0.8rem' }}
                                                 >
                                                     <FileText size={14} /> Pilih
                                                 </Link>
@@ -121,32 +123,30 @@ export default function PasienLama({ patients, filters }) {
                     {/* Pagination */}
                     {patients.links && patients.links.length > 3 && (
                         <div className="pagination shrink-0 p-3 glass-panel" style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem', minWidth: 0, marginTop: 0 }}>
-                            {patients.links
-                                .filter(link => link.label.includes('Previous') || link.label.includes('Next'))
-                                .map((link, index) => {
-                                    let label = link.label;
-                                    if (label.includes('Previous')) label = '&laquo; Previous';
-                                    if (label.includes('Next')) label = 'Next &raquo;';
-                                    
-                                    return link.url ? (
-                                        <Link
-                                            key={index}
-                                            href={link.url}
-                                            className="page-link"
-                                            style={{ padding: '0.5rem 1rem' }}
-                                            dangerouslySetInnerHTML={{ __html: label }}
-                                        />
-                                    ) : (
-                                        <span
-                                            key={index}
-                                            className="page-link disabled"
-                                            style={{ padding: '0.5rem 1rem' }}
-                                            dangerouslySetInnerHTML={{ __html: label }}
-                                        />
-                                    );
-                            })}
+                            {patients.links.map((link, index) => (
+                                link.url ? (
+                                    <Link
+                                        key={index}
+                                        href={link.url}
+                                        className={`dash-btn ${link.active ? 'primary' : 'secondary'}`}
+                                        style={{ padding: '0.25rem 0.5rem', fontSize: '0.875rem' }}
+                                        preserveState
+                                        preserveScroll
+                                    >
+                                        <span dangerouslySetInnerHTML={{ __html: link.label }} />
+                                    </Link>
+                                ) : (
+                                    <span
+                                        key={index}
+                                        className="dash-btn secondary disabled"
+                                        style={{ padding: '0.25rem 0.5rem', fontSize: '0.875rem', opacity: 0.5 }}
+                                        dangerouslySetInnerHTML={{ __html: link.label }}
+                                    />
+                                )
+                            ))}
                         </div>
                     )}
+                </main>
             </div>
         </DashboardLayout>
     );

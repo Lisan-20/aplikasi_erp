@@ -142,20 +142,20 @@ export default function DaftarCariPasien({ pasien, filters }) {
                 <div style={{ borderColor: 'var(--glass-border)', borderRadius: '16px', border: '1px solid var(--glass-border)', background: 'var(--glass-bg)', backdropFilter: 'blur(12px)', overflow: 'hidden', minHeight: 0, display: 'flex', flexDirection: 'column' }}>
                     <div style={{ flex: 1, minHeight: 0, overflow: 'auto' }}>
                         <table className="w-full min-w-max text-left text-sm whitespace-nowrap border-collapse" style={{ color: 'var(--text-main)' }}>
-                            <thead className="font-medium uppercase tracking-wider text-xs sticky top-0 z-10 shadow-sm" style={{ background: 'var(--bg-dark)' }}>
+                            <thead>
                                 <tr>
-                                    <th className="text-center w-12 px-4 py-4 border" style={{ borderColor: 'var(--glass-border)' }}>No.</th>
-                                    <th className="text-center px-4 py-4 border" style={{ borderColor: 'var(--glass-border)' }}>GC RI</th>
-                                    <th className="text-center px-4 py-4 border" style={{ borderColor: 'var(--glass-border)' }}>GC RJ</th>
-                                    <th className="text-center px-4 py-4 border" style={{ borderColor: 'var(--glass-border)' }}>Edit</th>
-                                    <th className="px-4 py-4 border" style={{ borderColor: 'var(--glass-border)' }}>No. MR</th>
-                                    <th className="px-4 py-4 border" style={{ borderColor: 'var(--glass-border)' }}>Nama Lengkap</th>
-                                    <th className="px-4 py-4 border" style={{ borderColor: 'var(--glass-border)' }}>Tgl Lahir</th>
-                                    <th className="px-4 py-4 border" style={{ borderColor: 'var(--glass-border)' }}>Nama Keluarga</th>
-                                    <th className="px-4 py-4 border" style={{ borderColor: 'var(--glass-border)' }}>Alamat</th>
-                                    <th className="px-4 py-4 border" style={{ borderColor: 'var(--glass-border)' }}>Nasabah</th>
-                                    <th className="px-4 py-4 border" style={{ borderColor: 'var(--glass-border)' }}>NIK</th>
-                                    <th className="px-4 py-4 border" style={{ borderColor: 'var(--glass-border)' }}>Catatan Khusus</th>
+                                    <th>No.</th>
+                                    <th>GC RI</th>
+                                    <th>GC RJ</th>
+                                    <th>Edit</th>
+                                    <th>No. MR</th>
+                                    <th>Nama Lengkap</th>
+                                    <th>Tgl Lahir</th>
+                                    <th>Nama Keluarga</th>
+                                    <th>Alamat</th>
+                                    <th>Nasabah</th>
+                                    <th>NIK</th>
+                                    <th>Catatan Khusus</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -165,7 +165,7 @@ export default function DaftarCariPasien({ pasien, filters }) {
                                             <td className="text-center px-4 py-3 border" style={{ color: 'var(--text-muted)', borderColor: 'var(--glass-border)' }}>
                                                 {pasien.from + index}.
                                             </td>
-                                            <td className="text-center px-4 py-3 border" style={{ borderColor: 'var(--glass-border)' }}>
+                                            <td>
                                                 <button
                                                     className="p-1.5 rounded-md transition-colors action-btn"
                                                     style={{ color: '#10b981' }}
@@ -175,7 +175,7 @@ export default function DaftarCariPasien({ pasien, filters }) {
                                                     <CheckSquare className="w-4 h-4" />
                                                 </button>
                                             </td>
-                                            <td className="text-center px-4 py-3 border" style={{ borderColor: 'var(--glass-border)' }}>
+                                            <td>
                                                 <button
                                                     className="p-1.5 rounded-md transition-colors action-btn"
                                                     style={{ color: '#3b82f6' }}
@@ -185,7 +185,7 @@ export default function DaftarCariPasien({ pasien, filters }) {
                                                     <FileText className="w-4 h-4" />
                                                 </button>
                                             </td>
-                                            <td className="text-center px-4 py-3 border" style={{ borderColor: 'var(--glass-border)' }}>
+                                            <td>
                                                 <button
                                                     className="p-1.5 rounded-md transition-colors action-btn"
                                                     style={{ color: '#f59e0b' }}
@@ -195,10 +195,10 @@ export default function DaftarCariPasien({ pasien, filters }) {
                                                     <Edit className="w-4 h-4" />
                                                 </button>
                                             </td>
-                                            <td className="font-mono font-medium px-4 py-3 border" style={{ borderColor: 'var(--glass-border)' }}>
+                                            <td>
                                                 {p.no_mr}
                                             </td>
-                                            <td className="px-4 py-3 border" style={{ borderColor: 'var(--glass-border)' }}>
+                                            <td>
                                                 {p.status_meninggal == 1 ? (
                                                     <span className="font-bold text-red-500">{p.nama_pasien} (Meninggal)</span>
                                                 ) : p.status_aktif === 'N' ? (

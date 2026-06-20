@@ -103,7 +103,7 @@ export default function PendaftaranRi({ auth, patients }) {
                                         <h4 className="text-sm font-semibold text-emerald-300 uppercase tracking-wider mb-2">Data Pasien</h4>
                                         
                                         <div className="form-group">
-                                            <label>Pilih Pasien <span className="text-red-400">*</span></label>
+                                            <label className="form-label">Pilih Pasien <span className="text-red-400">*</span></label>
                                             <select 
                                                 className={`form-control ${errors.no_mr ? 'is-invalid' : ''}`}
                                                 value={data.no_mr}
@@ -118,7 +118,7 @@ export default function PendaftaranRi({ auth, patients }) {
                                         </div>
 
                                         <div className="form-group">
-                                            <label>Status Pasien</label>
+                                            <label className="form-label">Status Pasien</label>
                                             <select 
                                                 className="form-control"
                                                 value={data.txt_pasien}
@@ -130,7 +130,7 @@ export default function PendaftaranRi({ auth, patients }) {
                                         </div>
                                         
                                         <div className="form-group">
-                                            <label>Nama Keluarga Terdekat <span className="text-red-400">*</span></label>
+                                            <label className="form-label">Nama Keluarga Terdekat <span className="text-red-400">*</span></label>
                                             <input 
                                                 type="text" 
                                                 className={`form-control ${errors.txt_nama_kel ? 'is-invalid' : ''}`}
@@ -144,7 +144,7 @@ export default function PendaftaranRi({ auth, patients }) {
                                         <h4 className="text-sm font-semibold text-emerald-300 uppercase tracking-wider mb-2">Data Asuransi / Penjamin</h4>
                                         
                                         <div className="form-group">
-                                            <label>Nasabah</label>
+                                            <label className="form-label">Nasabah</label>
                                             <select 
                                                 className="form-control"
                                                 value={data.txt_kode_kelompok}
@@ -159,7 +159,7 @@ export default function PendaftaranRi({ auth, patients }) {
                                         </div>
 
                                         <div className="form-group">
-                                            <label>Kepemilikan</label>
+                                            <label className="form-label">Kepemilikan</label>
                                             <input 
                                                 type="text" 
                                                 className="form-control"
@@ -169,7 +169,7 @@ export default function PendaftaranRi({ auth, patients }) {
                                         </div>
 
                                         <div className="form-group">
-                                            <label>No. Jaminan</label>
+                                            <label className="form-label">No. Jaminan</label>
                                             <input 
                                                 type="text" 
                                                 className="form-control"
@@ -183,7 +183,7 @@ export default function PendaftaranRi({ auth, patients }) {
                                         <h4 className="text-sm font-semibold text-emerald-300 uppercase tracking-wider mb-2">Data Masuk</h4>
                                         
                                         <div className="form-group">
-                                            <label>Tgl Masuk</label>
+                                            <label className="form-label">Tgl Masuk</label>
                                             <input 
                                                 type="datetime-local" 
                                                 className="form-control"
@@ -193,7 +193,7 @@ export default function PendaftaranRi({ auth, patients }) {
                                         </div>
 
                                         <div className="form-group">
-                                            <label>Bed (Kamar) <span className="text-red-400">*</span></label>
+                                            <label className="form-label">Bed (Kamar) <span className="text-red-400">*</span></label>
                                             <select 
                                                 className={`form-control ${errors.kode_ruangan ? 'is-invalid' : ''}`}
                                                 value={data.kode_ruangan}
@@ -207,7 +207,7 @@ export default function PendaftaranRi({ auth, patients }) {
                                         </div>
 
                                         <div className="form-group">
-                                            <label>Dokter Merawat <span className="text-red-400">*</span></label>
+                                            <label className="form-label">Dokter Merawat <span className="text-red-400">*</span></label>
                                             <select 
                                                 className={`form-control ${errors.kode_dokter ? 'is-invalid' : ''}`}
                                                 value={data.kode_dokter}
@@ -220,7 +220,7 @@ export default function PendaftaranRi({ auth, patients }) {
                                         </div>
                                         
                                         <div className="form-group">
-                                            <label>Cara Daftar</label>
+                                            <label className="form-label">Cara Daftar</label>
                                             <select 
                                                 className="form-control"
                                                 value={data.flag_daftar}

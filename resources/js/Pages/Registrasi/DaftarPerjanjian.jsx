@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Head, Link, router } from '@inertiajs/react';
 import { Search, ArrowLeft, Users, Plus, FileText } from 'lucide-react';
-import '../../../css/pasien-lama.css';
 
 export default function DaftarPerjanjian({ daftar, filters }) {
     const [topik, setTopik] = useState(filters.topik || 'nama');
@@ -28,7 +27,7 @@ export default function DaftarPerjanjian({ daftar, filters }) {
                         <p>Pilih pasien untuk membuat perjanjian baru</p>
                     </div>
                     <div className="pl-actions">
-                        <Link href="/dashboard/2" className="btn btn-secondary">
+                        <Link href="/dashboard/2" className="dash-btn secondary">
                             <ArrowLeft size={16} />
                             Kembali
                         </Link>
@@ -60,18 +59,18 @@ export default function DaftarPerjanjian({ daftar, filters }) {
                                 onChange={(e) => setFilterVal(e.target.value)}
                             />
                         </div>
-                        <button type="submit" className="btn btn-primary">
+                        <button type="submit" className="dash-btn primary">
                             Cari
                         </button>
                         {filters.filter && (
-                            <button type="button" onClick={handleClear} className="btn btn-secondary">
+                            <button type="button" onClick={handleClear} className="dash-btn secondary">
                                 Reset
                             </button>
                         )}
                     </form>
 
                     <div className="table-responsive">
-                        <table className="pl-table">
+                        <table className="dash-table">
                             <thead>
                                 <tr>
                                     <th style={{ width: '50px' }}>Aksi</th>
@@ -87,7 +86,7 @@ export default function DaftarPerjanjian({ daftar, filters }) {
                                         <tr key={patient.no_mr}>
                                             <td>
                                                 {patient.status_meninggal !== 1 && (
-                                                    <button className="btn btn-primary" style={{ padding: '0.25rem 0.5rem', fontSize: '0.75rem', display: 'flex', gap: '0.25rem', alignItems: 'center' }}>
+                                                    <button className="dash-btn primary" style={{ padding: '0.25rem 0.5rem', fontSize: '0.75rem', display: 'flex', gap: '0.25rem', alignItems: 'center' }}>
                                                         <Plus size={14} /> Pesan
                                                     </button>
                                                 )}

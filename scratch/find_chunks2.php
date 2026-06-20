@@ -1,0 +1,8 @@
+<?php
+$log = file('C:/Users/lsidq/.gemini/antigravity/brain/066a488e-bb8e-4e91-8110-6f31bb7fc2ca/.system_generated/logs/transcript.jsonl');
+foreach($log as $l) {
+    $d = json_decode($l, true);
+    if($d && isset($d['created_at']) && $d['created_at'] == '2026-06-20T14:26:19Z') {
+        print_r($d['tool_calls']);
+    }
+}

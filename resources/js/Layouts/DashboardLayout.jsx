@@ -1,21 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { Head, Link, usePage } from '@inertiajs/react';
-import { 
-    Menu, X, ChevronDown, ChevronRight, 
-    Home, Users, Activity, Settings, 
-    FileText, HeartPulse, LogOut, LayoutDashboard,
-    Sun, Moon 
+import {
+    Menu, X, ChevronDown, ChevronRight,
+    Home, Users, Settings, Briefcase,
+    FileText, LogOut, LayoutDashboard,
+    Sun, Moon, Boxes, Database, Layers
 } from 'lucide-react';
 
 // A mapping function to guess an icon based on menu name
 const getMenuIcon = (name) => {
     const n = name?.toLowerCase() || '';
-    if (n.includes('pasien') || n.includes('user')) return <Users size={20} />;
-    if (n.includes('rekam') || n.includes('laporan')) return <FileText size={20} />;
+    if (n.includes('pasien') || n.includes('user') || n.includes('sdm') || n.includes('pegawai')) return <Users size={20} />;
+    if (n.includes('rekam') || n.includes('laporan') || n.includes('dokumen')) return <FileText size={20} />;
     if (n.includes('setting') || n.includes('pengaturan')) return <Settings size={20} />;
-    if (n.includes('medis') || n.includes('klinik')) return <HeartPulse size={20} />;
-    if (n.includes('antrean') || n.includes('queue')) return <Activity size={20} />;
-    return <LayoutDashboard size={20} />;
+    if (n.includes('medis') || n.includes('klinik') || n.includes('layanan') || n.includes('poli')) return <Briefcase size={20} />;
+    if (n.includes('antrean') || n.includes('queue') || n.includes('transaksi') || n.includes('kasir')) return <Database size={20} />;
+    if (n.includes('gudang') || n.includes('stok') || n.includes('inventori')) return <Boxes size={20} />;
+    return <Layers size={20} />;
 };
 
 export default function DashboardLayout({ children }) {
@@ -26,8 +27,20 @@ export default function DashboardLayout({ children }) {
     const module_name = dashboard?.module_name || 'Dashboard';
     const menus = dashboard?.menus || [];
 
-    const [isSidebarOpen, setSidebarOpen] = useState(true);
-    
+    const [isSidebarOpen, setSidebarOpen] = useState(() => {
+        if (typeof window !== 'undefined') {
+            const saved = localStorage.getItem('sidebarOpen');
+            return saved !== null ? saved === 'true' : true;
+        }
+        return true;
+    });
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            localStorage.setItem('sidebarOpen', isSidebarOpen);
+        }
+    }, [isSidebarOpen]);
+
     // Simpan status menu yang terbuka ke sessionStorage agar tidak tertutup saat ganti halaman
     const [openMenus, setOpenMenus] = useState(() => {
         try {
@@ -52,7 +65,7 @@ export default function DashboardLayout({ children }) {
         } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
             setTheme('light');
         }
-        
+
         const timer = setInterval(() => setCurrentTime(new Date()), 1000);
         return () => clearInterval(timer);
     }, []);
@@ -66,31 +79,46 @@ export default function DashboardLayout({ children }) {
     const toggleSidebar = () => setSidebarOpen(!isSidebarOpen);
 
     const toggleMenu = (menuId) => {
-        setOpenMenus(prev => ({
-            ...prev,
-            [menuId]: !prev[menuId]
-        }));
+        setOpenMenus(prev => {
+            // Jika menu yang sama diklik, tutup menu tersebut (return object kosong).
+            // Jika menu lain diklik, buka HANYA menu tersebut (tutup yang lain).
+            if (prev[menuId]) {
+                return {};
+            }
+            return { [menuId]: true };
+        });
     };
+
+    const isPopup = typeof window !== 'undefined' && window.location.search.includes('popup=1');
+
+    if (isPopup) {
+        return (
+            <div className="dash-layout popup-mode" data-theme={theme} style={{ display: 'block', height: 'auto', overflow: 'auto' }}>
+                <Head title={`${module_name || 'Dashboard'} - ERP`} />
+                <div className="dash-body" style={{ height: 'auto', overflow: 'visible', padding: '20px' }}>
+                    <main className="dash-content" style={{ width: '100%', maxWidth: '100%', margin: 0, padding: 0 }}>
+                        {children}
+                    </main>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="dash-layout" data-theme={theme}>
-            <Head title={`${module_name || 'Dashboard'} - Medilink RS`} />
-            
-            {/* Background Glows */}
-            <div className="dash-glow dash-glow-1"></div>
-            <div className="dash-glow dash-glow-2"></div>
-            
+            <Head title={`${module_name || 'Dashboard'} - ERP`} />
+
             {/* Top Navbar */}
-            <header className="dash-navbar glass-panel">
+            <header className="dash-navbar dash-glass-panel">
                 <div className="dash-nav-left">
                     <button onClick={toggleSidebar} className="dash-icon-btn">
                         {isSidebarOpen ? <X size={24} /> : <Menu size={24} />}
                     </button>
                     <div className="dash-brand">
-                        <HeartPulse size={28} className="dash-brand-icon" />
+                        <Boxes size={28} className="dash-brand-icon" />
                         <div>
-                            <h2>MEDILINK</h2>
-                            <span className="dash-tag">{module_name || 'Smart Hospital'}</span>
+                            <h2>SISTEM ERP</h2>
+                            <span className="dash-tag">{module_name || 'Enterprise Edition'}</span>
                         </div>
                     </div>
                 </div>
@@ -99,11 +127,11 @@ export default function DashboardLayout({ children }) {
                     <div className="dash-clock">
                         {currentTime.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' })} WIB
                     </div>
-                    
+
                     <button onClick={toggleTheme} className="dash-icon-btn theme-toggle" title="Ubah Tema">
                         {theme === 'dark' ? <Sun size={20} className="text-yellow-400" /> : <Moon size={20} className="text-blue-600" />}
                     </button>
-                    
+
                     <div className="dash-user">
                         <div className="dash-user-info">
                             <span className="dash-user-name">{user.username || user.name}</span>
@@ -120,8 +148,14 @@ export default function DashboardLayout({ children }) {
             </header>
 
             <div className="dash-body">
+                {/* Overlay Backdrop for Mobile */}
+                <div 
+                    className={`dash-sidebar-overlay ${isSidebarOpen ? 'show' : ''}`} 
+                    onClick={toggleSidebar}
+                ></div>
+
                 {/* Sidebar */}
-                <aside className={`dash-sidebar glass-panel ${isSidebarOpen ? 'open' : 'closed'}`}>
+                <aside className={`dash-sidebar dash-glass-panel ${isSidebarOpen ? 'open' : 'closed'}`}>
                     <div className="dash-sidebar-inner">
                         <div className="dash-menu-section">
                             <span className="dash-menu-label">Main Menu</span>
@@ -134,7 +168,7 @@ export default function DashboardLayout({ children }) {
 
                                     return (
                                         <li key={menuId} className="dash-menu-group">
-                                            <button 
+                                            <button
                                                 className={`dash-menu-item ${isOpen ? 'active' : ''}`}
                                                 onClick={() => toggleMenu(menuId)}
                                             >
@@ -144,122 +178,25 @@ export default function DashboardLayout({ children }) {
                                                     isOpen ? <ChevronDown size={16} className="dash-menu-arrow" /> : <ChevronRight size={16} className="dash-menu-arrow" />
                                                 )}
                                             </button>
-                                            
+
                                             {submenus.length > 0 && (
                                                 <ul className={`dash-submenu-list ${isOpen ? 'open' : ''}`}>
                                                     {submenus.map((sub, sIdx) => {
-                                                        const subId = sub.id_dc_sub_menu || sub.id_sub_menu || sub.id;
-                                                        let subUrlRaw = sub.url_sub_menu || sub.url || '#';
-                                                        
-                                                        // NATIVE MIGRATION OVERRIDES (Tahap 1 & 2)
-                                                        if (subId == 9) subUrlRaw = '/registrasi/cari-pasien?type=poli';
-                                                        if (subId == 11) subUrlRaw = '/registrasi/cari-pasien?type=igd';
-                                                        if (subId == 10) subUrlRaw = '/registrasi/cari-pasien?type=pm';
-                                                        if (subId == 12) subUrlRaw = '/registrasi/cari-pasien?type=ri';
-                                                        if (subId == 668) subUrlRaw = '/registrasi/cari-pasien?type=igd-malam';
-                                                        if (subId == 807) subUrlRaw = '/registrasi/cari-pasien?type=paket-poli';
-                                                        if (subId == 609) subUrlRaw = '/registrasi/cari-pasien?type=mcu';
-                                                        
-                                                        // Other existing menus
-                                                        if (subId == 13) subUrlRaw = '/registrasi/pasien-baru';
-                                                        if (subId == 433) subUrlRaw = '/registrasi/pasien-lama';
-                                                        if (subId == 1246) subUrlRaw = '/registrasi/listing-poli';
-                                                        if (subId == 1829 || subId == 2267) subUrlRaw = '/registrasi/permintaan-ri';
-                                                        if (subId == 743) subUrlRaw = '/registrasi/pasien-rawat-inap';
-                                                        if (subId == 14) subUrlRaw = '/registrasi/edit-data'; // Phase 2
-                                                        // Phase 3 Mappings
-                                                        if (subId == 15) subUrlRaw = '/registrasi/jadwal-dokter';
-                                                        if (subId == 16) subUrlRaw = '/registrasi/riwayat-pasien';
-                                                        if (subId == 28) subUrlRaw = '/registrasi/info-ruangan';
-                                                        if (subId == 2349) subUrlRaw = '/registrasi/info-ruangan-2';
-                                                        if (subId == 1211) subUrlRaw = '/registrasi/harga-kamar';
-                                                        if (subId == 1374) subUrlRaw = '/registrasi/info-tarif-umum';
-                                                        if (subId == 19) subUrlRaw = '/registrasi/paket-bedah';
-                                                        if (subId == 20) subUrlRaw = '/registrasi/paket-melahirkan';
-                                                        // Phase 4 Mappings
-                                                        if (subId == 434) subUrlRaw = '/registrasi/perjanjian-pasien';
-                                                        if (subId == 435) subUrlRaw = '/registrasi/daftar-perjanjian';
-                                                        if (subId == 1736 || subId == 1737) subUrlRaw = '/registrasi/listing-online';
-                                                        if (subId == 1773) subUrlRaw = '/registrasi/listing-jkn';
-                                                        // Laporan Mappings (defined here, overrides set below at line 226)
-                                                        // (mapping handled at line 226)
-                                                        
-                                                        // Poli Mappings
-                                                        if (subUrlRaw.includes('mod_poli/antrian.php') || subUrlRaw.includes('mod_poli/antrian_pasien.php')) {
-                                                            subUrlRaw = '/poli/antrian-poli';
-                                                        }
-
-                                                        // Phase 5 Mappings - remaining legacy submenus via LegacyView
-                                                        if (subId == 2192) subUrlRaw = '/registrasi/listing-poli'; // Listing Pasien His → same page
-                                                        // PENDAFTARAN group legacy
-                                                        if (subId == 1087) subUrlRaw = '/mod_registrasi/his_registrasi.php';
-                                                        if (subId == 673) subUrlRaw = '/mod_secsio/reg_pasien_paket.php';
-                                                        if (subId == 1811) subUrlRaw = '/registrasi/legacy-ext?url=' + encodeURIComponent('http://192.168.0.3:8081/mod_registrasi/vclaim_monitoring_peserta_view.php') + '&title=Monitoring';
-                                                        // V CLAIM group - external URLs via legacy-ext
-                                                        if (subId == 1808) subUrlRaw = '/registrasi/legacy-ext?url=' + encodeURIComponent('http://192.168.0.4:8081/mod_registrasi/vclaim_cek_peserta_view.php') + '&title=Data+Peserta';
-                                                        if (subId == 1804) subUrlRaw = '/registrasi/legacy-ext?url=' + encodeURIComponent('http://192.168.0.4:8081/mod_registrasi/vclaim_data_peserta_view.php') + '&title=Update+SEP';
-                                                        if (subId == 1810) subUrlRaw = '/registrasi/legacy-ext?url=' + encodeURIComponent('http://192.168.0.4:8081/mod_registrasi/vclaim_kontrol_view.php') + '&title=Rencana+Kontrol';
-                                                        if (subId == 1806) subUrlRaw = '/registrasi/legacy-ext?url=' + encodeURIComponent('http://192.168.0.4:8081/mod_registrasi/vclaim_rujukan_view.php') + '&title=Rujukan';
-                                                        if (subId == 1812) subUrlRaw = '/registrasi/legacy-ext?url=' + encodeURIComponent('http://192.168.0.4:8081/mod_registrasi/vclaim_monitoring_peserta_view.php') + '&title=Monitoring+VClaim';
-                                                        // LISTING PASIEN group legacy
-                                                        if (subId == 662) subUrlRaw = '/mod_igd/batal_pasien_igd_view.php';
-                                                        // (subId == 437 mapped above for antrian_pasien.php)
-                                                        if (subId == 1151) subUrlRaw = '/mod_pm/listing_pasien_lab_v.php';
-                                                        if (subId == 1152) subUrlRaw = '/mod_pm/listing_pasien_rad_v.php';
-                                                        if (subId == 1154) subUrlRaw = '/mod_pm/list_pasien_fisio.php';
-                                                        if (subId == 1155) subUrlRaw = '/mod_pm/list_pasien_hd.php';
-                                                        if (subId == 1153) subUrlRaw = '/mod_mcu/list_pasien_mcu_v.php';
-                                                        if (subId == 1615) subUrlRaw = '/registrasi/legacy-ext?url=' + encodeURIComponent('http://192.168.0.8/mod_registrasi/pasien_ri_his.php') + '&title=History+Pasien+RI';
-                                                        // INFORMASI group legacy
-                                                        if (subId == 1437) subUrlRaw = '/mod_registrasi/data_perusahaan_view.php';
-                                                        if (subId == 21) subUrlRaw = '/mod_registrasi/pasien_ri_view.php';
-                                                        if (subId == 22) subUrlRaw = '/mod_registrasi/informasi_medik_view.php';
-                                                        if (subId == 2347) subUrlRaw = '/mod_registrasi/list_pasien_prb_tab.php';
-                                                        if (subId == 1213) subUrlRaw = '/mod_registrasi/lap_operan.php';
-                                                        if (subId == 2363) subUrlRaw = '/registrasi/legacy-ext?url=' + encodeURIComponent('http://192.168.0.3/mod_poli/rencana_kontrol_view.php') + '&title=WA+Blast+Rencana+Kontrol';
-                                                        // PERMINTAAN BRG group
-                                                        if (subId == 1294) subUrlRaw = '/registrasi/legacy-ext?url=' + encodeURIComponent('http://192.168.0.8/mod_gudang_non_medik/permintaan_unit_tab.php?kode_bagian=300001') + '&title=Permintaan+Non+Medis';
-                                                        if (subId == 1824) subUrlRaw = '/mod_IPRS/stok_aset_view.php?kode_bagian=300001';
-                                                        if (subId == 1826) subUrlRaw = '/registrasi/legacy-ext?url=' + encodeURIComponent('http://192.168.0.8/mod_pm/stok_nm_unit_view.php?kode_bagian=300001') + '&title=Barang+Non+Medis';
-                                                        // HRD group
-                                                        if (subId == 1744) subUrlRaw = '/mod_payroll/adm_personalia_unit.php';
-                                                        if (subId == 2214) subUrlRaw = '/mod_payroll/ver_kanit_lembur_view.php';
-                                                        // STOK DEPO
-                                                        if (subId == 2168) subUrlRaw = '/registrasi/legacy-ext?url=' + encodeURIComponent('http://192.168.0.8/mod_pm/stok_NM_depo_view.php') + '&title=Stok+Non+Medis';
-                                                        // KUITANSI BATAL
-                                                        if (subId == 767) subUrlRaw = '/mod_kasir/kuitansi_batal_view.php';
-                                                        // LAPORAN group
-                                                        if (subId == 30) subUrlRaw = '/laporan/kinerja';
-                                                        if (subId == 29) subUrlRaw = '/mod_laporan/lap_kunjungan.php';
-                                                        if (subId == 2000) subUrlRaw = '/registrasi/legacy-ext?url=' + encodeURIComponent('http://192.168.0.8/mod_laporan/lap_kinerja.php') + '&title=Kinerja+HIS';
-                                                        if (subId == 1999) subUrlRaw = '/registrasi/legacy-ext?url=' + encodeURIComponent('http://192.168.0.8/mod_laporan/lap_kunjungan.php') + '&title=Kunjungan+HIS';
-                                                        
-                                                        let subUrl = subUrlRaw.trim();
-                                                        
-                                                        // Convert relative legacy paths to root-absolute
-                                                        if (subUrl.startsWith('../')) {
-                                                            subUrl = '/' + subUrl.substring(3);
-                                                        } else if (!subUrl.startsWith('/') && !subUrl.startsWith('http') && subUrl !== '#') {
-                                                            subUrl = '/' + subUrl;
-                                                        }
-
-                                                        // External http:// URLs that are NOT already routed via /registrasi/legacy-ext
-                                                        // should open in new tab (e.g. accidental unhandled http:// links)
-                                                        const isUnhandledExternal = subUrl.startsWith('http');
+                                                        // Baca url_sub_menu_baru dari database (prioritas utama)
+                                                        const subUrl  = sub.url_sub_menu_baru || null;
                                                         const subName = sub.nama_sub_menu || sub.name || 'Submenu';
-                                                        
-                                                        const isActive = activeUrl === subUrl || activeUrl.startsWith(subUrl + '?');
+                                                        const isActive = subUrl && (activeUrl === subUrl || activeUrl.startsWith(subUrl + '?'));
 
                                                         return (
-                                                            <li key={sub.id_sub_menu || sub.id || sIdx}>
-                                                                {isUnhandledExternal ? (
-                                                                    <a href={subUrl} className={`dash-submenu-item ${isActive ? 'active' : ''}`} target="_blank" rel="noreferrer">
-                                                                        {subName}
-                                                                    </a>
-                                                                ) : (
+                                                            <li key={sub.id_dc_sub_menu || sub.id || sIdx}>
+                                                                {subUrl ? (
                                                                     <Link href={subUrl} className={`dash-submenu-item ${isActive ? 'active' : ''}`}>
                                                                         {subName}
                                                                     </Link>
+                                                                ) : (
+                                                                    <span className="dash-submenu-item disabled" title="URL belum dikonfigurasi">
+                                                                        {subName}
+                                                                    </span>
                                                                 )}
                                                             </li>
                                                         );
@@ -272,7 +209,7 @@ export default function DashboardLayout({ children }) {
                             </ul>
                         </div>
                     </div>
-                    
+
                     <div className="dash-sidebar-footer">
                         <Link href="/modul" className="dash-back-btn">
                             &larr; <span className="dash-menu-text">Ganti Modul</span>
@@ -284,18 +221,18 @@ export default function DashboardLayout({ children }) {
                 <main className="dash-content">
                     {children ? children : (
                         <>
-                            <div className="dash-welcome glass-panel">
+                            <div className="dash-welcome dash-glass-panel">
                                 <h1>Selamat Datang di {module_name || 'Modul Sistem'}</h1>
                                 <p>Silakan gunakan menu navigasi di sebelah kiri untuk mengakses fitur yang tersedia dalam modul ini.</p>
                             </div>
 
                             <div className="dash-widgets">
-                                <div className="dash-widget glass-panel">
+                                <div className="dash-widget dash-glass-panel">
                                     <Activity size={32} className="widget-icon primary" />
                                     <h3>Status Sistem</h3>
                                     <p>Sistem berjalan optimal. Semua layanan terhubung.</p>
                                 </div>
-                                <div className="dash-widget glass-panel">
+                                <div className="dash-widget dash-glass-panel">
                                     <Users size={32} className="widget-icon success" />
                                     <h3>Sesi Pengguna</h3>
                                     <p>Anda login sebagai <strong>{user.username || user.name}</strong> dengan hak akses modul saat ini.</p>
@@ -305,37 +242,57 @@ export default function DashboardLayout({ children }) {
                     )}
                 </main>
             </div>
-            
+
             <style>{`
-                /* Inline CSS for Dashboard Shell Glassmorphism */
-                @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+                /* Inline CSS for ERP Style Dashboard */
+                @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
                 :root {
-                    --bg-dark: #070b14;
-                    --glass-bg: rgba(15, 23, 42, 0.7);
-                    --glass-border: rgba(14, 165, 233, 0.15);
-                    --glass-hover: rgba(30, 41, 59, 0.85);
-                    --primary: #0ea5e9;
-                    --primary-glow: rgba(14, 165, 233, 0.3);
-                    --text-main: #f8fafc;
-                    --text-muted: #94a3b8;
-                    --sidebar-width: 270px;
-                    --sidebar-collapsed: 76px;
-                    --shadow-sm: 0 4px 10px -1px rgba(0, 0, 0, 0.3);
-                    --shadow-md: 0 10px 25px -3px rgba(0, 0, 0, 0.4);
+                    /* Main background */
+                    --bg-dark: #0b0f19;
+
+                    /* Glass Panels */
+                    --glass-bg: rgba(17, 24, 39, 0.7);
+                    --glass-border: rgba(255, 255, 255, 0.06);
+                    --glass-hover: rgba(31, 41, 55, 0.8);
+
+                    /* Primary brand color */
+                    --primary: #3b82f6;
+                    --primary-glow: rgba(59, 130, 246, 0.15);
+                    --primary-hover: #2563eb;
+
+                    /* Text colors */
+                    --text-main: #f3f4f6;
+                    --text-muted: #9ca3af;
+
+                    /* Layout */
+                    --sidebar-width: 260px;
+                    --sidebar-collapsed: 72px;
+
+                    /* Shadows */
+                    --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+                    --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
                 }
-                
+
                 .dash-layout[data-theme="light"] {
-                    --bg-dark: #f0f4f8;
-                    --glass-bg: rgba(255, 255, 255, 0.85);
-                    --glass-border: rgba(99, 102, 241, 0.15);
-                    --glass-hover: rgba(248, 250, 252, 1);
-                    --primary: #4f46e5;
-                    --primary-glow: rgba(79, 70, 229, 0.2);
-                    --text-main: #0f172a;
-                    --text-muted: #475569;
-                    --shadow-sm: 0 4px 12px -1px rgba(15, 23, 42, 0.05);
-                    --shadow-md: 0 12px 30px -3px rgba(15, 23, 42, 0.08);
+                    --bg-dark: #f3f4f6;
+                    --glass-bg: #ffffff;
+                    --glass-border: #e5e7eb;
+                    --glass-hover: #f9fafb;
+                    --primary: #2563eb;
+                    --text-main: #111827;
+                    --text-muted: #4b5563;
+                }
+
+                /* Keep dark mode intact but make it solid instead of glass */
+                .dash-layout[data-theme="dark"] {
+                    --bg-dark: #111827;
+                    --glass-bg: #1f2937;
+                    --glass-border: #374151;
+                    --glass-hover: #374151;
+                    --primary: #3b82f6;
+                    --text-main: #f9fafb;
+                    --text-muted: #9ca3af;
                 }
 
                 .dash-layout, .dash-layout *, .dash-layout *::before, .dash-layout *::after {
@@ -346,43 +303,36 @@ export default function DashboardLayout({ children }) {
                     height: 100vh;
                     background-color: var(--bg-dark);
                     color: var(--text-main);
-                    font-family: 'Outfit', sans-serif;
+                    font-family: 'Inter', system-ui, -apple-system, sans-serif;
                     display: flex;
                     flex-direction: column;
                     overflow: hidden;
                     position: relative;
                 }
 
-                .dash-glow {
-                    position: absolute;
-                    width: 500px;
-                    height: 500px;
-                    border-radius: 50%;
-                    filter: blur(100px);
-                    z-index: 0;
-                    opacity: 0.4;
-                    pointer-events: none;
-                }
-                .dash-glow-1 { top: -200px; left: -100px; background: radial-gradient(circle, var(--primary), transparent 60%); }
-                .dash-glow-2 { bottom: -200px; right: -100px; background: radial-gradient(circle, #8b5cf6, transparent 60%); }
-
-                .glass-panel {
+                /* Glass Panel for generic use */
+                .dash-glass-panel {
                     background: var(--glass-bg);
-                    backdrop-filter: blur(12px);
-                    -webkit-backdrop-filter: blur(12px);
+                    backdrop-filter: blur(16px);
+                    -webkit-backdrop-filter: blur(16px);
                     border: 1px solid var(--glass-border);
+                    box-shadow: var(--shadow-md);
+                    border-radius: 12px;
                     position: relative;
                     z-index: 1;
                 }
 
                 /* Navbar */
                 .dash-navbar {
-                    height: 70px;
+                    height: 64px;
                     display: flex;
                     align-items: center;
                     justify-content: space-between;
                     padding: 0 20px;
                     border-bottom: 1px solid var(--glass-border);
+                    border-radius: 0; /* Remove radius for navbar */
+                    box-shadow: var(--shadow-sm);
+                    z-index: 20;
                 }
 
                 .dash-nav-left {
@@ -394,16 +344,16 @@ export default function DashboardLayout({ children }) {
                 .dash-icon-btn {
                     background: transparent;
                     border: none;
-                    color: var(--text-main);
+                    color: var(--text-muted);
                     cursor: pointer;
                     display: flex;
                     align-items: center;
                     justify-content: center;
                     padding: 8px;
-                    border-radius: 8px;
-                    transition: background 0.2s;
+                    border-radius: 6px;
+                    transition: all 0.2s;
                 }
-                .dash-icon-btn:hover { background: rgba(255,255,255,0.1); }
+                .dash-icon-btn:hover { background: var(--glass-hover); color: var(--text-main); }
 
                 .dash-brand {
                     display: flex;
@@ -411,20 +361,20 @@ export default function DashboardLayout({ children }) {
                     gap: 12px;
                 }
                 .dash-brand-icon { color: var(--primary); }
-                .dash-brand h2 { margin: 0; font-size: 1.2rem; font-weight: 700; letter-spacing: 1px; }
-                .dash-tag { font-size: 0.75rem; color: var(--text-muted); background: rgba(59,130,246,0.1); padding: 2px 6px; border-radius: 4px; border: 1px solid rgba(59,130,246,0.2); }
+                .dash-brand h2 { margin: 0; font-size: 1.25rem; font-weight: 700; letter-spacing: 0.5px; color: var(--text-main); }
+                .dash-tag { font-size: 0.75rem; color: var(--primary); background: var(--primary-glow); padding: 2px 8px; border-radius: 4px; font-weight: 600; }
 
                 .dash-nav-right {
                     display: flex;
                     align-items: center;
                     gap: 24px;
                 }
-                .dash-clock { font-size: 0.9rem; color: var(--text-muted); font-weight: 500; }
+                .dash-clock { font-size: 0.85rem; color: var(--text-muted); font-weight: 500; }
                 .dash-user { display: flex; align-items: center; gap: 12px; }
                 .dash-user-info { display: flex; flex-direction: column; align-items: flex-end; }
-                .dash-user-name { font-weight: 600; font-size: 0.9rem; }
+                .dash-user-name { font-weight: 600; font-size: 0.85rem; color: var(--text-main); }
                 .dash-user-role { font-size: 0.75rem; color: var(--text-muted); }
-                .dash-avatar { width: 36px; height: 36px; background: linear-gradient(135deg, var(--primary), #8b5cf6); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+                .dash-avatar { width: 34px; height: 34px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.9rem; }
                 .dash-logout-btn { color: var(--text-muted); transition: color 0.2s; margin-left: 8px; }
                 .dash-logout-btn:hover { color: #ef4444; }
 
@@ -445,6 +395,8 @@ export default function DashboardLayout({ children }) {
                     transition: width 0.3s ease;
                     overflow-x: hidden;
                     min-height: 0;
+                    border-radius: 0;
+                    box-shadow: none; /* Let the border do the work */
                 }
                 .dash-sidebar.closed {
                     width: var(--sidebar-collapsed);
@@ -458,13 +410,14 @@ export default function DashboardLayout({ children }) {
                 .dash-sidebar-inner {
                     flex: 1;
                     overflow-y: auto;
-                    padding: 20px 10px;
+                    padding: 20px 12px;
                     min-height: 0;
                 }
-                
-                .dash-sidebar-inner::-webkit-scrollbar { width: 4px; }
+
+                .dash-sidebar-inner::-webkit-scrollbar { width: 6px; }
                 .dash-sidebar-inner::-webkit-scrollbar-track { background: transparent; }
-                .dash-sidebar-inner::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+                .dash-sidebar-inner::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 4px; }
+                .dash-sidebar-inner:hover::-webkit-scrollbar-thumb { background: #9ca3af; }
 
                 .dash-menu-label {
                     font-size: 0.7rem;
@@ -473,7 +426,8 @@ export default function DashboardLayout({ children }) {
                     font-weight: 700;
                     letter-spacing: 1px;
                     margin-left: 12px;
-                    margin-bottom: 10px;
+                    margin-bottom: 12px;
+                    margin-top: 10px;
                     display: block;
                 }
 
@@ -491,30 +445,31 @@ export default function DashboardLayout({ children }) {
                     align-items: center;
                     width: 100%;
                     padding: 10px 12px;
-                    border-radius: 8px;
+                    border-radius: 6px;
                     border: none;
                     background: transparent;
-                    color: var(--text-muted);
-                    font-size: 0.95rem;
+                    color: var(--text-main);
+                    font-size: 0.9rem;
+                    font-weight: 500;
                     cursor: pointer;
                     text-decoration: none;
                     transition: all 0.2s;
                 }
                 .dash-menu-item:hover {
-                    background: rgba(255,255,255,0.05);
-                    color: var(--text-main);
+                    background: var(--glass-hover);
                 }
                 .dash-menu-item.active {
-                    background: linear-gradient(90deg, var(--primary-glow) 0%, transparent 100%);
+                    background: var(--primary-glow);
                     color: var(--primary);
                     font-weight: 600;
-                    border-left: 3px solid var(--primary);
                 }
 
-                .dash-menu-icon { min-width: 20px; margin-right: 12px; }
+                .dash-menu-icon { min-width: 20px; margin-right: 12px; color: var(--text-muted); }
+                .dash-menu-item.active .dash-menu-icon { color: var(--primary); }
+
                 .dash-sidebar.closed .dash-menu-icon { margin-right: 0; margin-left: 4px; }
                 .dash-menu-text { flex: 1; text-align: left; white-space: nowrap; }
-                .dash-menu-arrow { margin-left: auto; transition: transform 0.2s; }
+                .dash-menu-arrow { margin-left: auto; transition: transform 0.2s; color: var(--text-muted); }
 
                 .dash-submenu-list {
                     list-style: none;
@@ -525,8 +480,9 @@ export default function DashboardLayout({ children }) {
                     transition: max-height 0.3s ease;
                 }
                 .dash-submenu-list.open {
-                    max-height: 500px; /* arbitrary large max height */
+                    max-height: 1000px;
                     margin-top: 4px;
+                    margin-bottom: 8px;
                 }
                 .dash-submenu-item {
                     display: block;
@@ -534,37 +490,68 @@ export default function DashboardLayout({ children }) {
                     color: var(--text-muted);
                     text-decoration: none;
                     font-size: 0.85rem;
-                    border-radius: 8px;
+                    border-radius: 6px;
                     transition: all 0.2s;
                     white-space: nowrap;
                     position: relative;
                 }
-                .dash-submenu-item:hover {
-                    background: rgba(255,255,255,0.03);
-                    color: var(--text-main);
-                    transform: translateX(4px);
-                }
-                .dash-submenu-item.active {
-                    color: var(--primary);
-                    font-weight: 600;
-                    background: rgba(14, 165, 233, 0.1);
-                }
-                .dash-submenu-item.active::before {
+
+                /* Submenu indentation line indicator */
+                .dash-submenu-item::before {
                     content: '';
                     position: absolute;
                     left: 20px;
+                    top: 0;
+                    bottom: 0;
+                    width: 1px;
+                    background: var(--glass-border);
+                }
+                /* Dot on the line */
+                .dash-submenu-item::after {
+                    content: '';
+                    position: absolute;
+                    left: 18.5px;
                     top: 50%;
                     transform: translateY(-50%);
-                    width: 6px;
-                    height: 6px;
+                    width: 4px;
+                    height: 4px;
                     border-radius: 50%;
-                    background: var(--primary);
-                    box-shadow: 0 0 8px var(--primary);
+                    background: var(--text-muted);
+                    transition: all 0.2s;
                 }
 
+                .dash-submenu-item:hover {
+                    color: var(--text-main);
+                    background: var(--glass-hover);
+                }
+                .dash-submenu-item:hover::after {
+                    background: var(--text-main);
+                    transform: translateY(-50%) scale(1.5);
+                }
+
+                .dash-submenu-item.active {
+                    color: var(--primary);
+                    font-weight: 600;
+                    background: var(--primary-glow);
+                }
+                .dash-submenu-item.active::before {
+                    background: var(--primary);
+                }
+                .dash-submenu-item.active::after {
+                    background: var(--primary);
+                    transform: translateY(-50%) scale(1.5);
+                }
+                .dash-submenu-item.disabled {
+                    opacity: 0.38;
+                    cursor: not-allowed;
+                    pointer-events: none;
+                    color: var(--text-muted, #888);
+                    font-style: italic;
+                }
                 .dash-sidebar-footer {
                     padding: 15px;
                     border-top: 1px solid var(--glass-border);
+                    background: var(--glass-bg);
                 }
                 .dash-back-btn {
                     display: flex;
@@ -572,14 +559,17 @@ export default function DashboardLayout({ children }) {
                     gap: 8px;
                     color: var(--text-muted);
                     text-decoration: none;
-                    font-size: 0.9rem;
-                    padding: 8px;
-                    border-radius: 8px;
+                    font-size: 0.85rem;
+                    font-weight: 500;
+                    padding: 10px;
+                    border-radius: 6px;
                     transition: all 0.2s;
                     justify-content: center;
+                    border: 1px solid var(--glass-border);
+                    background: var(--bg-dark);
                 }
-                .dash-back-btn:hover { background: rgba(255,255,255,0.05); color: var(--text-main); }
-                .dash-sidebar.closed .dash-back-btn { padding: 8px 0; }
+                .dash-back-btn:hover { background: var(--glass-hover); color: var(--text-main); border-color: #d1d5db; }
+                .dash-sidebar.closed .dash-back-btn { padding: 10px 0; }
 
                 /* Main Content Area */
                 .dash-content {
@@ -592,58 +582,205 @@ export default function DashboardLayout({ children }) {
                     display: flex;
                     flex-direction: column;
                 }
-                
+
                 .dash-content-inner {
                     flex: 1;
-                    padding: 30px;
+                    padding: 24px;
                     overflow: hidden;
                     min-height: 0;
                     display: flex;
                     flex-direction: column;
                     position: relative;
                 }
-                
+
                 .dash-welcome {
                     padding: 30px;
-                    border-radius: 16px;
-                    margin-bottom: 30px;
-                    animation: slideUp 0.5s ease-out forwards;
+                    border-radius: 8px;
+                    margin-bottom: 24px;
+                    border-left: 4px solid var(--primary);
+                    background: var(--glass-bg);
                 }
-                .dash-welcome h1 { margin-top: 0; font-size: 2rem; margin-bottom: 10px; background: linear-gradient(135deg, #fff, var(--primary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-                .dash-welcome p { color: var(--text-muted); margin: 0; font-size: 1.05rem; }
+                .dash-welcome h1 { margin-top: 0; font-size: 1.5rem; margin-bottom: 8px; color: var(--text-main); }
+                .dash-welcome p { color: var(--text-muted); margin: 0; font-size: 0.95rem; }
 
                 .dash-widgets {
                     display: grid;
                     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
                     gap: 20px;
-                    animation: slideUp 0.6s ease-out forwards;
                 }
 
                 .dash-widget {
                     padding: 24px;
-                    border-radius: 16px;
-                    transition: transform 0.3s;
+                    border-radius: 8px;
+                    transition: box-shadow 0.2s;
                 }
-                .dash-widget:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
+                .dash-widget:hover { box-shadow: var(--shadow-md); }
                 .widget-icon { margin-bottom: 16px; }
                 .widget-icon.primary { color: var(--primary); }
                 .widget-icon.success { color: #10b981; }
-                .dash-widget h3 { margin: 0 0 8px 0; font-size: 1.2rem; }
-                .dash-widget p { margin: 0; color: var(--text-muted); font-size: 0.9rem; line-height: 1.5; }
+                .dash-widget h3 { margin: 0 0 8px 0; font-size: 1.1rem; color: var(--text-main); }
+                .dash-widget p { margin: 0; color: var(--text-muted); font-size: 0.85rem; line-height: 1.5; }
 
-                @keyframes slideUp {
-                    from { opacity: 0; transform: translateY(20px); }
-                    to { opacity: 1; transform: translateY(0); }
+                /* Mobile Sidebar Overlay */
+                .dash-sidebar-overlay {
+                    display: none;
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    background: rgba(0, 0, 0, 0.5);
+                    z-index: 5;
+                    opacity: 0;
+                    transition: opacity 0.3s;
+                }
+
+                /* ODOO STYLES */
+                .odoo-control-panel {
+                    padding: 10px 24px;
+                    border-bottom: 1px solid var(--glass-border);
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    background: var(--glass-bg);
+                    min-height: 50px;
+                }
+                .odoo-breadcrumbs {
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                    font-size: 1.1rem;
+                    color: var(--text-muted);
+                }
+                .odoo-breadcrumbs span.active {
+                    color: var(--text-main);
+                    font-weight: 600;
+                }
+                .crumb-separator {
+                    color: var(--text-muted);
+                    opacity: 0.5;
+                }
+                .odoo-smart-buttons {
+                    display: flex;
+                    gap: 8px;
+                }
+                .odoo-smart-btn {
+                    background: var(--glass-bg);
+                    border: 1px solid var(--glass-border);
+                    padding: 6px 12px;
+                    border-radius: 6px;
+                    color: var(--text-main);
+                    font-size: 0.85rem;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    gap: 6px;
+                    transition: all 0.2s;
+                }
+                .odoo-smart-btn:hover {
+                    background: var(--glass-hover);
+                }
+
+                .odoo-view-container {
+                    display: flex;
+                    flex: 1;
+                    height: calc(100vh - 120px);
+                    background: transparent;
+                }
+
+                .odoo-document-wrapper {
+                    flex: 1;
+                    overflow-y: auto;
+                    padding: 24px;
+                    display: flex;
+                    justify-content: center;
+                }
+
+                .odoo-document-sheet {
+                    background: var(--glass-bg);
+                    border: 1px solid var(--glass-border);
+                    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+                    border-radius: 4px;
+                    width: 100%;
+                    max-width: 900px;
+                    min-height: 800px;
+                    position: relative;
+                }
+
+                .odoo-pipeline {
+                    display: flex;
+                    background: rgba(0,0,0,0.1);
+                    border-bottom: 1px solid var(--glass-border);
+                    padding: 10px 20px;
+                    justify-content: flex-end;
+                }
+
+                .odoo-pipeline-status {
+                    padding: 6px 16px;
+                    background: var(--glass-border);
+                    color: var(--text-muted);
+                    font-size: 0.85rem;
+                    font-weight: 600;
+                    margin-left: -5px;
+                    clip-path: polygon(0% 0%, 95% 0%, 100% 50%, 95% 100%, 0% 100%, 5% 50%);
+                }
+                .odoo-pipeline-status.active {
+                    background: var(--primary);
+                    color: #fff;
+                }
+
+                .odoo-chatter {
+                    width: 350px;
+                    border-left: 1px solid var(--glass-border);
+                    background: rgba(0,0,0,0.02);
+                    display: flex;
+                    flex-direction: column;
+                }
+                .odoo-chatter-header {
+                    padding: 15px;
+                    border-bottom: 1px solid var(--glass-border);
+                    font-weight: 600;
+                    color: var(--text-main);
+                }
+                .odoo-chatter-body {
+                    padding: 15px;
+                    flex: 1;
+                    overflow-y: auto;
+                    font-size: 0.85rem;
+                    color: var(--text-muted);
+                }
+                .odoo-log-item {
+                    display: flex;
+                    gap: 10px;
+                    margin-bottom: 15px;
+                }
+                .odoo-log-avatar {
+                    width: 32px;
+                    height: 32px;
+                    border-radius: 50%;
+                    background: var(--primary);
+                    color: #fff;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-weight: bold;
+                }
+                .odoo-log-content {
+                    flex: 1;
                 }
 
                 /* Responsive */
                 @media (max-width: 768px) {
-                    .dash-sidebar { position: absolute; height: 100%; z-index: 10; background: var(--bg-dark); }
+                    .dash-sidebar { position: absolute; height: 100%; z-index: 10; background: var(--glass-bg); }
                     .dash-sidebar.closed { transform: translateX(-100%); width: var(--sidebar-width); }
-                    .dash-content-inner { padding: 15px; }
+                    .dash-sidebar-overlay.show { display: block; opacity: 1; }
+                    .dash-content-inner { padding: 12px; }
                     .dash-nav-right .dash-clock, .dash-nav-right .dash-user-info { display: none; }
+                    .dash-brand h2 { font-size: 1rem; }
+                    .dash-tag { font-size: 0.65rem; }
                 }
             `}</style>
         </div>
     );
 }
+

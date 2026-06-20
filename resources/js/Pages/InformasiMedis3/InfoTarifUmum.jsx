@@ -58,7 +58,7 @@ export default function InfoTarifUmum({ data, filters }) {
                                 onChange={(e) => setSearchTerm(e.target.value)}
                                 placeholder="Masukkan kata kunci pencarian..."
                             />
-                            <button type="submit" className="btn-action primary-action">Cari</button>
+                            <button type="submit" className="dash-btn primary">Cari</button>
                         </form>
                     </div>
 
@@ -137,7 +137,7 @@ export default function InfoTarifUmum({ data, filters }) {
                                     <Link
                                         key={idx}
                                         href={link.url}
-                                        className="btn-action"
+                                        className="dash-btn secondary"
                                         style={{
                                             padding: '8px 12px',
                                             background: link.active ? 'var(--accent-color)' : 'rgba(255,255,255,0.05)',

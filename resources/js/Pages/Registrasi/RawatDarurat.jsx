@@ -111,7 +111,7 @@ export default function RawatDarurat({ auth, patient, dokter }) {
                                                 <h4 className="text-sm font-semibold text-red-300 uppercase tracking-wider mb-2">Data Kunjungan</h4>
                                                 
                                                 <div className="form-group">
-                                                    <label>No. MR <span className="text-red-400">*</span></label>
+                                                    <label className="form-label">No. MR <span className="text-red-400">*</span></label>
                                                     <input 
                                                         type="text" 
                                                         className={`form-control ${errors.no_mr ? 'is-invalid' : ''}`}
@@ -124,7 +124,7 @@ export default function RawatDarurat({ auth, patient, dokter }) {
                                                 </div>
 
                                                 <div className="form-group">
-                                                    <label>Dokter Jaga <span className="text-red-400">*</span></label>
+                                                    <label className="form-label">Dokter Jaga <span className="text-red-400">*</span></label>
                                                     <select 
                                                         className={`form-control ${errors.kode_dokter ? 'is-invalid' : ''}`}
                                                         value={data.kode_dokter}
@@ -139,7 +139,7 @@ export default function RawatDarurat({ auth, patient, dokter }) {
                                                 </div>
                                                 
                                                 <div className="form-group">
-                                                    <label>Tanggal & Jam Masuk <span className="text-red-400">*</span></label>
+                                                    <label className="form-label">Tanggal & Jam Masuk <span className="text-red-400">*</span></label>
                                                     <input 
                                                         type="datetime-local" 
                                                         className={`form-control ${errors.tgl_masuk ? 'is-invalid' : ''}`}
@@ -150,7 +150,7 @@ export default function RawatDarurat({ auth, patient, dokter }) {
                                                 </div>
 
                                                 <div className="form-group">
-                                                    <label>Status Pasien</label>
+                                                    <label className="form-label">Status Pasien</label>
                                                     <select 
                                                         className="form-control"
                                                         value={data.stat_pasien}
@@ -162,7 +162,7 @@ export default function RawatDarurat({ auth, patient, dokter }) {
                                                 </div>
 
                                                 <div className="form-group">
-                                                    <label>Prioritas</label>
+                                                    <label className="form-label">Prioritas</label>
                                                     <select 
                                                         className="form-control"
                                                         value={data.prioritas}
@@ -179,7 +179,7 @@ export default function RawatDarurat({ auth, patient, dokter }) {
                                                 <h4 className="text-sm font-semibold text-red-300 uppercase tracking-wider mb-2">Informasi Pengantar</h4>
                                                 
                                                 <div className="form-group">
-                                                    <label>Dibawa Oleh</label>
+                                                    <label className="form-label">Dibawa Oleh</label>
                                                     <input 
                                                         type="text" 
                                                         className="form-control"
@@ -189,7 +189,7 @@ export default function RawatDarurat({ auth, patient, dokter }) {
                                                 </div>
 
                                                 <div className="form-group">
-                                                    <label>Dibawa Dengan (Kendaraan)</label>
+                                                    <label className="form-label">Dibawa Dengan (Kendaraan)</label>
                                                     <input 
                                                         type="text" 
                                                         className="form-control"
@@ -199,7 +199,7 @@ export default function RawatDarurat({ auth, patient, dokter }) {
                                                 </div>
 
                                                 <div className="form-group">
-                                                    <label>Nama Orang Dekat / Keluarga</label>
+                                                    <label className="form-label">Nama Orang Dekat / Keluarga</label>
                                                     <input 
                                                         type="text" 
                                                         className="form-control"
@@ -209,7 +209,7 @@ export default function RawatDarurat({ auth, patient, dokter }) {
                                                 </div>
 
                                                 <div className="form-group">
-                                                    <label>Telp. Orang Dekat</label>
+                                                    <label className="form-label">Telp. Orang Dekat</label>
                                                     <input 
                                                         type="text" 
                                                         className="form-control"
@@ -219,7 +219,7 @@ export default function RawatDarurat({ auth, patient, dokter }) {
                                                 </div>
 
                                                 <div className="form-group">
-                                                    <label>Alamat Orang Dekat</label>
+                                                    <label className="form-label">Alamat Orang Dekat</label>
                                                     <textarea 
                                                         className="form-control"
                                                         rows="2"
@@ -234,7 +234,7 @@ export default function RawatDarurat({ auth, patient, dokter }) {
                                                 <h4 className="text-sm font-semibold text-red-300 uppercase tracking-wider mb-2">Data Kecelakaan (Jika Ada)</h4>
                                                 
                                                 <div className="form-group">
-                                                    <label>Jenis Kecelakaan</label>
+                                                    <label className="form-label">Jenis Kecelakaan</label>
                                                     <select 
                                                         className="form-control"
                                                         value={data.jns_celaka}
@@ -249,7 +249,7 @@ export default function RawatDarurat({ auth, patient, dokter }) {
                                                 </div>
 
                                                 <div className="form-group">
-                                                    <label>Kasus Polisi</label>
+                                                    <label className="form-label">Kasus Polisi</label>
                                                     <select 
                                                         className="form-control"
                                                         value={data.kasus_polisi}
@@ -261,7 +261,7 @@ export default function RawatDarurat({ auth, patient, dokter }) {
                                                 </div>
 
                                                 <div className="form-group">
-                                                    <label>Tanggal Kecelakaan</label>
+                                                    <label className="form-label">Tanggal Kecelakaan</label>
                                                     <input 
                                                         type="date" 
                                                         className="form-control"
@@ -271,7 +271,7 @@ export default function RawatDarurat({ auth, patient, dokter }) {
                                                 </div>
 
                                                 <div className="form-group">
-                                                    <label>Tempat Kecelakaan</label>
+                                                    <label className="form-label">Tempat Kecelakaan</label>
                                                     <input 
                                                         type="text" 
                                                         className="form-control"
@@ -281,7 +281,7 @@ export default function RawatDarurat({ auth, patient, dokter }) {
                                                 </div>
 
                                                 <div className="form-group">
-                                                    <label>Keluhan / Keterangan</label>
+                                                    <label className="form-label">Keluhan / Keterangan</label>
                                                     <textarea 
                                                         className="form-control"
                                                         rows="2"

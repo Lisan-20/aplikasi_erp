@@ -140,7 +140,7 @@ export default function Kinerja({ karyawan, shift, asal_pasien }) {
                                     <h2 style={{ fontSize: '1.1rem', color: '#f8fafc', marginBottom: '20px', paddingBottom: '10px', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
                                         Laporan Harian Kinerja Petugas Registrasi
                                     </h2>
-                                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+                                    <div className="grid-2-cols">
                                         <div className="form-group">
                                             <label className="form-label">Dari Tanggal</label>
                                             <input type="date" className="form-input" required value={regTglAwal} onChange={e => setRegTglAwal(e.target.value)} />
@@ -252,7 +252,7 @@ export default function Kinerja({ karyawan, shift, asal_pasien }) {
                                                 ))}
                                             </select>
                                         </div>
-                                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+                                        <div className="grid-2-cols">
                                             <div className="form-group">
                                                 <label className="form-label">Dari Tanggal</label>
                                                 <input type="date" className="form-input" required value={rujTglAwal} onChange={e => setRujTglAwal(e.target.value)} />
