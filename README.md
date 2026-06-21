@@ -63,53 +63,44 @@ The application serves as a bridge between established legacy database structure
 
 ## ✨ Features
 
-### Patient Registration & Management
-- **New Patient Registration** — Auto-generated medical record numbers (`no_mr`) with zero-padded 6-digit format
-- **Existing Patient Lookup** — Search and select previously registered patients
-- **Patient Search** — Quick patient lookup across the system
+### 🏢 Customer & Client Management (CRM)
+- **New Client Registration** — Auto-generated unique IDs with zero-padded format.
+- **Client Lookup** — Search and select previously registered corporate or retail clients.
+- **Client History** — Comprehensive tracking of client transactions and interaction history.
 
-### Outpatient Services
-- **Polyclinic Registration** — Register patients for outpatient polyclinic visits
-- **Polyclinic Queue** — View and manage patient queues by poly
-- **Patient Listing** — View patients currently waiting in polyclinics
+### 💼 Departmental Operations
+- **Department Requests** — Manage operational requests and queues across various divisions.
+- **Service Listings** — Real-time overview of active services being rendered.
+- **After-Hours Operations** — Support for shift-based and 24/7 continuous business operations.
 
-### Emergency Services (IGD)
-- **Emergency Registration** — Register patients for emergency department visits
-- **Night Emergency (IGD Malam)** — After-hours emergency registration
+### 📦 Inventory & Point of Sales (POS)
+- **Retail Point of Sales** — A high-performance, split-view POS system for fast checkout operations.
+- **Live Search & Auto-Pagination** — Debounce-enabled inventory lookup to handle millions of items smoothly without memory exhaustion.
+- **Returns & Refunds** — Robust logic for partial product returns and immediate stock reconciliation.
+- **Receipt Printing** — Thermal printer integration for transaction receipts.
 
-### Inpatient Services
-- **Inpatient Registration** — Hospital admission management
-- **Inpatient Listing** — Currently hospitalized patient overview
-- **Hospitalization Requests** — Manage pending admission requests
+### 📊 Master Data & Pricing
+- **Service Tariffs & Pricing** — Centralized management of service prices, including bundled packages.
+- **Asset/Room Information** — Monitor availability and occupancy of corporate assets, meeting rooms, or rental units.
+- **Staff Scheduling** — View and manage employee and specialist availability across departments.
 
-### Medical Support Services
-- **Penunjang Medis Registration** — Laboratory, radiology, physiotherapy, hemodialysis
-- **MCU/Package Registration** — Medical checkup packages
-- **Polyclinic Packages** — Bundled polyclinic treatment packages
+### 🤖 AI-Powered Assistants
+- **Agnostic AI Integration** — Switchable AI providers (Google Gemini / Local Ollama) via `.env` configuration.
+- **Smart Recommendations** — Context-aware AI suggestions during checkout or data entry.
+- **Fuzzy Search Resiliency** — AI data sanitization and regex-based fuzzy search to prevent errors from typos or markdown formatting.
 
-### BPJS / JKN Integration
-- **JKN Patient Listing** — BPJS patient registration verification
-- **Online Registration Listing** — Verify and manage online patient registrations
+### 📅 Appointments & Bookings
+- **Booking Management** — Schedule and track client appointments and reservations.
+- **Online Integrations** — Support for verifying bookings originating from third-party or online channels.
 
-### Medical Information
-- **Doctor Schedules** — View physician availability by polyclinic
-- **Room Information** — Room/ward availability and occupancy
-- **Room/Hospital Bed Prices** — Pricing information for rooms and beds
-- **General Tariff Info** — Medical service tariff information
-- **Surgery & Delivery Packages** — Package pricing for surgical and maternity services
-- **Patient History** — Medical record history lookup
+### 📈 Advanced Reporting
+- **High-Performance Dashboards** — Lightning-fast analytics powered by multi-result-set SQL Stored Procedures.
+- **Custom Filters** — Filter reports by date, shift, and user without freezing the UI.
+- **Export Capabilities** — Export transactional data to Excel/CSV.
 
-### Appointments
-- **Patient Appointments** — Schedule and manage patient appointments
-- **Appointment Listing** — View all scheduled appointments
-
-### Reports
-- **Performance Reports** — Registration, cancellation, and referral reporting
-- **Print Functionality** — Printable registration, cancellation, and referral reports
-
-### Legacy Integration
-- **Legacy Module Viewer** — Embed legacy PHP modules via iframe
-- **External URL Integration** — Connect to external/internal hospital servers (VClaim, HIS, etc.)
+### 🔄 Legacy System Integration
+- **Legacy Module Viewer** — Safely embed older PHP modules via iframe while preserving the SPA experience.
+- **External API Integrations** — Connect to third-party APIs and government services effortlessly.
 
 ---
 
