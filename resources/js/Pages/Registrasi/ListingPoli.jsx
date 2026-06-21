@@ -72,7 +72,7 @@ export default function ListingPoli({ data, filters }) {
                             </thead>
                             <tbody>
                                 {data.data.length > 0 ? (
-                                    data.data.map((item, index) => (
+                                    data.data.map((item) => (
                                         <tr key={item.no_registrasi}>
                                             <td style={{ whiteSpace: 'nowrap' }}>
                                                 <button className="dash-btn secondary" style={{ padding: '0.25rem 0.5rem', fontSize: '0.75rem', marginRight: '4px' }} title="Cetak GC">

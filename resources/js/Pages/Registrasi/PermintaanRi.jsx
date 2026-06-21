@@ -71,7 +71,7 @@ export default function PermintaanRi({ data, filters }) {
                             </thead>
                             <tbody>
                                 {data.data.length > 0 ? (
-                                    data.data.map((item, index) => (
+                                    data.data.map((item) => (
                                         <tr key={item.no_registrasi}>
                                             <td>
                                                 <button className="dash-btn secondary" style={{ padding: '0.25rem 0.5rem', fontSize: '0.75rem' }} title="Cetak Permintaan RI">

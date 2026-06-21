@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Inertia\Inertia;
 use Illuminate\Support\Facades\DB;
+use Inertia\Inertia;
 
 class PerjanjianController extends Controller
 {
@@ -21,16 +21,16 @@ class PerjanjianController extends Controller
         if ($filter !== '') {
             switch ($topik) {
                 case 'nama':
-                    $query->where('a.nama', 'like', '%' . $filter . '%');
+                    $query->where('a.nama', 'like', '%'.$filter.'%');
                     break;
                 case 'mr':
                     $query->where('a.no_mr', $filter);
                     break;
                 case 'bagian':
-                    $query->where('b.nama_bagian', 'like', '%' . $filter . '%');
+                    $query->where('b.nama_bagian', 'like', '%'.$filter.'%');
                     break;
                 case 'dokter':
-                    $query->where('c.nama_pegawai', 'like', '%' . $filter . '%');
+                    $query->where('c.nama_pegawai', 'like', '%'.$filter.'%');
                     break;
             }
         } else {
@@ -46,7 +46,7 @@ class PerjanjianController extends Controller
             'filters' => [
                 'topik' => $topik,
                 'filter' => $filter,
-            ]
+            ],
         ]);
     }
 
@@ -67,25 +67,25 @@ class PerjanjianController extends Controller
         if ($filter !== '') {
             switch ($topik) {
                 case 'nama':
-                    $query->where('nama_pasien', 'like', '%' . $filter . '%');
+                    $query->where('nama_pasien', 'like', '%'.$filter.'%');
                     break;
                 case 'mr':
                     $query->where('no_mr', $filter);
                     break;
                 case 'nasabah':
-                    $query->where(function($q) use ($filter) {
-                        $q->where('nasabah', 'like', '%' . $filter . '%')
-                          ->orWhere('perusahaan', 'like', '%' . $filter . '%');
+                    $query->where(function ($q) use ($filter) {
+                        $q->where('nasabah', 'like', '%'.$filter.'%')
+                            ->orWhere('perusahaan', 'like', '%'.$filter.'%');
                     });
                     break;
                 case 'alamat':
-                    $query->where('almt_ttp_pasien', 'like', '%' . $filter . '%');
+                    $query->where('almt_ttp_pasien', 'like', '%'.$filter.'%');
                     break;
                 case 'ktp':
-                    $query->where('no_ktp', 'like', '%' . $filter . '%');
+                    $query->where('no_ktp', 'like', '%'.$filter.'%');
                     break;
                 case 'telpon':
-                    $query->where('tlp_almt_ttp', 'like', '%' . $filter . '%');
+                    $query->where('tlp_almt_ttp', 'like', '%'.$filter.'%');
                     break;
             }
         }
@@ -99,7 +99,7 @@ class PerjanjianController extends Controller
             'filters' => [
                 'topik' => $topik,
                 'filter' => $filter,
-            ]
+            ],
         ]);
     }
 }

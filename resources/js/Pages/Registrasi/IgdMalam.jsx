@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
 import { Head, Link, useForm, usePage } from '@inertiajs/react';
 
-export default function IgdMalam({ auth, pasien, nasabahList, perusahaanList, kelasList, dokterList }) {
-    const user = auth?.user || { username: 'Admin', role: 'Registrasi' };
-    
+export default function IgdMalam({ pasien, dokterList }) {
     // Inertia form
-    const { data, setData, post, get, processing, errors, reset } = useForm({
+    const { data, setData, post, get, processing, reset } = useForm({
         no_mr: pasien?.no_mr || '',
         txt_pasien: pasien ? 'Lama' : 'Baru',
         txt_tanggal_masuk: new Date().toISOString().slice(0, 16),

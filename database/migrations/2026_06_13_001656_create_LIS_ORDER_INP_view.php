@@ -1,0 +1,28 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Support\Facades\DB;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        DB::statement("CREATE OR ALTER VIEW dbo.LIS_ORDER_INP
+AS
+SELECT     ID, MESSAGE_DT, ORDER_CONTROL, PID, PNAME, ADDRESS, PTYPE, BIRTH_DT, SEX, ONO, REQUEST_DT, SOURCE, CLINICIAN, ROOM_NO, 
+                      PRIORITY, COMMENT, VISITNO, ORDER_TESTID, FLAG_STATUS, FLAG_EDIT, KIRIM
+FROM         dbo.LIS_ORDER
+");
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        DB::statement("DROP VIEW IF EXISTS [LIS_ORDER_INP]");
+    }
+};

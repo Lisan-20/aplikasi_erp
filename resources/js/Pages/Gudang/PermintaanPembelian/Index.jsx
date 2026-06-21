@@ -73,7 +73,7 @@ export default function PermintaanPembelianIndex({ prs, filters }) {
                         </div>
                     </div>
 
-                    <div className="dash-table">
+                    <div className="overflow-x-auto w-full">
                         <table className="dash-table">
                             <thead>
                                 <tr>

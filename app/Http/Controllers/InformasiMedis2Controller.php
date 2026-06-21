@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
@@ -44,7 +46,7 @@ class InformasiMedis2Controller extends Controller
             'filters' => [
                 'filter' => $search,
                 'tipeCari' => $tipeCari,
-            ]
+            ],
         ]);
     }
 
@@ -71,14 +73,14 @@ class InformasiMedis2Controller extends Controller
                 // Assuming `mt_bagian` table exists.
                 $query->whereIn('kode_bagian', function ($q) use ($search) {
                     $q->select('kode_bagian')
-                      ->from('mt_bagian')
-                      ->where('nama_bagian', 'LIKE', "%{$search}%");
+                        ->from('mt_bagian')
+                        ->where('nama_bagian', 'LIKE', "%{$search}%");
                 });
             } elseif ($tipeCari == 'klas') {
                 $query->whereIn('kode_klas', function ($q) use ($search) {
                     $q->select('kode_klas')
-                      ->from('mt_klas')
-                      ->where('nama_klas', 'LIKE', "%{$search}%");
+                        ->from('mt_klas')
+                        ->where('nama_klas', 'LIKE', "%{$search}%");
                 });
             } elseif ($tipeCari == 'kamar') {
                 $query->where('no_kamar', $search);
@@ -88,7 +90,7 @@ class InformasiMedis2Controller extends Controller
         }
 
         $paginated = $query->paginate(20)->withQueryString();
-        
+
         // Loop over the items and append the necessary joined data manually to exactly mirror legacy
         $items = collect($paginated->items())->map(function ($item) {
             $klas = DB::table('mt_klas')->where('kode_klas', $item->kode_klas)->first();
@@ -100,11 +102,11 @@ class InformasiMedis2Controller extends Controller
                     $item->tgl_masuk = $pasien->tgl_masuk ?? null;
                     $item->no_mr = $pasien->no_mr ?? null;
                     $item->nama_pasien = $pasien->nama_pasien ?? null;
-                    
+
                     $kode_kelompok = $pasien->kode_kelompok ?? null;
                     $penjamin = DB::table('mt_nasabah')->where('kode_kelompok', $kode_kelompok)->first();
                     $item->nama_kelompok = $penjamin ? $penjamin->nama_kelompok : '';
-                    
+
                     if ($kode_kelompok != 12 && $kode_kelompok != 9) {
                         $perusahaan = DB::table('mt_perusahaan')->where('kode_perusahaan', $pasien->kode_perusahaan ?? null)->first();
                         $item->nama_perusahaan = $perusahaan ? $perusahaan->nama_perusahaan : '';
@@ -125,16 +127,17 @@ class InformasiMedis2Controller extends Controller
                 $item->nama_kelompok = null;
                 $item->nama_perusahaan = null;
             }
+
             return $item;
         });
 
         // Replace paginated items
-        $data = new \Illuminate\Pagination\LengthAwarePaginator(
+        $data = new LengthAwarePaginator(
             $items,
             $paginated->total(),
             $paginated->perPage(),
             $paginated->currentPage(),
-            ['path' => \Illuminate\Pagination\Paginator::resolveCurrentPath()]
+            ['path' => Paginator::resolveCurrentPath()]
         );
 
         return Inertia::render('Registrasi/InfoRuangan2', [
@@ -142,7 +145,7 @@ class InformasiMedis2Controller extends Controller
             'filters' => [
                 'filter' => $search,
                 'tipeCari' => $tipeCari,
-            ]
+            ],
         ]);
     }
 
@@ -177,7 +180,7 @@ class InformasiMedis2Controller extends Controller
             'filters' => [
                 'filter' => $search,
                 'tipeCari' => $tipeCari,
-            ]
+            ],
         ]);
     }
 }

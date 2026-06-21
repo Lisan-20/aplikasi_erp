@@ -1,5 +1,6 @@
 import React from 'react';
 import { useForm, Head } from '@inertiajs/react';
+import { LogIn, User, Lock, ArrowRight, ShieldCheck, Building2, MapPin, Phone, Printer } from 'lucide-react';
 
 export default function Login({ config }) {
     const { data, setData, post, processing, errors } = useForm({
@@ -13,111 +14,111 @@ export default function Login({ config }) {
     };
 
     const appConfig = {
-        nama_aplikasi: config?.nama_aplikasi || 'Sistem Informasi Manajemen Rumah Sakit',
-        nama_perusahaan: config?.nama_perusahaan || '-',
+        nama_aplikasi: config?.nama_aplikasi || 'Enterprise Resource Planning',
+        nama_perusahaan: config?.nama_perusahaan || 'Perusahaan Anda',
         alamat: config?.alamat || '-',
         kota: config?.kota || '-',
         kode_pos: config?.kode_pos || '-',
         telpon: config?.telpon || '-',
         fax: config?.fax || '-',
         logo: config?.logo || '-',
-        html_title: config?.html_title || 'SIMRS',
+        html_title: config?.html_title || 'Sistem ERP',
     };
 
     return (
-        <div className="login-container">
+        <div className="min-h-screen bg-slate-900 text-slate-100 flex flex-col items-center justify-center relative overflow-hidden font-sans p-4 sm:p-8">
             <Head title={`${appConfig.html_title} - Sign In`} />
 
-            {/* Background Decorative Elements */}
-            <div className="bg-glow bg-glow-blue"></div>
-            <div className="bg-glow bg-glow-emerald"></div>
-            <div className="grid-overlay"></div>
+            {/* Glowing Orbs for Premium Background */}
+            <div className="absolute top-[-10%] left-[-10%] w-[600px] h-[600px] bg-blue-600/20 rounded-full blur-[120px] pointer-events-none animate-pulse" style={{ animationDuration: '8s' }}></div>
+            <div className="absolute bottom-[-10%] right-[-10%] w-[600px] h-[600px] bg-emerald-600/20 rounded-full blur-[120px] pointer-events-none animate-pulse" style={{ animationDuration: '12s' }}></div>
 
-            <div className="login-card glass-card animate-fade-in split-layout">
+            {/* Main Glass Card */}
+            <div className="relative z-10 w-full max-w-5xl bg-slate-800/60 backdrop-blur-2xl border border-slate-700/50 rounded-[2rem] shadow-2xl flex flex-col md:flex-row overflow-hidden animate-[fadeInUp_0.8s_ease-out_forwards]">
+                
                 {/* Left Pane: Login Form */}
-                <div className="login-form-pane">
-                    <div className="login-header">
-                        <div className="logo-container">
-                            <svg className="logo-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                            </svg>
-                            <div className="pulse-ring"></div>
+                <div className="w-full md:w-1/2 p-8 sm:p-12 lg:p-16 flex flex-col justify-center">
+                    <div className="mb-10 text-center md:text-left">
+                        <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-blue-500/10 text-blue-400 mb-6 border border-blue-500/20 shadow-inner">
+                            <ShieldCheck size={32} />
                         </div>
-                        <h1>Sign In</h1>
-                        <p className="subtitle">Masuk ke akun Anda untuk mengakses dashboard layanan</p>
+                        <h1 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-400 mb-2">Selamat Datang</h1>
+                        <p className="text-slate-400 text-sm">Masuk ke akun Anda untuk mengakses pusat komando sistem</p>
                     </div>
 
-                    <form onSubmit={handleSubmit} className="login-form">
+                    <form onSubmit={handleSubmit} className="flex flex-col gap-6">
                         {/* General Errors */}
                         {errors.message && (
-                            <div className="error-alert">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="alert-icon">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                                </svg>
+                            <div className="bg-red-500/10 border border-red-500/30 text-red-400 px-4 py-3 rounded-xl flex items-center gap-3 text-sm animate-pulse">
+                                <ShieldCheck size={20} className="text-red-500 flex-shrink-0" />
                                 <span>{errors.message}</span>
                             </div>
                         )}
 
                         {/* Username Field */}
-                        <div className="form-group">
-                            <label htmlFor="txt_name">User ID</label>
-                            <div className="input-wrapper">
-                                <svg className="input-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                                </svg>
+                        <div className="flex flex-col gap-2">
+                            <label htmlFor="txt_name" className="text-sm font-medium text-slate-300">User ID</label>
+                            <div className="relative group">
+                                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-500 group-focus-within:text-blue-400 transition-colors">
+                                    <User size={20} />
+                                </div>
                                 <input
                                     id="txt_name"
                                     type="text"
                                     name="txt_name"
                                     value={data.txt_name}
-                                    className={`premium-input ${errors.txt_name ? 'input-error' : ''}`}
-                                    placeholder="User ID"
+                                    className={`w-full pl-12 pr-4 py-3 bg-slate-900/50 border ${errors.txt_name ? 'border-red-500/50 focus:border-red-500 focus:ring-red-500/20' : 'border-slate-700 focus:border-blue-500 focus:ring-blue-500/20'} rounded-xl text-slate-100 placeholder-slate-500 outline-none focus:ring-4 transition-all`}
+                                    placeholder="Masukkan User ID"
                                     onChange={e => setData('txt_name', e.target.value)}
                                     required
                                     autoComplete="username"
                                     autoFocus
                                 />
                             </div>
-                            {errors.txt_name && <span className="field-error">{errors.txt_name}</span>}
+                            {errors.txt_name && <span className="text-red-400 text-xs mt-1">{errors.txt_name}</span>}
                         </div>
 
                         {/* Password Field */}
-                        <div className="form-group">
-                            <label htmlFor="txt_pass">Password</label>
-                            <div className="input-wrapper">
-                                <svg className="input-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                                </svg>
+                        <div className="flex flex-col gap-2">
+                            <label htmlFor="txt_pass" className="text-sm font-medium text-slate-300">Password</label>
+                            <div className="relative group">
+                                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-500 group-focus-within:text-blue-400 transition-colors">
+                                    <Lock size={20} />
+                                </div>
                                 <input
                                     id="txt_pass"
                                     type="password"
                                     name="txt_pass"
                                     value={data.txt_pass}
-                                    className={`premium-input ${errors.txt_pass ? 'input-error' : ''}`}
+                                    className={`w-full pl-12 pr-4 py-3 bg-slate-900/50 border ${errors.txt_pass ? 'border-red-500/50 focus:border-red-500 focus:ring-red-500/20' : 'border-slate-700 focus:border-blue-500 focus:ring-blue-500/20'} rounded-xl text-slate-100 placeholder-slate-500 outline-none focus:ring-4 transition-all`}
                                     placeholder="••••••••"
                                     onChange={e => setData('txt_pass', e.target.value)}
                                     required
                                     autoComplete="current-password"
                                 />
                             </div>
-                            {errors.txt_pass && <span className="field-error">{errors.txt_pass}</span>}
+                            {errors.txt_pass && <span className="text-red-400 text-xs mt-1">{errors.txt_pass}</span>}
                         </div>
 
                         {/* Options */}
-                        <div className="form-options">
-                            <label className="checkbox-container">
-                                <input type="checkbox" />
-                                <span className="checkmark"></span>
-                                Ingat saya
+                        <div className="flex items-center justify-between mt-2">
+                            <label className="flex items-center gap-2 cursor-pointer group">
+                                <div className="relative flex items-center justify-center w-5 h-5 border border-slate-600 rounded bg-slate-900/50 group-hover:border-blue-400 transition-colors">
+                                    <input type="checkbox" className="opacity-0 absolute inset-0 cursor-pointer peer" />
+                                    <svg className="w-3 h-3 text-blue-400 opacity-0 peer-checked:opacity-100 transition-opacity" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                    </svg>
+                                </div>
+                                <span className="text-sm text-slate-400 group-hover:text-slate-300 transition-colors">Ingat saya</span>
                             </label>
-                            <a href="#" className="forgot-link">Lupa Password?</a>
+                            <a href="#" className="text-sm text-blue-400 hover:text-blue-300 hover:underline transition-colors">Lupa Password?</a>
                         </div>
 
                         {/* Submit Buttons */}
-                        <div className="form-buttons">
+                        <div className="flex items-center gap-4 mt-4">
                             <button
                                 type="button"
-                                className="btn-secondary reset-btn"
+                                className="px-6 py-3 rounded-xl font-medium text-slate-300 bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-slate-600 transition-all focus:ring-4 focus:ring-slate-700/50 outline-none"
                                 onClick={() => setData({ txt_name: '', txt_pass: '' })}
                             >
                                 Reset
@@ -125,21 +126,20 @@ export default function Login({ config }) {
                             <button
                                 type="submit"
                                 disabled={processing}
-                                className="btn-primary login-btn"
+                                className="flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-semibold text-white bg-blue-600 hover:bg-blue-500 border border-blue-500/50 shadow-lg shadow-blue-500/20 transition-all focus:ring-4 focus:ring-blue-500/30 outline-none disabled:opacity-70 disabled:cursor-not-allowed group"
                             >
                                 {processing ? (
                                     <>
-                                        <svg className="spinner-icon" viewBox="0 0 24 24">
-                                            <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                                        <svg className="animate-spin -ml-1 mr-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                         </svg>
                                         <span>Memproses...</span>
                                     </>
                                 ) : (
                                     <>
-                                        <span>Submit</span>
-                                        <svg className="btn-arrow" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                                        </svg>
+                                        <span>Masuk Sekarang</span>
+                                        <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
                                     </>
                                 )}
                             </button>
@@ -147,64 +147,79 @@ export default function Login({ config }) {
                     </form>
 
                     {/* Footer */}
-                    <div className="login-footer">
+                    <div className="mt-12 text-center md:text-left text-xs text-slate-500">
                         <p>&copy; {new Date().getFullYear()} {appConfig.nama_perusahaan}. All rights reserved.</p>
                     </div>
                 </div>
 
-                {/* Right Pane: Config Info / Brand Showcase */}
-                <div className="login-info-pane">
-                    <div className="info-pane-bg" style={{ backgroundImage: `url(${appConfig.logo})` }}></div>
-                    <div className="info-pane-overlay"></div>
-                    <div className="info-pane-content">
-                        <div className="brand-title">
-                            <span className="badge-tech">PORTAL SYSTEM</span>
-                            <h2 className="app-name-display">{appConfig.nama_aplikasi}</h2>
-                            <h3 className="company-name-display">{appConfig.nama_perusahaan}</h3>
-                        </div>
+                {/* Right Pane: Brand Showcase */}
+                <div className="w-full md:w-1/2 relative flex flex-col justify-center p-8 sm:p-12 lg:p-16 border-t md:border-t-0 md:border-l border-slate-700/50 bg-gradient-to-br from-slate-800/80 to-slate-900/80 overflow-hidden">
+                    {/* Abstract Decoration */}
+                    <div className="absolute top-0 right-0 w-full h-full bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-blue-500/10 via-transparent to-transparent pointer-events-none"></div>
+                    <div className="absolute bottom-0 left-0 w-full h-full bg-[radial-gradient(circle_at_bottom_left,_var(--tw-gradient-stops))] from-emerald-500/10 via-transparent to-transparent pointer-events-none"></div>
 
-                        <div className="hospital-details">
-                            <div className="detail-item">
-                                <svg className="detail-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                                </svg>
-                                <div className="detail-text">
-                                    <p className="detail-label">Alamat</p>
-                                    <p className="detail-value">{appConfig.alamat}</p>
-                                    <p className="detail-value">{appConfig.kota}{appConfig.kode_pos ? ` - ${appConfig.kode_pos}` : ''}</p>
+                    <div className="relative z-10 flex flex-col items-center md:items-start text-center md:text-left">
+                        <span className="px-3 py-1 text-xs font-semibold tracking-wider text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 rounded-full mb-6 uppercase">
+                            Sistem Utama
+                        </span>
+                        
+                        <h2 className="text-3xl lg:text-4xl font-extrabold text-white mb-2 tracking-tight">
+                            {appConfig.nama_aplikasi}
+                        </h2>
+                        <h3 className="text-xl text-blue-300 font-medium mb-12">
+                            {appConfig.nama_perusahaan}
+                        </h3>
+
+                        <div className="flex flex-col gap-6 w-full max-w-sm">
+                            <div className="flex items-start gap-4">
+                                <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-slate-800 border border-slate-700 text-slate-400 flex-shrink-0">
+                                    <MapPin size={20} />
+                                </div>
+                                <div className="flex flex-col pt-0.5">
+                                    <span className="text-xs text-slate-500 font-medium uppercase tracking-wider mb-1">Kantor Pusat</span>
+                                    <span className="text-sm text-slate-300">{appConfig.alamat}</span>
+                                    <span className="text-sm text-slate-300">{appConfig.kota}{appConfig.kode_pos ? ` - ${appConfig.kode_pos}` : ''}</span>
                                 </div>
                             </div>
 
-                            <div className="detail-item">
-                                <svg className="detail-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.94.725l.548 2.2a1 1 0 01-.321.988l-1.305.98a10.582 10.582 0 004.872 4.872l.98-1.305a1 1 0 01.988-.321l2.2.548a1 1 0 01.725.94V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                                </svg>
-                                <div className="detail-text">
-                                    <p className="detail-label">Telepon</p>
-                                    <p className="detail-value">{appConfig.telpon}</p>
+                            <div className="flex items-start gap-4">
+                                <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-slate-800 border border-slate-700 text-slate-400 flex-shrink-0">
+                                    <Phone size={20} />
+                                </div>
+                                <div className="flex flex-col pt-0.5">
+                                    <span className="text-xs text-slate-500 font-medium uppercase tracking-wider mb-1">Telepon</span>
+                                    <span className="text-sm text-slate-300">{appConfig.telpon}</span>
                                 </div>
                             </div>
 
                             {appConfig.fax && appConfig.fax !== '-' && (
-                                <div className="detail-item">
-                                    <svg className="detail-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
-                                    </svg>
-                                    <div className="detail-text">
-                                        <p className="detail-label">Fax</p>
-                                        <p className="detail-value">{appConfig.fax}</p>
+                                <div className="flex items-start gap-4">
+                                    <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-slate-800 border border-slate-700 text-slate-400 flex-shrink-0">
+                                        <Printer size={20} />
+                                    </div>
+                                    <div className="flex flex-col pt-0.5">
+                                        <span className="text-xs text-slate-500 font-medium uppercase tracking-wider mb-1">Fax</span>
+                                        <span className="text-sm text-slate-300">{appConfig.fax}</span>
                                     </div>
                                 </div>
                             )}
                         </div>
 
-                        <div className="info-pane-footer">
-                            <p className="system-tagline">Integrated Hospital Information System</p>
+                        <div className="mt-16 pt-8 border-t border-slate-700/50 w-full text-center md:text-left">
+                            <p className="text-xs text-slate-500 tracking-widest uppercase font-semibold">
+                                Enterprise Resource Planning System
+                            </p>
                         </div>
                     </div>
                 </div>
             </div>
+
+            <style>{`
+                @keyframes fadeInUp {
+                    from { opacity: 0; transform: translateY(20px); }
+                    to { opacity: 1; transform: translateY(0); }
+                }
+            `}</style>
         </div>
     );
 }

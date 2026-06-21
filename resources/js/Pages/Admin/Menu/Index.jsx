@@ -184,7 +184,7 @@ export default function MenuIndex() {
                         </div>
                     </div>
 
-                    <div className="dash-table">
+                    <div className="overflow-x-auto w-full">
                         <table className="dash-table">
                             <thead>
                                 <tr>
@@ -192,7 +192,6 @@ export default function MenuIndex() {
                                     <th style={{ width: '100px', textAlign: 'center' }}>No. Urut</th>
                                     <th>Modul</th>
                                     <th>Nama Menu</th>
-                                    <th>URL (Legacy)</th>
                                     <th style={{ width: '120px', textAlign: 'center' }}>Aksi</th>
                                 </tr>
                             </thead>
@@ -212,7 +211,6 @@ export default function MenuIndex() {
                                         </td>
                                         <td><span className="badge bg-primary">{item.modul?.nama_modul}</span></td>
                                         <td><strong>{item.nama_menu}</strong></td>
-                                        <td className="text-muted"><small>{item.url || '-'}</small></td>
                                         <td style={{ textAlign: 'center', whiteSpace: 'nowrap' }}>
                                             <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
                                                 <button
@@ -320,22 +318,6 @@ export default function MenuIndex() {
                                 />
                             </div>
                                 
-                            <div style={{ marginBottom: '15px' }}>
-                                <label style={{ display: 'block', marginBottom: '5px', fontWeight: '500', color: 'var(--text-color)' }}>
-                                    URL Folder (Legacy)
-                                </label>
-                                <input 
-                                    type="text" 
-                                    className="premium-input" 
-                                    value={formData.url}
-                                    onChange={(e) => setFormData({...formData, url: e.target.value})}
-                                    placeholder="e.g., ../mod_kasir/"
-                                />
-                                <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', display: 'block', marginTop: '5px' }}>
-                                    Catatan: Untuk menu induk biasanya URL ini tidak dipakai. Hanya sebagai pengelompok saja.
-                                </span>
-                            </div>
-
                             <div style={{ marginBottom: '20px' }}>
                                 <label style={{ display: 'block', marginBottom: '5px', fontWeight: '500', color: 'var(--text-color)' }}>
                                     No. Urut

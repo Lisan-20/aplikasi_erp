@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Head, Link, router } from '@inertiajs/react';
-import { Search, UserPlus, ArrowLeft, Users, FileText, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-react';
+import { Search, UserPlus, ArrowLeft, Users, FileText } from 'lucide-react';
 import DashboardLayout from '@/Layouts/DashboardLayout';
 
 export default function PasienLama({ patients, filters }) {

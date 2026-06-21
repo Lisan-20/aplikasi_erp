@@ -1,0 +1,45 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Support\Facades\DB;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        DB::unprepared("/*
+**	Retrieve the owner object(s) of a given property
+*/
+CREATE OR ALTER PROCEDURE dbo.dt_getobjwithprop_u
+	@property varchar(30),
+	@uvalue nvarchar(255)
+as
+	set nocount on
+
+	if (@property is null) or (@property = '')
+	begin
+		raiserror('Must specify a property name.',-1,-1)
+		return (1)
+	end
+
+	if (@uvalue is null)
+		select objectid id from dbo.dtproperties
+			where property=@property
+
+	else
+		select objectid id from dbo.dtproperties
+			where property=@property and uvalue=@uvalue
+");
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        DB::unprepared("DROP PROCEDURE IF EXISTS dt_getobjwithprop_u");
+    }
+};

@@ -104,7 +104,7 @@ export default function BarangIndex({ barang, filters }) {
 
                 {/* Table Data */}
                 <div className="glass-panel table-wrap flex-1 overflow-hidden rounded-xl flex flex-col">
-                    <div className="dash-table">
+                    <div className="overflow-x-auto w-full">
                         <table className="dash-table">
                             <thead>
                                 <tr>

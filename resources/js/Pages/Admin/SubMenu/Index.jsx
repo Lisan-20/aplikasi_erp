@@ -223,7 +223,7 @@ export default function SubMenuIndex() {
                         </div>
                     </div>
 
-                    <div className="dash-table">
+                    <div className="overflow-x-auto w-full">
                         <table className="dash-table">
                             <thead>
                                 <tr>
@@ -231,8 +231,7 @@ export default function SubMenuIndex() {
                                     <th style={{ width: '100px', textAlign: 'center' }}>No. Urut</th>
                                     <th>Hirarki</th>
                                     <th>Sub Menu</th>
-                                    <th>URL Lama (PHP)</th>
-                                    <th>URL Baru (React)</th>
+                                    <th>URL</th>
                                     <th>Keterangan</th>
                                     <th style={{ width: '120px', textAlign: 'center' }}>Aksi</th>
                                 </tr>
@@ -257,7 +256,6 @@ export default function SubMenuIndex() {
                                             <div><span className="badge bg-secondary">{item.menu?.nama_menu}</span></div>
                                         </td>
                                         <td><strong>{item.nama_sub_menu}</strong></td>
-                                        <td className="text-muted" style={{maxWidth: '150px', wordBreak: 'break-all'}}><small>{item.url_sub_menu || '-'}</small></td>
                                         <td className="text-success" style={{maxWidth: '150px', wordBreak: 'break-all'}}><small className="font-bold">{item.url_sub_menu_baru || '-'}</small></td>
                                         <td><small>{item.summary || item.keterangan || '-'}</small></td>
                                         <td style={{ textAlign: 'center', whiteSpace: 'nowrap' }}>
@@ -374,7 +372,7 @@ export default function SubMenuIndex() {
                                     <h6 className="text-orange-500 font-semibold mb-3">Konfigurasi URL / Navigasi</h6>
                                     
                                     <div className="mb-3">
-                                        <label className="form-label">URL Baru (React/Inertia)</label>
+                                        <label className="form-label">URL (React/Inertia)</label>
                                         <input 
                                             type="text" 
                                             className="premium-input border-green-500/50 text-green-600 dark:text-green-400" 
@@ -383,21 +381,7 @@ export default function SubMenuIndex() {
                                             placeholder="e.g., /admin/user atau /registrasi/pasien-baru"
                                         />
                                         <span className="text-xs text-slate-500 mt-1 block">
-                                            Gunakan URL relatif (dengan awalan slash `/`). URL ini diprioritaskan oleh sistem baru.
-                                        </span>
-                                    </div>
-
-                                    <div>
-                                        <label className="form-label">URL Lama (PHP Legacy)</label>
-                                        <input 
-                                            type="text" 
-                                            className="premium-input" 
-                                            value={formData.url_sub_menu}
-                                            onChange={(e) => setFormData({...formData, url_sub_menu: e.target.value})}
-                                            placeholder="e.g., ../mod_kasir/pendaftaran.php"
-                                        />
-                                        <span className="text-xs text-slate-500 mt-1 block">
-                                            Hanya digunakan jika URL Baru kosong. Sistem akan membukanya melalui iFrame.
+                                            Gunakan URL relatif (dengan awalan slash `/`).
                                         </span>
                                     </div>
                                 </div>

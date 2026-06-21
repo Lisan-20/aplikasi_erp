@@ -1,0 +1,26 @@
+services:
+  app:
+    build:
+      context: ../..
+      dockerfile: deploy/staging/Dockerfile
+    image: simrs-staging-app:latest
+    restart: unless-stopped
+    env_file:
+      - .env.staging
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    ports:
+      - "9091:80"
+    volumes:
+      - storage_data:/var/www/html/storage
+      - bootstrap_cache:/var/www/html/bootstrap/cache
+    networks:
+      - simrs_staging
+
+volumes:
+  storage_data:
+  bootstrap_cache:
+
+networks:
+  simrs_staging:
+    driver: bridge

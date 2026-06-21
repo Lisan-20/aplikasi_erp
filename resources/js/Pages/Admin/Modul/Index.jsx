@@ -169,7 +169,7 @@ export default function ModulIndex() {
                         </div>
                     </div>
 
-                    <div className="dash-table">
+                    <div className="overflow-x-auto w-full">
                         <table className="dash-table">
                             <thead>
                                 <tr>

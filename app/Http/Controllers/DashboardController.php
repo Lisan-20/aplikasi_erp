@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Session;
 
 class DashboardController extends Controller
 {
@@ -22,7 +22,7 @@ class DashboardController extends Controller
     public function show($modul)
     {
         $id_dd_user = Session::get('id_dd_user');
-        Log::info('DashboardController show: id_dd_user=' . $id_dd_user . ' modul=' . $modul);
+        Log::info('DashboardController show: id_dd_user='.$id_dd_user.' modul='.$modul);
 
         // Fetch Module Info
         $module = DB::table('dc_modul')->where('id_dc_modul', $modul)->first();
@@ -52,11 +52,11 @@ class DashboardController extends Controller
 
         foreach ($hakAkses as $row) {
             // Check if menu already exists in array
-            if (!isset($menus[$row->id_dc_menu])) {
+            if (! isset($menus[$row->id_dc_menu])) {
                 $menus[$row->id_dc_menu] = [
                     'id_dc_menu' => $row->id_dc_menu,
                     'nama_menu' => $row->nama_menu,
-                    'sub_menus' => []
+                    'sub_menus' => [],
                 ];
             }
 
@@ -71,7 +71,7 @@ class DashboardController extends Controller
                     }
                 }
 
-                if (!$subExists) {
+                if (! $subExists) {
                     $menus[$row->id_dc_menu]['sub_menus'][] = [
                         'id_dc_sub_menu' => $row->id_dc_sub_menu,
                         'nama_sub_menu' => $row->nama_sub_menu,
@@ -85,7 +85,7 @@ class DashboardController extends Controller
         // Convert menus to sequential array
         $menus = array_values($menus);
 
-        Log::info('Menus for User ' . $id_dd_user . ' Modul ' . $modul . ': ' . json_encode($menus));
+        Log::info('Menus for User '.$id_dd_user.' Modul '.$modul.': '.json_encode($menus));
 
         return inertia('Dashboard', [
             'dashboard' => [
@@ -122,10 +122,26 @@ class DashboardController extends Controller
             // Result 3: Payment Methods
             $paymentMethods = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
+            // Pastikan value adalah tipe numerik agar Recharts tidak gagal merender
+            foreach ($paymentMethods as &$method) {
+                $method['value'] = (float) ($method['value'] ?? 0);
+            }
+            unset($method);
+
+            foreach ($revenueTrend as &$trend) {
+                $trend['revenue'] = (float) ($trend['revenue'] ?? 0);
+            }
+            unset($trend);
+
+            $headerData = $header[0] ?? ['TotalPendapatanHariIni' => 0, 'TotalTransaksiHariIni' => 0, 'TotalPiutangHariIni' => 0];
+            $headerData['TotalPendapatanHariIni'] = (float) ($headerData['TotalPendapatanHariIni'] ?? 0);
+            $headerData['TotalTransaksiHariIni'] = (float) ($headerData['TotalTransaksiHariIni'] ?? 0);
+            $headerData['TotalPiutangHariIni'] = (float) ($headerData['TotalPiutangHariIni'] ?? 0);
+
             return response()->json([
                 'status' => 'success',
                 'data' => [
-                    'header' => $header[0] ?? ['TotalPendapatanHariIni' => 0, 'TotalTransaksiHariIni' => 0, 'TotalPiutangHariIni' => 0],
+                    'header' => $headerData,
                     'revenueTrend' => $revenueTrend,
                     'paymentMethods' => $paymentMethods
                 ]

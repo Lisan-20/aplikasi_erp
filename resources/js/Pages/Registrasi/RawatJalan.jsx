@@ -5,7 +5,6 @@ import DataUmum from './DataUmum';
 import Riwayat from './Riwayat';
 
 export default function RawatJalan({ 
-    auth, 
     patient, 
     bagian = [], 
     dokter = [],
@@ -15,7 +14,6 @@ export default function RawatJalan({
     asal_pasien = [],
     jadwal_dokter = []
 }) {
-    const user = auth?.user || { username: 'Admin', role: 'Registrasi' };
     const [activeTab, setActiveTab] = useState('pendaftaran_umum');
 
     const hitungUmur = (tglLahir) => {

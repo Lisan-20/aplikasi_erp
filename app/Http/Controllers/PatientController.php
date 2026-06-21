@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Patient;
-use Illuminate\Http\Request;
 
 class PatientController extends Controller
 {
@@ -16,12 +15,12 @@ class PatientController extends Controller
             return view('test_db', [
                 'total' => $totalPatients,
                 'latest' => $latestPatient,
-                'status' => 'Connected'
+                'status' => 'Connected',
             ]);
         } catch (\Exception $e) {
             return view('test_db', [
                 'status' => 'Error',
-                'message' => $e->getMessage()
+                'message' => $e->getMessage(),
             ]);
         }
     }

@@ -1,17 +1,19 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\ModuleController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\InformasiMedis1Controller;
+use App\Http\Controllers\InformasiMedis2Controller;
+use App\Http\Controllers\InformasiMedis3Controller;
+use App\Http\Controllers\LaporanController;
+use App\Http\Controllers\ListingPasienController;
+use App\Http\Controllers\ModuleController;
 use App\Http\Controllers\PasienBaruController;
 use App\Http\Controllers\PasienLamaController;
-use App\Http\Controllers\RegistrasiKunjunganController;
-use App\Http\Controllers\LegacyController;
 use App\Http\Controllers\PasienRawatInapController;
+use App\Http\Controllers\PendaftaranLanjutan1Controller;
 use App\Http\Controllers\PendaftaranLanjutan2Controller;
 use App\Http\Controllers\PendaftaranLanjutan3Controller;
-use App\Http\Controllers\PendaftaranLanjutan1Controller;
 use App\Http\Controllers\ConsentController;
 use App\Http\Controllers\Kasir\PosController;
 use App\Http\Controllers\Laporan\LaporanKasirController;
@@ -54,24 +56,25 @@ Route::middleware(['web', 'check.permission'])->group(function () {
     Route::get('/debug/menus/{modul}', function($modul) {
         $c = new DashboardController();
         $r = $c->show($modul);
+
         return $r->toResponse(request())->getData();
     });
 
     // Registrasi Routes
-    Route::prefix('registrasi')->group(function() {
+    Route::prefix('registrasi')->group(function () {
         Route::get('/pasien-baru', [PasienBaruController::class, 'create'])->name('registrasi.pasien-baru');
         Route::post('/pasien-baru', [PasienBaruController::class, 'store'])->name('registrasi.pasien-baru.store');
         Route::get('/pasien-lama', [PasienLamaController::class, 'index'])->name('registrasi.pasien-lama');
-        
-        Route::get('/cari-pasien', [\App\Http\Controllers\Registrasi\CariPasienController::class, 'index'])->name('registrasi.cari-pasien');
-        
+
+        Route::get('/cari-pasien', [CariPasienController::class, 'index'])->name('registrasi.cari-pasien');
+
         Route::get('/rawat-jalan/form/{no_mr}', [RegistrasiKunjunganController::class, 'createPoli'])->name('registrasi.rawat-jalan.form');
         Route::post('/rawat-jalan/form/{no_mr}', [RegistrasiKunjunganController::class, 'storePoli'])->name('registrasi.rawat-jalan.store');
         Route::get('/igd/form/{no_mr}', [RegistrasiKunjunganController::class, 'createIgd'])->name('registrasi.igd.form');
         Route::post('/igd/form/{no_mr}', [RegistrasiKunjunganController::class, 'storeIgd'])->name('registrasi.igd.store');
 
-        Route::get('/listing-poli', [\App\Http\Controllers\ListingPasienController::class, 'listingPoli'])->name('registrasi.listing-poli');
-        Route::get('/permintaan-ri', [\App\Http\Controllers\ListingPasienController::class, 'permintaanRi'])->name('registrasi.permintaan-ri');
+        Route::get('/listing-poli', [ListingPasienController::class, 'listingPoli'])->name('registrasi.listing-poli');
+        Route::get('/permintaan-ri', [ListingPasienController::class, 'permintaanRi'])->name('registrasi.permintaan-ri');
         Route::get('/pasien-rawat-inap', [PasienRawatInapController::class, 'index'])->name('registrasi.pasien-rawat-inap');
 
         Route::get('/rawat-inap/form/{no_mr}', [PendaftaranLanjutan3Controller::class, 'createPendaftaranRi']);
@@ -89,36 +92,35 @@ Route::middleware(['web', 'check.permission'])->group(function () {
         Route::get('/igd-malam/form/{no_mr}', [PendaftaranLanjutan1Controller::class, 'createIgdMalam']);
         Route::post('/igd-malam/form/{no_mr}', [PendaftaranLanjutan1Controller::class, 'storeIgdMalam']);
 
-        Route::get('/info-tarif-umum', [\App\Http\Controllers\InformasiMedis3Controller::class, 'infoTarifUmum'])->name('registrasi.info-tarif-umum');
-        Route::get('/paket-bedah', [\App\Http\Controllers\InformasiMedis3Controller::class, 'paketBedah'])->name('registrasi.paket-bedah');
-        Route::get('/paket-melahirkan', [\App\Http\Controllers\InformasiMedis3Controller::class, 'paketMelahirkan'])->name('registrasi.paket-melahirkan');
+        Route::get('/info-tarif-umum', [InformasiMedis3Controller::class, 'infoTarifUmum'])->name('registrasi.info-tarif-umum');
+        Route::get('/paket-bedah', [InformasiMedis3Controller::class, 'paketBedah'])->name('registrasi.paket-bedah');
+        Route::get('/paket-melahirkan', [InformasiMedis3Controller::class, 'paketMelahirkan'])->name('registrasi.paket-melahirkan');
 
-        Route::get('/info-ruangan', [\App\Http\Controllers\InformasiMedis2Controller::class, 'infoRuangan'])->name('registrasi.info-ruangan');
-        Route::get('/info-ruangan-2', [\App\Http\Controllers\InformasiMedis2Controller::class, 'infoRuangan2'])->name('registrasi.info-ruangan-2');
-        Route::get('/harga-kamar', [\App\Http\Controllers\InformasiMedis2Controller::class, 'hargaKamar'])->name('registrasi.harga-kamar');
+        Route::get('/info-ruangan', [InformasiMedis2Controller::class, 'infoRuangan'])->name('registrasi.info-ruangan');
+        Route::get('/info-ruangan-2', [InformasiMedis2Controller::class, 'infoRuangan2'])->name('registrasi.info-ruangan-2');
+        Route::get('/harga-kamar', [InformasiMedis2Controller::class, 'hargaKamar'])->name('registrasi.harga-kamar');
 
-        Route::get('/jadwal-dokter', [\App\Http\Controllers\InformasiMedis1Controller::class, 'jadwalDokter'])->name('registrasi.jadwal-dokter');
-        Route::get('/riwayat-pasien', [\App\Http\Controllers\InformasiMedis1Controller::class, 'riwayatPasien'])->name('registrasi.riwayat-pasien');
+        Route::get('/jadwal-dokter', [InformasiMedis1Controller::class, 'jadwalDokter'])->name('registrasi.jadwal-dokter');
+        Route::get('/riwayat-pasien', [InformasiMedis1Controller::class, 'riwayatPasien'])->name('registrasi.riwayat-pasien');
 
-        Route::get('/perjanjian-pasien', [\App\Http\Controllers\PerjanjianController::class, 'perjanjianPasien'])->name('registrasi.perjanjian-pasien');
-        Route::get('/daftar-perjanjian', [\App\Http\Controllers\PerjanjianController::class, 'daftarPerjanjian'])->name('registrasi.daftar-perjanjian');
+        Route::get('/perjanjian-pasien', [PerjanjianController::class, 'perjanjianPasien'])->name('registrasi.perjanjian-pasien');
+        Route::get('/daftar-perjanjian', [PerjanjianController::class, 'daftarPerjanjian'])->name('registrasi.daftar-perjanjian');
 
-        Route::get('/listing-online', [\App\Http\Controllers\VerifikasiOnlineController::class, 'index'])->name('registrasi.listing-online');
-        Route::get('/listing-jkn', [\App\Http\Controllers\VerifikasiJknController::class, 'index'])->name('registrasi.listing-jkn');
-        Route::get('/listing-jkn/data', [\App\Http\Controllers\VerifikasiJknController::class, 'data'])->name('registrasi.listing-jkn.data');
+        Route::get('/listing-online', [VerifikasiOnlineController::class, 'index'])->name('registrasi.listing-online');
+        Route::get('/listing-jkn', [VerifikasiJknController::class, 'index'])->name('registrasi.listing-jkn');
+        Route::get('/listing-jkn/data', [VerifikasiJknController::class, 'data'])->name('registrasi.listing-jkn.data');
 
-        // Legacy external URL viewer (for VClaim, His servers, etc.)
-        Route::get('/legacy-ext', [\App\Http\Controllers\LegacyController::class, 'showExternal'])->name('registrasi.legacy-ext');
+    });
+
+    Route::prefix('laporan')->group(function () {
+        Route::get('/kinerja', [LaporanController::class, 'kinerjaIndex'])->name('laporan.kinerja');
+        Route::get('/kinerja/cetak-registrasi', [LaporanController::class, 'cetakKinerjaRegistrasi'])->name('laporan.kinerja.cetak-registrasi');
+        Route::get('/kinerja/cetak-batal', [LaporanController::class, 'cetakKinerjaBatal'])->name('laporan.kinerja.cetak-batal');
+        Route::get('/kinerja/cetak-rujukan', [LaporanController::class, 'cetakKinerjaRujukan'])->name('laporan.kinerja.cetak-rujukan');
     });
 
     Route::prefix('poli')->group(function () {
-        Route::get('/antrian-poli', [\App\Http\Controllers\PoliController::class, 'antrianPoli'])->name('poli.antrian-poli');
-
-        Route::get('/general-consent', [ConsentController::class, 'generalConsent'])->name('poli.general-consent');
-        Route::get('/pasien-dashboard/{no_mr}', [\App\Http\Controllers\PasienPoliController::class, 'dashboard'])->name('poli.pasien-dashboard');
-        
-        Route::get('/entry-pasien-luar', [\App\Http\Controllers\PasienLuarController::class, 'entryLuar'])->name('poli.entry-pasien-luar');
-        Route::post('/entry-pasien-luar', [\App\Http\Controllers\PasienLuarController::class, 'storeLuar'])->name('poli.entry-pasien-luar.store');
+        Route::get('/antrian-poli', [PoliController::class, 'antrianPoli'])->name('poli.antrian-poli');
     });
 
     Route::prefix('kasir')->name('kasir.')->group(function () {
@@ -127,7 +129,7 @@ Route::middleware(['web', 'check.permission'])->group(function () {
         Route::post('/api/gemini-recommendations', [\App\Http\Controllers\Kasir\AiController::class, 'getAiRecommendations'])->name('api.recommendations');
         Route::post('/checkout', [PosController::class, 'checkout'])->name('checkout');
         Route::get('/struk/{no_registrasi}', [PosController::class, 'printStruk'])->name('struk');
-        
+
         // Riwayat Kasir
         Route::get('/riwayat', [PosController::class, 'getRiwayat'])->name('riwayat');
         Route::delete('/batal/{no_registrasi}', [PosController::class, 'batalTransaksi'])->name('batal');
@@ -138,7 +140,7 @@ Route::middleware(['web', 'check.permission'])->group(function () {
     Route::prefix('laporan')->name('laporan.')->group(function () {
         Route::get('/kasir', [LaporanKasirController::class, 'index'])->name('kasir');
         Route::get('/kasir/print', [LaporanKasirController::class, 'print'])->name('kasir.print');
-        
+
         Route::get('/kinerja', [\App\Http\Controllers\LaporanController::class, 'kinerjaIndex'])->name('kinerja');
         Route::get('/kinerja/cetak-registrasi', [\App\Http\Controllers\LaporanController::class, 'cetakKinerjaRegistrasi'])->name('kinerja.cetak-registrasi');
         Route::get('/kinerja/cetak-batal', [\App\Http\Controllers\LaporanController::class, 'cetakKinerjaBatal'])->name('kinerja.cetak-batal');
@@ -224,14 +226,8 @@ Route::middleware(['web', 'check.permission'])->group(function () {
     // Helper API
     Route::get('/api/search-barang-nm', [PenerimaanBarangController::class, 'searchBarangNm'])->name('api.search-barang-nm');
 
-    // Legacy Route Catcher
-    Route::get('/{legacy_dir}/{legacy_file}', [LegacyController::class, 'show'])
-        ->where('legacy_dir', 'mod_.*')
-        ->name('legacy.view');
-
 });
 
 Route::get('/', function () {
     return redirect()->route('login');
 });
-

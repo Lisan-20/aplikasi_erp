@@ -1,0 +1,32 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Support\Facades\DB;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        DB::statement("CREATE OR ALTER VIEW dbo.lap_10_besar_penyakit_semester_sum_v
+AS
+SELECT     TOP (100) PERCENT dbo.lap_10_besar_penyakit_sum_v.tahun, dbo.lap_10_besar_penyakit_sum_v.tipe_rl, SUM(dbo.lap_10_besar_penyakit_sum_v.jumlah) 
+                      AS jumlah, dbo.lap_10_besar_penyakit_sum_v.kode_icd, dbo.lap_10_besar_penyakit_sum_v.nama_icd_10, dbo.mt_bulan.semester
+FROM         dbo.lap_10_besar_penyakit_sum_v INNER JOIN
+                      dbo.mt_bulan ON dbo.lap_10_besar_penyakit_sum_v.bulan = dbo.mt_bulan.bulan
+GROUP BY dbo.lap_10_besar_penyakit_sum_v.tahun, dbo.lap_10_besar_penyakit_sum_v.tipe_rl, dbo.lap_10_besar_penyakit_sum_v.kode_icd, 
+                      dbo.lap_10_besar_penyakit_sum_v.nama_icd_10, dbo.mt_bulan.semester
+ORDER BY jumlah DESC
+");
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        DB::statement("DROP VIEW IF EXISTS [lap_10_besar_penyakit_semester_sum_v]");
+    }
+};

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Head, Link } from '@inertiajs/react';
-import { Search, ArrowLeft, CheckCircle, XCircle, Clock, Trash2, Edit } from 'lucide-react';
+import { Search, ArrowLeft, Trash2 } from 'lucide-react';
 import axios from 'axios';
 
 export default function ListingJkn() {
@@ -148,9 +148,9 @@ export default function ListingJkn() {
                                                 <td>{item.tgl_input ? new Date(item.tgl_input).toLocaleDateString('id-ID') : '-'}</td>
                                                 <td>
                                                     {tab === 'baru' ? (
-                                                        <a href={`/legacy/mod_registrasi/edit_data_umum_jkn.php?id_pasien_jkn=${item.id_pasien_jkn}&rubah=1`} className="text-blue-500 font-bold hover:underline">
+                                                        <span className="text-blue-500 font-bold">
                                                             {item.nomorkartu?.replace(/\\/g, '') || '-'}
-                                                        </a>
+                                                        </span>
                                                     ) : (
                                                         <span className="font-bold">{item.nomorkartu?.replace(/\\/g, '') || '-'}</span>
                                                     )}
@@ -165,7 +165,7 @@ export default function ListingJkn() {
                                                 {tab === 'baru' && (
                                                     <td>
                                                         <button 
-                                                            onClick={() => window.open(`/legacy/mod_registrasi/batal_daftar_jkn.php?id_pasien_jkn=${item.id_pasien_jkn}`, 'Batal', 'width=500,height=300')}
+                                                            onClick={() => alert('Fitur Batal Daftar sedang dalam tahap migrasi ke React.')}
                                                             className="text-red-500 hover:text-red-700 transition-colors"
                                                             title="Batal Daftar"
                                                         >

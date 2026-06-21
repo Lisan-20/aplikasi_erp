@@ -44,7 +44,7 @@ class ModuleController extends Controller
         })->values()->all();
 
         return inertia('ModuleSelection', [
-            'modulars' => $groupedData
+            'modulars' => $groupedData,
         ]);
     }
 
@@ -58,7 +58,7 @@ class ModuleController extends Controller
             ->where('id_dc_modul', $id_modul)
             ->first();
 
-        if (!$hakUser) {
+        if (! $hakUser) {
             abort(403, 'Unauthorized access to this module.');
         }
 
@@ -66,7 +66,7 @@ class ModuleController extends Controller
             DB::table('log_user_login_detail')->insert([
                 'id_log_user' => $idLogUser,
                 'login_time_detail' => now(),
-                'id_dc_modul' => $id_modul
+                'id_dc_modul' => $id_modul,
             ]);
         }
 

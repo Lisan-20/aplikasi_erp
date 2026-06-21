@@ -1,0 +1,32 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Support\Facades\DB;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        DB::statement("CREATE OR ALTER VIEW dbo.v_bill_dokter_fee_umum
+AS
+SELECT     dbo.fee_dokter_rajal_temp.kode_dr, dbo.fee_dokter_rajal_temp.kode_trans_pelayanan, dbo.mt_karyawan.nama_pegawai, dbo.tc_trans_pelayanan.kode_kelompok, 
+                      dbo.tc_trans_pelayanan.kode_perusahaan, dbo.tc_trans_pelayanan.bill_dr1, dbo.tc_trans_pelayanan.bill_dr2, dbo.tc_trans_pelayanan.bill_rs, 
+                      dbo.tc_trans_pelayanan.bill_dr1 + dbo.tc_trans_pelayanan.bill_dr2 + dbo.tc_trans_pelayanan.bill_rs AS bill, dbo.tc_trans_pelayanan.no_registrasi
+FROM         dbo.fee_dokter_rajal_temp INNER JOIN
+                      dbo.mt_karyawan ON dbo.fee_dokter_rajal_temp.kode_dr = dbo.mt_karyawan.kode_dokter INNER JOIN
+                      dbo.tc_trans_pelayanan ON dbo.fee_dokter_rajal_temp.kode_trans_pelayanan = dbo.tc_trans_pelayanan.kode_trans_pelayanan
+WHERE     (dbo.fee_dokter_rajal_temp.kode_dr IN (128, 162, 121)) AND (dbo.tc_trans_pelayanan.kode_kelompok = 1)
+");
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        DB::statement("DROP VIEW IF EXISTS [v_bill_dokter_fee_umum]");
+    }
+};

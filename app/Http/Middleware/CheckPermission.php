@@ -13,7 +13,7 @@ class CheckPermission
     {
         $userId = Session::get('id_dd_user');
 
-        if (!$userId) {
+        if (! $userId) {
             return redirect('/login');
         }
 
@@ -27,7 +27,7 @@ class CheckPermission
                 ->where('id_dc_modul', $modulId)
                 ->exists();
 
-            if (!$hasAccess) {
+            if (! $hasAccess) {
                 abort(403, 'Unauthorized access.');
             }
         }

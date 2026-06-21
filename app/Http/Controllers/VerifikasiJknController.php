@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Inertia\Inertia;
 use Illuminate\Support\Facades\DB;
+use Inertia\Inertia;
 
 class VerifikasiJknController extends Controller
 {
@@ -34,7 +34,7 @@ class VerifikasiJknController extends Controller
         if ($search) {
             switch ($filterBy) {
                 case 'nama':
-                    $query->where('nama_pasien', 'like', '%' . $search . '%');
+                    $query->where('nama_pasien', 'like', '%'.$search.'%');
                     break;
                 case 'mr':
                     $query->where('no_mr', $search);
@@ -44,21 +44,21 @@ class VerifikasiJknController extends Controller
                     break;
                 case 'nasabah':
                     $query->where(function ($q) use ($search) {
-                        $q->where('nasabah', 'like', '%' . $search . '%')
-                          ->orWhere('perusahaan', 'like', '%' . $search . '%');
+                        $q->where('nasabah', 'like', '%'.$search.'%')
+                            ->orWhere('perusahaan', 'like', '%'.$search.'%');
                     });
                     break;
                 case 'alamat':
-                    $query->where('almt_ttp_pasien', 'like', '%' . $search . '%');
+                    $query->where('almt_ttp_pasien', 'like', '%'.$search.'%');
                     break;
                 case 'tgl_lahir':
-                    $query->where('tgl_lhr', 'like', '%' . $search . '%');
+                    $query->where('tgl_lhr', 'like', '%'.$search.'%');
                     break;
                 case 'ktp':
-                    $query->where('ktp', 'like', '%' . $search . '%');
+                    $query->where('ktp', 'like', '%'.$search.'%');
                     break;
                 case 'telpon':
-                    $query->where('notlp', 'like', '%' . $search . '%');
+                    $query->where('notlp', 'like', '%'.$search.'%');
                     break;
                 default:
                     // do nothing

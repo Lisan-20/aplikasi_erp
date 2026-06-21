@@ -71,7 +71,7 @@ export default function PoIndex({ pos, filters }) {
                         </div>
                     </div>
 
-                    <div className="dash-table">
+                    <div className="overflow-x-auto w-full">
                         <table className="dash-table">
                             <thead>
                                 <tr>

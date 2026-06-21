@@ -1,0 +1,36 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        if (Schema::hasTable('mt_kategori_insentif_detail_det')) {
+            return;
+        }
+
+        Schema::create('mt_kategori_insentif_detail_det', function (Blueprint $table) {
+            $table->increments('id');
+            $table->integer('kode_kategori')->nullable();
+            $table->integer('kode_kategori_det')->nullable();
+            $table->string('nama_detail')->nullable();
+            $table->decimal('plafon', 19, 4)->nullable();
+            $table->decimal('persen', 18)->nullable();
+            $table->integer('kode_detail')->nullable();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('mt_kategori_insentif_detail_det');
+    }
+};

@@ -1,0 +1,42 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        if (Schema::hasTable('mt_tariff_bpjs_ri')) {
+            return;
+        }
+
+        Schema::create('mt_tariff_bpjs_ri', function (Blueprint $table) {
+            $table->integer('no');
+            $table->string('ir_code', 50)->nullable();
+            $table->string('code', 50)->nullable();
+            $table->string('description', 250)->nullable();
+            $table->string('alos', 50)->nullable();
+            $table->string('final_cost_weight', 50)->nullable();
+            $table->string('base_rate', 50)->nullable();
+            $table->decimal('kelas_3', 18, 5)->nullable();
+            $table->decimal('kelas_2', 18, 5)->nullable();
+            $table->decimal('kelas_1', 18, 5)->nullable();
+            $table->decimal('vip', 18, 5)->nullable();
+            $table->decimal('vvip', 18, 5)->nullable();
+            $table->string('code_ncc', 50)->nullable();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('mt_tariff_bpjs_ri');
+    }
+};

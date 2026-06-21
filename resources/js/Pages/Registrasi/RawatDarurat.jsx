@@ -1,12 +1,10 @@
-import React, { useState } from 'react';
-import { Head, Link, useForm, usePage } from '@inertiajs/react';
+import React from 'react';
+import { Head, useForm, usePage } from '@inertiajs/react';
 import DashboardLayout from '@/Layouts/DashboardLayout';
 
-export default function RawatDarurat({ auth, patient, dokter }) {
-    const user = auth?.user || { username: 'Admin', role: 'Registrasi' };
-    
+export default function RawatDarurat({ patient, dokter }) {
     // Inertia form
-    const { data, setData, post, get, processing, errors, reset } = useForm({
+    const { data, setData, post, processing, errors, reset } = useForm({
         no_mr: patient?.no_mr || '',
         kode_dokter: '',
         tgl_masuk: new Date().toISOString().slice(0, 16),

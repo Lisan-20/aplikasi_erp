@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Inertia\Middleware;
 
 class HandleInertiaRequests extends Middleware
@@ -36,7 +37,7 @@ class HandleInertiaRequests extends Middleware
         $moduleName = 'Dashboard';
 
         if ($id_dd_user && $active_modul) {
-            $module = \Illuminate\Support\Facades\DB::table('dc_modul')->where('id_dc_modul', $active_modul)->first();
+            $module = DB::table('dc_modul')->where('id_dc_modul', $active_modul)->first();
             $moduleName = $module ? $module->nama_modul : 'Dashboard';
 
             $hakAkses = \Illuminate\Support\Facades\DB::table('admin_hak_user_v')
@@ -49,11 +50,11 @@ class HandleInertiaRequests extends Middleware
                 ->get();
 
             foreach ($hakAkses as $row) {
-                if (!isset($menus[$row->id_dc_menu])) {
+                if (! isset($menus[$row->id_dc_menu])) {
                     $menus[$row->id_dc_menu] = [
                         'id_dc_menu' => $row->id_dc_menu,
                         'nama_menu' => $row->nama_menu,
-                        'sub_menus' => []
+                        'sub_menus' => [],
                     ];
                 }
                 if ($row->id_dc_sub_menu) {
@@ -64,7 +65,7 @@ class HandleInertiaRequests extends Middleware
                             break;
                         }
                     }
-                    if (!$subExists) {
+                    if (! $subExists) {
                         $menus[$row->id_dc_menu]['sub_menus'][] = [
                             'id_dc_sub_menu' => $row->id_dc_sub_menu,
                             'nama_sub_menu' => $row->nama_sub_menu,
@@ -97,7 +98,7 @@ class HandleInertiaRequests extends Middleware
             'dashboard' => [
                 'menus' => $menus,
                 'module_name' => $moduleName,
-            ]
+            ],
         ]);
     }
 }

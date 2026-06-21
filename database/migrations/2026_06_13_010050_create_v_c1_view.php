@@ -1,0 +1,28 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Support\Facades\DB;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        DB::statement("CREATE OR ALTER VIEW dbo.v_c1
+AS
+SELECT     persen, kode_bagian, jenis_tindakan, kode_plafon
+FROM         dbo.plafon_bpjs_v
+GROUP BY persen, kode_bagian, jenis_tindakan, kode_plafon
+");
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        DB::statement("DROP VIEW IF EXISTS [v_c1]");
+    }
+};

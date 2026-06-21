@@ -4,7 +4,7 @@ import {
     Menu, X, ChevronDown, ChevronRight,
     Home, Users, Settings, Briefcase,
     FileText, LogOut, LayoutDashboard,
-    Sun, Moon, Boxes, Database, Layers
+    Sun, Moon, Boxes, Database, Layers, Activity
 } from 'lucide-react';
 
 // A mapping function to guess an icon based on menu name
@@ -20,9 +20,9 @@ const getMenuIcon = (name) => {
 };
 
 export default function DashboardLayout({ children }) {
-    const { auth, dashboard, url: currentUrl } = usePage().props;
-    // Alternative way to get url if it's not in props: const currentUrl = usePage().url;
-    const activeUrl = currentUrl || usePage().url;
+    const page = usePage();
+    const { auth, dashboard } = page.props;
+    const activeUrl = page.url;
     const user = auth?.user || { username: 'User', role: 'Administrator' };
     const module_name = dashboard?.module_name || 'Dashboard';
     const menus = dashboard?.menus || [];
@@ -30,7 +30,8 @@ export default function DashboardLayout({ children }) {
     const [isSidebarOpen, setSidebarOpen] = useState(() => {
         if (typeof window !== 'undefined') {
             const saved = localStorage.getItem('sidebarOpen');
-            return saved !== null ? saved === 'true' : true;
+            if (saved !== null) return saved === 'true';
+            return window.innerWidth > 768;
         }
         return true;
     });
@@ -46,7 +47,7 @@ export default function DashboardLayout({ children }) {
         try {
             const saved = sessionStorage.getItem('medilink_open_menus');
             return saved ? JSON.parse(saved) : {};
-        } catch (e) {
+        } catch {
             return {};
         }
     });
@@ -74,6 +75,12 @@ export default function DashboardLayout({ children }) {
         const newTheme = theme === 'dark' ? 'light' : 'dark';
         setTheme(newTheme);
         localStorage.setItem('medilink-theme', newTheme);
+        document.documentElement.setAttribute('data-theme', newTheme);
+        if (newTheme === 'dark') {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
     };
 
     const toggleSidebar = () => setSidebarOpen(!isSidebarOpen);

@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* Google Font Imports are in app.blade.php */
 
 :root {
@@ -1604,35 +1608,35 @@ h1, h2, h3, h4, h5, h6 {
 .dash-sidebar-link svg { width: 20px; height: 20px; margin-right: 12px; flex-shrink: 0; }
 
 
- / *   - - -   P A G E   H E A D E R   ( p l - h e a d e r )   - - -   * / 
- . p l - h e a d e r   { 
-         d i s p l a y :   f l e x ; 
-         j u s t i f y - c o n t e n t :   s p a c e - b e t w e e n ; 
-         a l i g n - i t e m s :   c e n t e r ; 
-         p a d d i n g :   2 4 p x ; 
-         m a r g i n - b o t t o m :   2 4 p x ; 
-         b o r d e r - r a d i u s :   1 6 p x ; 
-         g a p :   1 6 p x ; 
-         f l e x - w r a p :   w r a p ; 
- } 
- . p l - t i t l e   h 1   { 
-         f o n t - s i z e :   1 . 5 r e m ; 
-         f o n t - w e i g h t :   7 0 0 ; 
-         c o l o r :   v a r ( - - t e x t - c o l o r ) ; 
-         m a r g i n :   0   0   4 p x   0 ; 
- } 
- . p l - t i t l e   p   { 
-         f o n t - s i z e :   0 . 9 5 r e m ; 
-         c o l o r :   v a r ( - - t e x t - m u t e d ) ; 
-         m a r g i n :   0 ; 
- } 
- . p l - a c t i o n s   { 
-         d i s p l a y :   f l e x ; 
-         a l i g n - i t e m s :   c e n t e r ; 
-         g a p :   1 2 p x ; 
- } 
- 
- 
+/* --- PAGE HEADER (pl-header) --- */
+.pl-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px;
+    margin-bottom: 24px;
+    border-radius: 16px;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+.pl-title h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-color);
+    margin: 0 0 4px 0;
+}
+.pl-title p {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    margin: 0;
+}
+.pl-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+
 
 .pl-container {
   flex: 1;
@@ -1676,7 +1680,7 @@ h1, h2, h3, h4, h5, h6 {
   margin: 0;
   font-size: 1.5rem;
   font-weight: 600;
-  color: #1e293b;
+  color: var(--text-primary);
 }
 
 .pl-title p {
@@ -1867,4 +1871,26 @@ h1, h2, h3, h4, h5, h6 {
   width: 3rem;
   height: 3rem;
   color: #cbd5e1;
+}
+
+
+/* --- PREMIUM DASHBOARD BUTTONS (.dash-btn) --- */
+.dash-btn {
+  @apply inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-semibold rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm border;
+}
+
+.dash-btn.primary {
+  @apply bg-blue-600 text-white border-blue-600 hover:bg-blue-700 hover:shadow-md focus:ring-blue-500 dark:bg-blue-500 dark:border-blue-500 dark:hover:bg-blue-600;
+}
+
+.dash-btn.secondary {
+  @apply bg-white text-slate-700 border-slate-300 hover:bg-slate-50 focus:ring-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:border-slate-600 dark:hover:bg-slate-700 dark:focus:ring-slate-700;
+}
+
+.dash-btn.danger {
+  @apply bg-red-600 text-white border-red-600 hover:bg-red-700 hover:shadow-md focus:ring-red-500 dark:bg-red-500 dark:border-red-500 dark:hover:bg-red-600;
+}
+
+.dash-icon-btn {
+  @apply inline-flex items-center justify-center p-2 rounded-lg text-slate-500 hover:bg-slate-100 hover:text-slate-700 transition-colors focus:outline-none dark:text-slate-400 dark:hover:bg-slate-700 dark:hover:text-slate-200;
 }
