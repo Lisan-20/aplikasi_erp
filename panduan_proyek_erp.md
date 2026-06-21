@@ -163,3 +163,8 @@ Maka Agen AI akan memuat dokumen ini dan langsung memiliki ingatan yang seragam.
  -   * * T a t a   L e t a k   O d o o : * *   M e r e s m i k a n   p o l a   t a t a   l e t a k   U I   y a n g   m e m i s a h k a n   * L i s t   V i e w s *   ( F u l l   W i d t h   G r i d )   d e n g a n   * F o r m   V i e w s *   ( D o c u m e n t   S h e e t   +   C h a t t e r ) . 
   
  
+ # # #   T a h a p   1 6 :   Q u a l i t y   C o n t r o l ,   C o d e   F o r m a t t i n g ,   &   K o n f i g u r a s i   W a k t u 
+ -   * * L i n t i n g   &   F o r m a t t i n g : * *   M e l a k u k a n   p e m b e r s i h a n   d a n   p e r a p i a n   k o d e   m a s s a l   m e n g g u n a k a n   L a r a v e l   P i n t   ( u n t u k   B a c k e n d   P H P )   d a n   E S L i n t   F i x   ( u n t u k   F r o n t e n d   R e a c t ) .   S t a n d a r   k o d i n g a n   s a a t   i n i   m e n g i k u t i   * C l e a n   C o d e *   b a w a a n   * f r a m e w o r k *   s e c a r a   k e t a t . 
+ -   * * K o n f i g u r a s i   Z o n a   W a k t u : * *   M e n g u b a h   \ 	 i m e z o n e \   d e f a u l t   d i   \ c o n f i g / a p p . p h p \   d a r i   \ U T C \   m e n j a d i   \ A s i a / J a k a r t a \   ( W I B ,   + 0 7 : 0 0 )   a g a r   a k t i v i t a s   l o g   d a n   w a k t u   a p l i k a s i   s e l a r a s   d e n g a n   w a k t u   P C   l o k a l . 
+  
+ 
