@@ -1,7 +1,7 @@
-<h1 align="center">SIMRS — Sistem Informasi Manajemen Rumah Sakit</h1>
+<h1 align="center">Sistem ERP — Enterprise Resource Planning</h1>
 
 <p align="center">
-  A modern Hospital Information System (SIMRS) built with Laravel, React, and Inertia.js,
+  A modern Enterprise Resource Planning (ERP) System built with Laravel, React, and Inertia.js,
   bridging legacy database structures with a contemporary Single Page Application experience.
 </p>
 
@@ -35,7 +35,7 @@
 
 ## 📖 Overview
 
-**SIMRS (Sistem Informasi Manajemen Rumah Sakit)** is a comprehensive Hospital Information System that modernizes and extends a legacy hospital management platform. It provides a unified interface for patient registration, outpatient/inpatient management, BPJS/JKN integration, medical record keeping, reporting, pharmacy management, and financial/accounting operations.
+**Sistem ERP (Enterprise Resource Planning)** is a comprehensive application that modernizes and extends legacy business management platforms. It provides a unified interface for client management, departmental operations, inventory control, point of sales (POS), reporting, and financial/accounting operations.
 
 The application serves as a bridge between established legacy database structures (Microsoft SQL Server) and a modern **Single Page Application (SPA)** frontend, ensuring a smooth transition from the legacy system without disrupting existing operations.
 
@@ -156,7 +156,7 @@ All **4,315+ migration files** are designed to be safe for re-running against an
 ```bash
 # 1. Clone the repository
 git clone <repository-url>
-cd simrs/aplikasi_laravel
+cd aplikasi_erp_laravel
 
 # 2. Install PHP dependencies
 composer install
@@ -177,7 +177,7 @@ Edit `.env` with your SQL Server credentials:
 DB_CONNECTION=sqlsrv
 DB_HOST=localhost
 DB_PORT=1433
-DB_DATABASE=simrs
+DB_DATABASE=aplikasi_erp_db
 DB_USERNAME=sa
 DB_PASSWORD=your_password
 DB_ENCRYPT=yes
