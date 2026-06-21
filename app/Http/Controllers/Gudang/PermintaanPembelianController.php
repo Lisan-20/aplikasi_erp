@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Gudang;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Inertia\Inertia;
-use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Inertia\Inertia;
 
 class PermintaanPembelianController extends Controller
 {
@@ -29,9 +29,9 @@ class PermintaanPembelianController extends Controller
 
         if ($request->has('search') && $request->search != '') {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('a.kode_permohonan', 'like', "%{$search}%")
-                  ->orWhere('b.namasupplier', 'like', "%{$search}%");
+                    ->orWhere('b.namasupplier', 'like', "%{$search}%");
             });
         }
 
@@ -55,7 +55,7 @@ class PermintaanPembelianController extends Controller
 
         return Inertia::render('Gudang/PermintaanPembelian/Index', [
             'prs' => $prs,
-            'filters' => $request->only(['search'])
+            'filters' => $request->only(['search']),
         ]);
     }
 
@@ -79,7 +79,7 @@ class PermintaanPembelianController extends Controller
             // Generate kode_permohonan (e.g. 489/PPNM/06/2026)
             $month = Carbon::now()->format('m');
             $year = Carbon::now()->format('Y');
-            
+
             $lastPr = DB::table('tc_permohonan_nm')
                 ->whereYear('tgl_permohonan', $year)
                 ->orderBy('id_tc_permohonan', 'desc')
@@ -90,7 +90,7 @@ class PermintaanPembelianController extends Controller
                 $nextNum = intval($matches[1]) + 1;
             }
 
-            $kodePermohonan = sprintf("%d/PPNM/%s/%s", $nextNum, $month, $year);
+            $kodePermohonan = sprintf('%d/PPNM/%s/%s', $nextNum, $month, $year);
 
             $idTcPermohonan = DB::table('tc_permohonan_nm')->insertGetId([
                 'kode_permohonan' => $kodePermohonan,
@@ -101,7 +101,7 @@ class PermintaanPembelianController extends Controller
                 'status_batal' => 0,
                 'status_kirim' => 1,
                 'kodesupplier' => $request->kodesupplier,
-                'kode_bagian' => '070201' // Gudang Non Medis
+                'kode_bagian' => '070201', // Gudang Non Medis
             ]);
 
             $details = [];
@@ -117,7 +117,7 @@ class PermintaanPembelianController extends Controller
                     'user_id' => 1,
                     'flag_satuan' => 1,
                     'pilih_satuan' => 1,
-                    'satuan' => $item['satuan'] ?? ''
+                    'satuan' => $item['satuan'] ?? '',
                 ];
             }
 
@@ -125,11 +125,12 @@ class PermintaanPembelianController extends Controller
 
             DB::commit();
 
-            return redirect('/gudang/permintaan-pembelian')->with('success', 'Permintaan Pembelian berhasil dibuat dengan Kode: ' . $kodePermohonan);
+            return redirect('/gudang/permintaan-pembelian')->with('success', 'Permintaan Pembelian berhasil dibuat dengan Kode: '.$kodePermohonan);
 
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()->withErrors(['error' => 'Gagal menyimpan Permintaan Pembelian: ' . $e->getMessage()]);
+
+            return back()->withErrors(['error' => 'Gagal menyimpan Permintaan Pembelian: '.$e->getMessage()]);
         }
     }
 }

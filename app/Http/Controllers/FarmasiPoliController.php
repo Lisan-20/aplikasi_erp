@@ -2,21 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
-use Carbon\Carbon;
 
 class FarmasiPoliController extends Controller
 {
-    private function pembulatan($txt_biaya_tebus) {
-        $harga_jual_1 = substr((string)$txt_biaya_tebus, -3, 3);
-        $hrg_bulat = (int)$harga_jual_1;
+    private function pembulatan($txt_biaya_tebus)
+    {
+        $harga_jual_1 = substr((string) $txt_biaya_tebus, -3, 3);
+        $hrg_bulat = (int) $harga_jual_1;
 
         if ($hrg_bulat > 0 && $hrg_bulat < 500) {
             $harga_jual_2 = 500;
             $harga_jual_ok = $txt_biaya_tebus - $hrg_bulat;
-        } else if ($hrg_bulat > 500 && $hrg_bulat < 1000) {
+        } elseif ($hrg_bulat > 500 && $hrg_bulat < 1000) {
             $harga_jual_2 = 1000;
             $harga_jual_ok = $txt_biaya_tebus - $hrg_bulat;
         } else {
@@ -25,6 +26,7 @@ class FarmasiPoliController extends Controller
         }
         $harga_3 = $harga_jual_ok;
         $harga_jual_4 = $harga_3 + $harga_jual_2;
+
         return $harga_jual_4;
     }
 
@@ -38,7 +40,7 @@ class FarmasiPoliController extends Controller
             ->orWhere('kode_poli', $kode_poli)
             ->first();
 
-        if (!$pasien) {
+        if (! $pasien) {
             abort(404, 'Data Pasien tidak ditemukan');
         }
 
@@ -52,7 +54,7 @@ class FarmasiPoliController extends Controller
             $nm_nasabah = $perusahaan ? $perusahaan->nama_perusahaan : '';
             if ($pasien->kode_kelompok == 11) {
                 $kelompok = DB::table('mt_nasabah')->where('kode_kelompok', 11)->first();
-                $nm_nasabah = ($kelompok ? $kelompok->nama_kelompok . ' ' : '') . $nm_nasabah;
+                $nm_nasabah = ($kelompok ? $kelompok->nama_kelompok.' ' : '').$nm_nasabah;
             }
         } else {
             $nasabah = DB::table('mt_nasabah')->where('kode_kelompok', $pasien->kode_kelompok)->first();
@@ -148,7 +150,7 @@ class FarmasiPoliController extends Controller
             'takaranList' => $takaranList,
             'penggunaanList' => $penggunaanList,
             'resepList' => $resepList,
-            'transaksiFar' => $transaksiFar
+            'transaksiFar' => $transaksiFar,
         ]);
     }
 
@@ -159,8 +161,8 @@ class FarmasiPoliController extends Controller
 
         $kode_brg = $request->input('kode_brg');
         $jumlah = $request->input('jumlah', 1);
-        
-        if (!$kode_brg) {
+
+        if (! $kode_brg) {
             return redirect()->back()->withErrors(['kode_brg' => 'Pilih obat terlebih dahulu']);
         }
 
@@ -176,12 +178,12 @@ class FarmasiPoliController extends Controller
 
             $kode_trans_far = $frTcFar ? $frTcFar->kode_trans_far : null;
 
-            if (!$kode_trans_far) {
+            if (! $kode_trans_far) {
                 // Buat Header Baru
                 $kode_trans_far = DB::table('fr_tc_far')->max('kode_trans_far') + 1;
                 $kode_form_rj = DB::table('fr_tc_far')->where('kode_profit', $kode_profit)->max('kode_form_rj') + 1;
                 $kd_blkg = date('dmY');
-                $no_form = $kode_form_rj . "/RJ-" . $kd_blkg;
+                $no_form = $kode_form_rj.'/RJ-'.$kd_blkg;
 
                 DB::table('fr_tc_far')->insert([
                     'kode_trans_far' => $kode_trans_far,
@@ -207,7 +209,7 @@ class FarmasiPoliController extends Controller
                     'kode_profit' => $kode_profit,
                     'kode_klas' => $patient['kode_klas'] ?: 16,
                     'no_reg_resep' => $patient['no_registrasi'],
-                    'status_transaksi' => 1
+                    'status_transaksi' => 1,
                 ]);
             }
 
@@ -218,10 +220,10 @@ class FarmasiPoliController extends Controller
             $harga_beli = $barang ? ($barang->harga_satuan ?? 0) : 0;
             $kode_layanan = trim($barang->kode_layanan ?? '');
             $golongan = $barang->obat_khusus ?? '';
-            
+
             $kode_profit_margin = $kode_profit;
             // Jika injeksi atau racikan (di skip dulu racikan)
-            if ($kode_layanan == "GP") {
+            if ($kode_layanan == 'GP') {
                 $kode_profit_margin = 5000;
             }
 
@@ -231,7 +233,7 @@ class FarmasiPoliController extends Controller
                 ->where('kode_kelompok', $patient['kode_kelompok'])
                 ->value('profit_obat');
 
-            if (!$nilai_profit || $nilai_profit == 0) {
+            if (! $nilai_profit || $nilai_profit == 0) {
                 $nilai_profit = 50; // default 50%
             }
 
@@ -240,7 +242,7 @@ class FarmasiPoliController extends Controller
 
             // Embalase/Service
             $txt_service = 300; // default
-            $obat_racikan = ['D01A02460','D01A02461','D01A02462','D01A02463','D01A02464','D01A02465','D01A02466','D01A02467','D01A02763'];
+            $obat_racikan = ['D01A02460', 'D01A02461', 'D01A02462', 'D01A02463', 'D01A02464', 'D01A02465', 'D01A02466', 'D01A02467', 'D01A02763'];
             if (in_array($kode_brg, $obat_racikan)) {
                 if ($kode_brg == 'D01A02467') {
                     $txt_service = 3000 + (200 * $jumlah);
@@ -248,7 +250,7 @@ class FarmasiPoliController extends Controller
                     $txt_service = 3000;
                 }
             }
-            
+
             $txt_biaya_tebus = $harga_jual * $jumlah;
             if ($kode_brg == 'D01A02467') {
                 $txt_biaya_tebus_blt = $this->pembulatan($txt_biaya_tebus);
@@ -286,11 +288,13 @@ class FarmasiPoliController extends Controller
             ]);
 
             DB::commit();
+
             return redirect()->back();
 
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->withErrors(['error' => 'Gagal menyimpan obat: ' . $e->getMessage()]);
+
+            return redirect()->back()->withErrors(['error' => 'Gagal menyimpan obat: '.$e->getMessage()]);
         }
     }
 

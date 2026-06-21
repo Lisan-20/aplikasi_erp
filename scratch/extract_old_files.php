@@ -1,16 +1,17 @@
 <?php
-$log = file('C:/Users/lsidq/.gemini/antigravity/brain/066a488e-bb8e-4e91-8110-6f31bb7fc2ca/.system_generated/logs/transcript_full.jsonl');
-$dc_content = "";
-$dl_content = "";
 
-foreach($log as $l) {
+$log = file('C:/Users/lsidq/.gemini/antigravity/brain/066a488e-bb8e-4e91-8110-6f31bb7fc2ca/.system_generated/logs/transcript_full.jsonl');
+$dc_content = '';
+$dl_content = '';
+
+foreach ($log as $l) {
     $d = json_decode($l, true);
-    if($d && isset($d['created_at']) && $d['created_at'] <= '2026-06-20T15:30:00Z') {
-        if(isset($d['tool_calls']) && isset($d['tool_calls'][0]['args'])) {
+    if ($d && isset($d['created_at']) && $d['created_at'] <= '2026-06-20T15:30:00Z') {
+        if (isset($d['tool_calls']) && isset($d['tool_calls'][0]['args'])) {
             $args = $d['tool_calls'][0]['args'];
             $tool = $d['tool_calls'][0]['name'];
             $target = $args['TargetFile'] ?? $args['AbsolutePath'] ?? '';
-            
+
             // EXACT MATCH on filename at the end of the path
             if (basename(str_replace('\\', '/', $target)) === 'DashboardController.php') {
                 if ($tool == 'write_to_file') {
@@ -37,7 +38,7 @@ foreach($log as $l) {
                 }
             }
         }
-        
+
         // Also look at VIEW_FILE
         if ($d['type'] == 'VIEW_FILE') {
             if (strpos($d['content'] ?? '', 'File Path: `file:///d:/001_Aplikasi/aplikasi_erp_laravel/app/Http/Controllers/DashboardController.php`') !== false && strpos($d['content'], 'The above content does NOT show the entire file') === false) {
@@ -51,5 +52,5 @@ foreach($log as $l) {
 }
 file_put_contents('scratch/old_DashboardController.php', $dc_content);
 file_put_contents('scratch/old_DashboardLayout.jsx', $dl_content);
-echo "Extracted DashboardController.php size: " . strlen($dc_content) . "\n";
-echo "Extracted DashboardLayout.jsx size: " . strlen($dl_content) . "\n";
+echo 'Extracted DashboardController.php size: '.strlen($dc_content)."\n";
+echo 'Extracted DashboardLayout.jsx size: '.strlen($dl_content)."\n";

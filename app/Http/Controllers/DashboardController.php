@@ -16,6 +16,7 @@ class DashboardController extends Controller
         if ($modul) {
             return redirect()->route('dashboard', ['modul' => $modul]);
         }
+
         return redirect()->route('modul.index');
     }
 
@@ -91,8 +92,8 @@ class DashboardController extends Controller
             'dashboard' => [
                 'module_name' => $moduleName,
                 'modul_id' => $modul,
-                'menus' => $menus
-            ]
+                'menus' => $menus,
+            ],
         ]);
     }
 
@@ -108,7 +109,7 @@ class DashboardController extends Controller
             // Memanggil Stored Procedure
             // Karena SP mengembalikan multiple result sets, kita menggunakan PDO langsung untuk meloop
             $pdo = DB::connection()->getPdo();
-            $stmt = $pdo->prepare("EXEC sp_DashboardKasir_GetMetrics ?, ?");
+            $stmt = $pdo->prepare('EXEC sp_DashboardKasir_GetMetrics ?, ?');
             $stmt->execute([$startDate, $endDate]);
 
             // Result 1: Header Metrics
@@ -143,22 +144,22 @@ class DashboardController extends Controller
                 'data' => [
                     'header' => $headerData,
                     'revenueTrend' => $revenueTrend,
-                    'paymentMethods' => $paymentMethods
-                ]
+                    'paymentMethods' => $paymentMethods,
+                ],
             ]);
 
         } catch (\Exception $e) {
-            Log::error('Error fetching Kasir metrics via SP: ' . $e->getMessage());
+            Log::error('Error fetching Kasir metrics via SP: '.$e->getMessage());
 
             // Fallback Dummy Data jika koneksi database putus atau SP belum ada di server (Demo mode)
             return response()->json([
                 'status' => 'error',
-                'message' => 'SP execution failed, returning fallback data. ' . $e->getMessage(),
+                'message' => 'SP execution failed, returning fallback data. '.$e->getMessage(),
                 'data' => [
                     'header' => [
                         'TotalPendapatanHariIni' => 12500000,
                         'TotalTransaksiHariIni' => 145,
-                        'TotalPiutangHariIni' => 2100000
+                        'TotalPiutangHariIni' => 2100000,
                     ],
                     'revenueTrend' => [
                         ['name' => 'Senin', 'revenue' => 15000000],
@@ -174,10 +175,9 @@ class DashboardController extends Controller
                         ['name' => 'Transfer Bank', 'value' => 30],
                         ['name' => 'QRIS', 'value' => 15],
                         ['name' => 'Kartu Kredit', 'value' => 10],
-                    ]
-                ]
+                    ],
+                ],
             ]);
         }
     }
 }
-

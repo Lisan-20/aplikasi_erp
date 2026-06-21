@@ -16,11 +16,11 @@ class MenuController extends Controller
 
         if ($request->has('search') && $request->search != '') {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('nama_menu', 'like', "%{$search}%")
-                  ->orWhereHas('modul', function($q2) use ($search) {
-                      $q2->where('nama_modul', 'like', "%{$search}%");
-                  });
+                    ->orWhereHas('modul', function ($q2) use ($search) {
+                        $q2->where('nama_modul', 'like', "%{$search}%");
+                    });
             });
         }
 
@@ -82,7 +82,7 @@ class MenuController extends Controller
     public function destroy($id)
     {
         $menu = DcMenu::findOrFail($id);
-        
+
         // Check if there are submenus related
         if ($menu->subMenus()->count() > 0) {
             return redirect()->route('admin.menu')->with('error', 'Tidak dapat menghapus menu karena masih memiliki sub menu.');

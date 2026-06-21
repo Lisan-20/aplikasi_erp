@@ -1,12 +1,26 @@
 <?php
 
+use App\Http\Controllers\Admin\MenuController;
+use App\Http\Controllers\Admin\ModularController;
+use App\Http\Controllers\Admin\ModulController;
+use App\Http\Controllers\Admin\SubMenuController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\AdminPrivilegesController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\Gudang\PenerimaanBarangController;
+use App\Http\Controllers\Gudang\PermintaanPembelianController;
 use App\Http\Controllers\InformasiMedis1Controller;
 use App\Http\Controllers\InformasiMedis2Controller;
 use App\Http\Controllers\InformasiMedis3Controller;
+use App\Http\Controllers\Kasir\AiController;
+use App\Http\Controllers\Kasir\PosController;
+use App\Http\Controllers\Laporan\LaporanKasirController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\ListingPasienController;
+use App\Http\Controllers\Manajemen\AccPurchasingController;
+use App\Http\Controllers\Master\BarangController;
+use App\Http\Controllers\Master\SupplierController;
 use App\Http\Controllers\ModuleController;
 use App\Http\Controllers\PasienBaruController;
 use App\Http\Controllers\PasienLamaController;
@@ -14,21 +28,7 @@ use App\Http\Controllers\PasienRawatInapController;
 use App\Http\Controllers\PendaftaranLanjutan1Controller;
 use App\Http\Controllers\PendaftaranLanjutan2Controller;
 use App\Http\Controllers\PendaftaranLanjutan3Controller;
-use App\Http\Controllers\ConsentController;
-use App\Http\Controllers\Kasir\PosController;
-use App\Http\Controllers\Laporan\LaporanKasirController;
 use App\Http\Controllers\Pengadaan\PengadaanController;
-use App\Http\Controllers\Manajemen\AccPurchasingController;
-use App\Http\Controllers\Gudang\PermintaanPembelianController;
-use App\Http\Controllers\Gudang\PenerimaanBarangController;
-use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\Admin\ModulController;
-use App\Http\Controllers\Admin\MenuController;
-use App\Http\Controllers\Admin\SubMenuController;
-use App\Http\Controllers\Admin\ModularController;
-use App\Http\Controllers\AdminPrivilegesController;
-use App\Http\Controllers\Master\SupplierController;
-use App\Http\Controllers\Master\BarangController;
 
 /*
 |--------------------------------------------------------------------------
@@ -53,8 +53,8 @@ Route::middleware(['web', 'check.permission'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
     Route::get('/dashboard/{modul}', [DashboardController::class, 'show'])->name('dashboard');
     Route::get('/api/dashboard/kasir', [DashboardController::class, 'getKasirMetrics']);
-    Route::get('/debug/menus/{modul}', function($modul) {
-        $c = new DashboardController();
+    Route::get('/debug/menus/{modul}', function ($modul) {
+        $c = new DashboardController;
         $r = $c->show($modul);
 
         return $r->toResponse(request())->getData();
@@ -126,7 +126,7 @@ Route::middleware(['web', 'check.permission'])->group(function () {
     Route::prefix('kasir')->name('kasir.')->group(function () {
         Route::get('/pos', [PosController::class, 'index'])->name('pos');
         Route::get('/api/barang-nm', [PosController::class, 'searchBarang'])->name('api.barang');
-        Route::post('/api/gemini-recommendations', [\App\Http\Controllers\Kasir\AiController::class, 'getAiRecommendations'])->name('api.recommendations');
+        Route::post('/api/gemini-recommendations', [AiController::class, 'getAiRecommendations'])->name('api.recommendations');
         Route::post('/checkout', [PosController::class, 'checkout'])->name('checkout');
         Route::get('/struk/{no_registrasi}', [PosController::class, 'printStruk'])->name('struk');
 
@@ -141,10 +141,10 @@ Route::middleware(['web', 'check.permission'])->group(function () {
         Route::get('/kasir', [LaporanKasirController::class, 'index'])->name('kasir');
         Route::get('/kasir/print', [LaporanKasirController::class, 'print'])->name('kasir.print');
 
-        Route::get('/kinerja', [\App\Http\Controllers\LaporanController::class, 'kinerjaIndex'])->name('kinerja');
-        Route::get('/kinerja/cetak-registrasi', [\App\Http\Controllers\LaporanController::class, 'cetakKinerjaRegistrasi'])->name('kinerja.cetak-registrasi');
-        Route::get('/kinerja/cetak-batal', [\App\Http\Controllers\LaporanController::class, 'cetakKinerjaBatal'])->name('kinerja.cetak-batal');
-        Route::get('/kinerja/cetak-rujukan', [\App\Http\Controllers\LaporanController::class, 'cetakKinerjaRujukan'])->name('kinerja.cetak-rujukan');
+        Route::get('/kinerja', [LaporanController::class, 'kinerjaIndex'])->name('kinerja');
+        Route::get('/kinerja/cetak-registrasi', [LaporanController::class, 'cetakKinerjaRegistrasi'])->name('kinerja.cetak-registrasi');
+        Route::get('/kinerja/cetak-batal', [LaporanController::class, 'cetakKinerjaBatal'])->name('kinerja.cetak-batal');
+        Route::get('/kinerja/cetak-rujukan', [LaporanController::class, 'cetakKinerjaRujukan'])->name('kinerja.cetak-rujukan');
     });
 
     Route::prefix('admin')->name('admin.')->group(function () {

@@ -16,12 +16,12 @@ class ModulController extends Controller
 
         if ($request->has('search') && $request->search != '') {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('nama_modul', 'like', "%{$search}%")
-                  ->orWhere('folder', 'like', "%{$search}%")
-                  ->orWhereHas('modular', function($q2) use ($search) {
-                      $q2->where('nama_modular', 'like', "%{$search}%");
-                  });
+                    ->orWhere('folder', 'like', "%{$search}%")
+                    ->orWhereHas('modular', function ($q2) use ($search) {
+                        $q2->where('nama_modular', 'like', "%{$search}%");
+                    });
             });
         }
 
@@ -81,7 +81,7 @@ class ModulController extends Controller
     public function destroy($id)
     {
         $modul = DcModul::findOrFail($id);
-        
+
         // Check if there are menus related
         if ($modul->menus()->count() > 0) {
             return redirect()->route('admin.modul')->with('error', 'Tidak dapat menghapus modul karena masih memiliki menu.');

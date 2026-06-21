@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
-use Carbon\Carbon;
 
 class PasienLuarController extends Controller
 {
@@ -43,9 +43,9 @@ class PasienLuarController extends Controller
             ->get();
 
         $pt = DB::table('mt_perusahaan')
-            ->where(function($query) {
+            ->where(function ($query) {
                 $query->whereNull('flag')
-                      ->orWhere('flag', 0);
+                    ->orWhere('flag', 0);
             })
             ->select('nama_perusahaan', 'kode_perusahaan')
             ->orderBy('nama_perusahaan')
@@ -63,7 +63,7 @@ class PasienLuarController extends Controller
             'asuransi' => $asuransi,
             'asuransiCob' => $asuransiCob,
             'pt' => $pt,
-            'penunjang' => $penunjang
+            'penunjang' => $penunjang,
         ]);
     }
 
@@ -86,15 +86,15 @@ class PasienLuarController extends Controller
 
             $tgl_masuk = Carbon::now();
             $kode_bagian_masuk = $validated['kode_bagian'];
-            $stat_pasien = "Baru";
+            $stat_pasien = 'Baru';
             $status_cito = 0;
 
             // Generate ID and no_pm
             $id_mt_pasien_penunjang = (DB::table('mt_pasien_penunjang')->max('id_mt_pasien_penunjang') ?? 0) + 1;
             $kode_penunjang = (DB::table('pm_tc_penunjang')->max('kode_penunjang') ?? 0) + 1;
-            
+
             $iRecNumber = $id_mt_pasien_penunjang;
-            $no_pm = str_pad($iRecNumber, 7, "0", STR_PAD_LEFT) . "L";
+            $no_pm = str_pad($iRecNumber, 7, '0', STR_PAD_LEFT).'L';
 
             // 1. Insert mt_pasien_penunjang
             DB::table('mt_pasien_penunjang')->insert([
@@ -113,10 +113,10 @@ class PasienLuarController extends Controller
             ]);
 
             // 2. tc_registrasi
-            $tgl_cek = date("d");
-            $bln_cek = date("m");
-            $thn_cek = date("Y");
-            $tgl_ymd = date("ymd");
+            $tgl_cek = date('d');
+            $bln_cek = date('m');
+            $thn_cek = date('Y');
+            $tgl_ymd = date('ymd');
 
             $no_urut_reg = (DB::table('tc_registrasi')
                 ->whereDay('tgl_jam_masuk', $tgl_cek)
@@ -124,8 +124,8 @@ class PasienLuarController extends Controller
                 ->whereYear('tgl_jam_masuk', $thn_cek)
                 ->max('no_urut') ?? 0) + 1;
 
-            $no_urut1 = sprintf("%03s", $no_urut_reg);
-            $no_registrasi = $tgl_ymd . "" . $no_urut1;
+            $no_urut1 = sprintf('%03s', $no_urut_reg);
+            $no_registrasi = $tgl_ymd.''.$no_urut1;
 
             DB::table('tc_registrasi')->insert([
                 'no_registrasi' => $no_registrasi,
@@ -210,7 +210,8 @@ class PasienLuarController extends Controller
 
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+
+            return redirect()->back()->with('error', 'Terjadi kesalahan: '.$e->getMessage());
         }
     }
 }

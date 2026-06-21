@@ -40,7 +40,7 @@ class HandleInertiaRequests extends Middleware
             $module = DB::table('dc_modul')->where('id_dc_modul', $active_modul)->first();
             $moduleName = $module ? $module->nama_modul : 'Dashboard';
 
-            $hakAkses = \Illuminate\Support\Facades\DB::table('admin_hak_user_v')
+            $hakAkses = DB::table('admin_hak_user_v')
                 ->select('id_dc_menu', 'nama_menu', 'no_urut_menu', 'id_dc_sub_menu', 'nama_sub_menu', 'url_sub_menu', 'url_sub_menu_baru', 'no_urut_sub_menu')
                 ->where('id_dd_user', $id_dd_user)
                 ->where('id_dc_modul', $active_modul)

@@ -15,9 +15,9 @@ class AdminPrivilegesController extends Controller
 
         $query = DB::table('dd_user_group');
         if ($filter) {
-            $query->where('nama_group', 'like', '%' . $filter . '%');
+            $query->where('nama_group', 'like', '%'.$filter.'%');
         }
-        
+
         $groups = $query->paginate(20)->withQueryString();
 
         return Inertia::render('Admin/Privileges/Index', [
@@ -63,6 +63,7 @@ class AdminPrivilegesController extends Controller
     public function destroyGroup($id)
     {
         DB::table('dd_user_group')->where('id_dd_user_group', $id)->delete();
+
         return redirect()->back()->with('success', 'Group User berhasil dihapus.');
     }
 
@@ -92,7 +93,7 @@ class AdminPrivilegesController extends Controller
             ->join('dc_menu as m', 's.id_dc_menu', '=', 'm.id_dc_menu')
             ->join('dc_modul as d', 'm.id_dc_modul', '=', 'd.id_dc_modul');
 
-        if (!$tipeCari) {
+        if (! $tipeCari) {
             // When no group is selected, force empty result just like legacy did
             $querySubMenu->whereNull('s.id_dc_sub_menu');
         }
@@ -118,7 +119,7 @@ class AdminPrivilegesController extends Controller
         $id_dd_user_group = $request->input('id_dd_user_group');
         $oid = $request->input('oid', []); // Array of [id_dc_sub_menu => hak_akses_menu]
 
-        if (!$id_dd_user_group) {
+        if (! $id_dd_user_group) {
             return redirect()->back()->with('error', 'Group User tidak valid.');
         }
 
@@ -153,10 +154,12 @@ class AdminPrivilegesController extends Controller
                 }
             }
             DB::commit();
+
             return redirect()->back()->with('success', 'Hak Akses berhasil diperbarui.');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'Gagal memperbarui hak akses: ' . $e->getMessage());
+
+            return redirect()->back()->with('error', 'Gagal memperbarui hak akses: '.$e->getMessage());
         }
     }
 }

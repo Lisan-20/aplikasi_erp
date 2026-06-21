@@ -10,7 +10,9 @@ class DcSubMenu extends Model
     use HasFactory;
 
     protected $table = 'dc_sub_menu';
+
     protected $primaryKey = 'id_dc_sub_menu';
+
     public $timestamps = false;
 
     protected $fillable = [

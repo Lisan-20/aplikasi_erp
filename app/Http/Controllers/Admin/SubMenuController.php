@@ -17,19 +17,19 @@ class SubMenuController extends Controller
 
         if ($request->has('search') && $request->search != '') {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('nama_sub_menu', 'like', "%{$search}%")
-                  ->orWhereHas('menu', function($q2) use ($search) {
-                      $q2->where('nama_menu', 'like', "%{$search}%")
-                        ->orWhereHas('modul', function($q3) use ($search) {
-                            $q3->where('nama_modul', 'like', "%{$search}%");
-                        });
-                  });
+                    ->orWhereHas('menu', function ($q2) use ($search) {
+                        $q2->where('nama_menu', 'like', "%{$search}%")
+                            ->orWhereHas('modul', function ($q3) use ($search) {
+                                $q3->where('nama_modul', 'like', "%{$search}%");
+                            });
+                    });
             });
         }
 
         if ($request->has('id_dc_modul') && $request->id_dc_modul != '') {
-            $query->whereHas('menu', function($q) use ($request) {
+            $query->whereHas('menu', function ($q) use ($request) {
                 $q->where('id_dc_modul', $request->id_dc_modul);
             });
         }

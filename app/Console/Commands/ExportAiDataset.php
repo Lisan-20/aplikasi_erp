@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Storage;
 class ExportAiDataset extends Command
 {
     protected $signature = 'ai:export-kasir';
+
     protected $description = 'Mengekstrak riwayat transaksi kasir menjadi dataset JSONL untuk Fine-Tuning AI';
 
     public function handle()
@@ -21,19 +22,19 @@ class ExportAiDataset extends Command
             ->orderBy('d.no_registrasi')
             ->get();
 
-        $this->info('Ditemukan total ' . count($transaksi) . ' item terjual.');
+        $this->info('Ditemukan total '.count($transaksi).' item terjual.');
 
         $grouped = [];
         foreach ($transaksi as $t) {
-            if (!isset($grouped[$t->no_registrasi])) {
+            if (! isset($grouped[$t->no_registrasi])) {
                 $grouped[$t->no_registrasi] = [];
             }
             $grouped[$t->no_registrasi][] = $t->nama_brg;
         }
 
-        $this->info('Total transaksi (keranjang) unik: ' . count($grouped));
+        $this->info('Total transaksi (keranjang) unik: '.count($grouped));
 
-        $jsonlData = "";
+        $jsonlData = '';
         $validTransactionCount = 0;
 
         foreach ($grouped as $no_reg => $items) {
@@ -42,7 +43,7 @@ class ExportAiDataset extends Command
             }
 
             $unique_items = array_values(array_unique($items));
-            
+
             if (count($unique_items) < 2) {
                 continue;
             }
@@ -50,26 +51,26 @@ class ExportAiDataset extends Command
             $target_item = array_pop($unique_items);
             $input_items_string = implode(', ', $unique_items);
 
-            $system_prompt = "Anda adalah asisten kasir cerdas di Sistem ERP. Tugas Anda adalah memberikan 1 rekomendasi barang (cross-selling/upselling) berdasarkan barang yang sedang dibeli oleh pelanggan.";
-            $user_prompt = "Pelanggan saat ini membeli barang berikut: [" . $input_items_string . "]. Tolong rekomendasikan 1 barang terkait yang mungkin juga mereka butuhkan.";
-            $assistant_response = "Berdasarkan pola pembelian, pelanggan juga sering membeli: " . $target_item . ". Saya sangat merekomendasikan untuk menawarkannya.";
+            $system_prompt = 'Anda adalah asisten kasir cerdas di Sistem ERP. Tugas Anda adalah memberikan 1 rekomendasi barang (cross-selling/upselling) berdasarkan barang yang sedang dibeli oleh pelanggan.';
+            $user_prompt = 'Pelanggan saat ini membeli barang berikut: ['.$input_items_string.']. Tolong rekomendasikan 1 barang terkait yang mungkin juga mereka butuhkan.';
+            $assistant_response = 'Berdasarkan pola pembelian, pelanggan juga sering membeli: '.$target_item.'. Saya sangat merekomendasikan untuk menawarkannya.';
 
             $messageObj = [
-                "messages" => [
-                    ["role" => "system", "content" => $system_prompt],
-                    ["role" => "user", "content" => $user_prompt],
-                    ["role" => "assistant", "content" => $assistant_response]
-                ]
+                'messages' => [
+                    ['role' => 'system', 'content' => $system_prompt],
+                    ['role' => 'user', 'content' => $user_prompt],
+                    ['role' => 'assistant', 'content' => $assistant_response],
+                ],
             ];
 
-            $jsonlData .= json_encode($messageObj) . "\n";
+            $jsonlData .= json_encode($messageObj)."\n";
             $validTransactionCount++;
         }
 
-        $fileName = 'ai_dataset/kasir_finetune_' . date('Ymd_His') . '.jsonl';
+        $fileName = 'ai_dataset/kasir_finetune_'.date('Ymd_His').'.jsonl';
         Storage::disk('local')->put($fileName, $jsonlData);
 
-        $this->info('Selesai! Berhasil membuat ' . $validTransactionCount . ' baris dataset pelatihan.');
-        $this->info('File disimpan di: storage/app/' . $fileName);
+        $this->info('Selesai! Berhasil membuat '.$validTransactionCount.' baris dataset pelatihan.');
+        $this->info('File disimpan di: storage/app/'.$fileName);
     }
 }

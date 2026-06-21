@@ -3,14 +3,15 @@
 namespace App\Http\Controllers\Kasir;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Services\GeminiAiService;
 use App\Services\OllamaAiService;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class AiController extends Controller
 {
     protected $geminiService;
+
     protected $ollamaService;
 
     public function __construct(GeminiAiService $geminiService, OllamaAiService $ollamaService)
@@ -22,7 +23,7 @@ class AiController extends Controller
     public function getAiRecommendations(Request $request)
     {
         $cartItemCodes = $request->input('cart', []);
-        
+
         if (empty($cartItemCodes)) {
             return response()->json([]);
         }

@@ -29,17 +29,17 @@ class UserController extends Controller
         $users = $query->orderBy('username', 'asc')->paginate(20)->withQueryString();
 
         $groups = DB::table('dd_user_group')
-                    ->select('id_dd_user_group', 'nama_group')
-                    ->orderBy('nama_group', 'asc')
-                    ->get();
+            ->select('id_dd_user_group', 'nama_group')
+            ->orderBy('nama_group', 'asc')
+            ->get();
 
         return Inertia::render('Admin/User/Index', [
             'users' => $users,
             'groups' => $groups,
             'filters' => [
                 'tipeCari' => $tipeCari,
-                'filter' => $filter
-            ]
+                'filter' => $filter,
+            ],
         ]);
     }
 
@@ -50,12 +50,12 @@ class UserController extends Controller
         $query = DB::table('mt_karyawan')
             ->join('mt_bagian', 'mt_karyawan.kode_bagian', '=', 'mt_bagian.kode_bagian')
             ->select('mt_karyawan.no_induk', 'mt_karyawan.nama_pegawai', 'mt_bagian.nama_bagian');
-            // Menghapus 'status_aktif' jika tidak ada di tabel, karena legacy script tidak melakukan filter status_aktif.
+        // Menghapus 'status_aktif' jika tidak ada di tabel, karena legacy script tidak melakukan filter status_aktif.
 
         if ($search) {
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('mt_karyawan.nama_pegawai', 'LIKE', "%{$search}%")
-                  ->orWhere('mt_karyawan.no_induk', 'LIKE', "%{$search}%");
+                    ->orWhere('mt_karyawan.no_induk', 'LIKE', "%{$search}%");
             });
         }
 
@@ -80,18 +80,20 @@ class UserController extends Controller
                 'username' => $validated['username'],
                 'password' => md5($validated['password']), // Sesuai kesepakatan legacy compat
                 'no_induk' => $validated['no_induk'],
-                'npp'      => $validated['no_induk'],
+                'npp' => $validated['no_induk'],
                 'id_dd_user_group' => $validated['id_dd_user_group'],
                 'status' => $validated['status'],
                 'ko_wil' => '101',
                 'input_id' => session('user_id') ?? 0,
-                'input_tgl' => date('Y-m-d')
+                'input_tgl' => date('Y-m-d'),
             ]);
             DB::commit();
+
             return redirect()->back()->with('success', 'User berhasil ditambahkan.');
         } catch (\Exception $e) {
             DB::rollback();
-            return redirect()->back()->withErrors(['error' => 'Gagal menyimpan data: ' . $e->getMessage()]);
+
+            return redirect()->back()->withErrors(['error' => 'Gagal menyimpan data: '.$e->getMessage()]);
         }
     }
 
@@ -116,12 +118,14 @@ class UserController extends Controller
             }
 
             DB::table('dd_user')->where('id_dd_user', $id)->update($updateData);
-            
+
             DB::commit();
+
             return redirect()->back()->with('success', 'User berhasil diperbarui.');
         } catch (\Exception $e) {
             DB::rollback();
-            return redirect()->back()->withErrors(['error' => 'Gagal memperbarui data: ' . $e->getMessage()]);
+
+            return redirect()->back()->withErrors(['error' => 'Gagal memperbarui data: '.$e->getMessage()]);
         }
     }
 
@@ -131,10 +135,12 @@ class UserController extends Controller
         try {
             DB::table('dd_user')->where('id_dd_user', $id)->delete();
             DB::commit();
+
             return redirect()->back()->with('success', 'User berhasil dihapus.');
         } catch (\Exception $e) {
             DB::rollback();
-            return redirect()->back()->withErrors(['error' => 'Gagal menghapus data: ' . $e->getMessage()]);
+
+            return redirect()->back()->withErrors(['error' => 'Gagal menghapus data: '.$e->getMessage()]);
         }
     }
 }

@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
-use Carbon\Carbon;
 
 class AsesmenPerawatController extends Controller
 {
@@ -33,7 +33,7 @@ class AsesmenPerawatController extends Controller
             ->where('tc_kunjungan.no_kunjungan', $no_kunjungan)
             ->first();
 
-        if (!$pasien) {
+        if (! $pasien) {
             abort(404, 'Kunjungan tidak ditemukan');
         }
 
@@ -51,7 +51,7 @@ class AsesmenPerawatController extends Controller
             // Because one kd_periksa can have hasil and hasil2
             $existingAnswers[$ans->kode_pemeriksaan] = [
                 'hasil' => $ans->hasil,
-                'hasil2' => $ans->hasil2
+                'hasil2' => $ans->hasil2,
             ];
         }
 
@@ -74,12 +74,12 @@ class AsesmenPerawatController extends Controller
         // CPOT                           : 14000-14999
         // NIPS                           : 12000-12999
         $skalaNyeri = DB::table('mt_acc_erm')
-            ->where(function($q) {
+            ->where(function ($q) {
                 $q->whereBetween('kd_periksa', [36000, 36999]) // Wong Baker
-                  ->orWhereBetween('kd_periksa', [38000, 38999]) // NRS
-                  ->orWhereBetween('kd_periksa', [13000, 13999]) // FLACC
-                  ->orWhereBetween('kd_periksa', [14000, 14999]) // CPOT
-                  ->orWhereBetween('kd_periksa', [12000, 12999]); // NIPS
+                    ->orWhereBetween('kd_periksa', [38000, 38999]) // NRS
+                    ->orWhereBetween('kd_periksa', [13000, 13999]) // FLACC
+                    ->orWhereBetween('kd_periksa', [14000, 14999]) // CPOT
+                    ->orWhereBetween('kd_periksa', [12000, 12999]); // NIPS
             })
             ->orderBy('kd_periksa')
             ->get();
@@ -107,32 +107,39 @@ class AsesmenPerawatController extends Controller
 
         $details = [];
         foreach ($detailsRaw as $d) {
-            if (!isset($details[$d->kd_periksa])) {
+            if (! isset($details[$d->kd_periksa])) {
                 $details[$d->kd_periksa] = [];
             }
             $details[$d->kd_periksa][] = $d;
         }
 
         // Map existing answers and details into questions
-        $mapQuestions = function($questions) use ($details, $existingAnswers) {
-            return $questions->map(function($q) use ($details, $existingAnswers) {
+        $mapQuestions = function ($questions) use ($details, $existingAnswers) {
+            return $questions->map(function ($q) use ($details, $existingAnswers) {
                 $q->options = $details[$q->kd_periksa] ?? [];
-                
+
                 $ans = $existingAnswers[$q->kd_periksa] ?? null;
                 // If answer exists, use it. Else fallback to value_3 (default input value)
                 $q->answer = $ans ? $ans['hasil'] : ($q->kd_type == '1' || $q->kd_type == '3' || $q->kd_type == '5' ? $q->value_3 : '');
                 $q->answer2 = $ans ? $ans['hasil2'] : ($q->kd_type == '3' && $q->kd_kk == '1' ? $q->value_3 : '');
+
                 return $q;
             });
         };
 
         $emr = DB::table('tc_emr_form')->where('no_kunjungan', $no_kunjungan)->pluck('kode_rm')->toArray();
         $radiogroup = '1';
-        if (in_array(64, $emr)) $radiogroup = '1';
-        elseif (in_array(66, $emr)) $radiogroup = '2';
-        elseif (in_array(53, $emr)) $radiogroup = '3';
-        elseif (in_array(54, $emr)) $radiogroup = '4';
-        elseif (in_array(52, $emr)) $radiogroup = '5';
+        if (in_array(64, $emr)) {
+            $radiogroup = '1';
+        } elseif (in_array(66, $emr)) {
+            $radiogroup = '2';
+        } elseif (in_array(53, $emr)) {
+            $radiogroup = '3';
+        } elseif (in_array(54, $emr)) {
+            $radiogroup = '4';
+        } elseif (in_array(52, $emr)) {
+            $radiogroup = '5';
+        }
 
         return Inertia::render('Poli/Asesmen/AsesmenAwalForm', [
             'pasien' => $pasien,
@@ -144,7 +151,7 @@ class AsesmenPerawatController extends Controller
             'asuhanKeperawatan' => $mapQuestions(collect($asuhanKeperawatan)),
             'dischargePlanning' => $mapQuestions(collect($dischargePlanning)),
             'radiogroup_val' => $radiogroup,
-            'mode' => count($existingAnswersRaw) > 0 ? 'edit' : 'create'
+            'mode' => count($existingAnswersRaw) > 0 ? 'edit' : 'create',
         ]);
     }
 
@@ -165,19 +172,25 @@ class AsesmenPerawatController extends Controller
             DB::table('tc_emr_form')->where('no_kunjungan', $no_kunjungan)->whereIn('kode_rm', [64, 66, 53, 54, 52])->delete();
             // Hapus data skala nyeri sesuai range aktual di database
             DB::table('tc_pemeriksaan_erm')->where('no_kunjungan', $no_kunjungan)
-                ->where(function($q) {
+                ->where(function ($q) {
                     $q->whereBetween('kode_pemeriksaan', [36000, 36999]) // Wong Baker
-                      ->orWhereBetween('kode_pemeriksaan', [38000, 38999]) // NRS
-                      ->orWhereBetween('kode_pemeriksaan', [13000, 13999]) // FLACC
-                      ->orWhereBetween('kode_pemeriksaan', [14000, 14999]) // CPOT
-                      ->orWhereBetween('kode_pemeriksaan', [12000, 12999]); // NIPS
+                        ->orWhereBetween('kode_pemeriksaan', [38000, 38999]) // NRS
+                        ->orWhereBetween('kode_pemeriksaan', [13000, 13999]) // FLACC
+                        ->orWhereBetween('kode_pemeriksaan', [14000, 14999]) // CPOT
+                        ->orWhereBetween('kode_pemeriksaan', [12000, 12999]); // NIPS
                 })->delete();
             $kode_rm = 64;
-            if ($radiogroup == '1') $kode_rm = 64;
-            elseif ($radiogroup == '2') $kode_rm = 66;
-            elseif ($radiogroup == '3') $kode_rm = 53;
-            elseif ($radiogroup == '4') $kode_rm = 54;
-            elseif ($radiogroup == '5') $kode_rm = 52;
+            if ($radiogroup == '1') {
+                $kode_rm = 64;
+            } elseif ($radiogroup == '2') {
+                $kode_rm = 66;
+            } elseif ($radiogroup == '3') {
+                $kode_rm = 53;
+            } elseif ($radiogroup == '4') {
+                $kode_rm = 54;
+            } elseif ($radiogroup == '5') {
+                $kode_rm = 52;
+            }
             DB::table('tc_emr_form')->insert([
                 'no_kunjungan' => $no_kunjungan,
                 'kode_rm' => $kode_rm,
@@ -188,7 +201,7 @@ class AsesmenPerawatController extends Controller
                 DB::table('tc_pemeriksaan_erm')->updateOrInsert(
                     [
                         'no_kunjungan' => $no_kunjungan,
-                        'kode_pemeriksaan' => $ans['kd_periksa']
+                        'kode_pemeriksaan' => $ans['kd_periksa'],
                     ],
                     [
                         'no_registrasi' => $no_registrasi,
@@ -211,20 +224,20 @@ class AsesmenPerawatController extends Controller
             // ==========================
             $tinggi = DB::table('tc_pemeriksaan_erm')->where('no_kunjungan', $no_kunjungan)->where('kode_pemeriksaan', '10216')->value('hasil');
             $berat = DB::table('tc_pemeriksaan_erm')->where('no_kunjungan', $no_kunjungan)->where('kode_pemeriksaan', '10215')->value('hasil');
-            
+
             if ($tinggi && $berat && is_numeric($tinggi) && is_numeric($berat) && $tinggi > 0) {
                 $tinggi_cm = $tinggi / 100;
                 $bmi = $berat / ($tinggi_cm * $tinggi_cm);
-                
-                $hasil_bmi = "Normal";
+
+                $hasil_bmi = 'Normal';
                 if ($bmi < 18.5) {
-                    $hasil_bmi = "Underweight";
+                    $hasil_bmi = 'Underweight';
                 } elseif ($bmi >= 18.5 && $bmi < 23) {
-                    $hasil_bmi = "Normal";
+                    $hasil_bmi = 'Normal';
                 } elseif ($bmi >= 23 && $bmi < 25) {
-                    $hasil_bmi = "Overweight";
+                    $hasil_bmi = 'Overweight';
                 } elseif ($bmi >= 25) {
-                    $hasil_bmi = "Obese";
+                    $hasil_bmi = 'Obese';
                 }
 
                 DB::table('tc_pemeriksaan_erm')->updateOrInsert(
@@ -264,7 +277,7 @@ class AsesmenPerawatController extends Controller
                 ->where('no_kunjungan', $no_kunjungan)
                 ->where('kode_pemeriksaan', 'like', '99%')
                 ->sum('sekor');
-                
+
             DB::table('tc_pemeriksaan_erm')->updateOrInsert(
                 ['no_kunjungan' => $no_kunjungan, 'kode_pemeriksaan' => '99301'],
                 ['hasil' => $tot_skor, 'sekor' => $tot_skor]
@@ -276,7 +289,7 @@ class AsesmenPerawatController extends Controller
             $id_user = auth()->id() ?? 1;
             $dateNow = Carbon::now();
 
-            $updateEmr = function($kode_rm) use ($no_kunjungan, $no_registrasi, $no_mr, $id_user, $dateNow) {
+            $updateEmr = function ($kode_rm) use ($no_kunjungan, $no_registrasi, $no_mr, $id_user, $dateNow) {
                 DB::table('tc_emr_form')->updateOrInsert(
                     ['no_registrasi' => $no_registrasi, 'kode_rm' => $kode_rm],
                     ['no_kunjungan' => $no_kunjungan, 'no_mr' => $no_mr, 'tgl_update' => $dateNow, 'id_user' => $id_user]
@@ -290,7 +303,7 @@ class AsesmenPerawatController extends Controller
             } elseif ($radiogroup == '3') {
                 DB::table('tc_pemeriksaan_erm')
                     ->where('no_kunjungan', $no_kunjungan)->where('kode_pemeriksaan', 'like', '13%')
-                    ->where('kd_type', '2')->where(function($query) {
+                    ->where('kd_type', '2')->where(function ($query) {
                         $query->where('hasil', '')->orWhereNull('hasil')->orWhere('hasil', '2');
                     })->update(['sekor' => 0]);
                 $tot_flacc = DB::table('tc_pemeriksaan_erm')->where('no_kunjungan', $no_kunjungan)->where('kode_pemeriksaan', 'like', '13%')->sum('sekor');
@@ -299,7 +312,7 @@ class AsesmenPerawatController extends Controller
             } elseif ($radiogroup == '4') {
                 DB::table('tc_pemeriksaan_erm')
                     ->where('no_kunjungan', $no_kunjungan)->where('kode_pemeriksaan', 'like', '14%')
-                    ->where('kd_type', '2')->where(function($query) {
+                    ->where('kd_type', '2')->where(function ($query) {
                         $query->where('hasil', '')->orWhereNull('hasil')->orWhere('hasil', '2');
                     })->update(['sekor' => 0]);
                 $tot_cpot = DB::table('tc_pemeriksaan_erm')->where('no_kunjungan', $no_kunjungan)->where('kode_pemeriksaan', 'like', '14%')->sum('sekor');
@@ -308,7 +321,7 @@ class AsesmenPerawatController extends Controller
             } elseif ($radiogroup == '5') {
                 DB::table('tc_pemeriksaan_erm')
                     ->where('no_kunjungan', $no_kunjungan)->where('kode_pemeriksaan', 'like', '12%')
-                    ->where('kd_type', '2')->where(function($query) {
+                    ->where('kd_type', '2')->where(function ($query) {
                         $query->where('hasil', '')->orWhereNull('hasil')->orWhere('hasil', '2');
                     })->update(['sekor' => 0]);
                 $tot_nips = DB::table('tc_pemeriksaan_erm')->where('no_kunjungan', $no_kunjungan)->where('kode_pemeriksaan', 'like', '12%')->sum('sekor');
@@ -322,14 +335,16 @@ class AsesmenPerawatController extends Controller
             DB::table('tc_registrasi')->where('no_registrasi', $no_registrasi)->update([
                 'st_ass_awal' => 1,
                 'tgl_jam_ass_awal' => $dateNow,
-                'id_user_perawat' => $id_user
+                'id_user_perawat' => $id_user,
             ]);
 
             DB::commit();
+
             return redirect()->back()->with('success', 'Asesmen Awal berhasil disimpan');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->withErrors('Gagal menyimpan asesmen: ' . $e->getMessage());
+
+            return redirect()->back()->withErrors('Gagal menyimpan asesmen: '.$e->getMessage());
         }
     }
 
@@ -355,7 +370,7 @@ class AsesmenPerawatController extends Controller
             ->where('tc_kunjungan.no_kunjungan', $no_kunjungan)
             ->first();
 
-        if (!$pasien) {
+        if (! $pasien) {
             abort(404, 'Kunjungan tidak ditemukan');
         }
 
@@ -369,17 +384,23 @@ class AsesmenPerawatController extends Controller
         // Get radiogroup choice
         $emr = DB::table('tc_emr_form')->where('no_kunjungan', $no_kunjungan)->pluck('kode_rm')->toArray();
         $skala_nyeri = 'Wong Baker Faces';
-        if (in_array(64, $emr)) $skala_nyeri = 'Wong Baker Faces';
-        elseif (in_array(66, $emr)) $skala_nyeri = 'Numeric Rating Scale';
-        elseif (in_array(53, $emr)) $skala_nyeri = 'FLACC';
-        elseif (in_array(54, $emr)) $skala_nyeri = 'CPOT';
-        elseif (in_array(52, $emr)) $skala_nyeri = 'NIPS';
+        if (in_array(64, $emr)) {
+            $skala_nyeri = 'Wong Baker Faces';
+        } elseif (in_array(66, $emr)) {
+            $skala_nyeri = 'Numeric Rating Scale';
+        } elseif (in_array(53, $emr)) {
+            $skala_nyeri = 'FLACC';
+        } elseif (in_array(54, $emr)) {
+            $skala_nyeri = 'CPOT';
+        } elseif (in_array(52, $emr)) {
+            $skala_nyeri = 'NIPS';
+        }
 
         return Inertia::render('Poli/Asesmen/AsesmenAwalPrint', [
             'pasien' => $pasien,
             'answers' => $answers,
             'skala_nyeri' => $skala_nyeri,
-            'petugas' => DB::table('dd_user')->where('id_dd_user', auth()->id() ?? 1)->value('nama_lengkap') ?? 'Perawat Poli'
+            'petugas' => DB::table('dd_user')->where('id_dd_user', auth()->id() ?? 1)->value('nama_lengkap') ?? 'Perawat Poli',
         ]);
     }
 
@@ -406,7 +427,7 @@ class AsesmenPerawatController extends Controller
             ->where('tc_kunjungan.no_kunjungan', $no_kunjungan)
             ->first();
 
-        if (!$pasien) {
+        if (! $pasien) {
             abort(404, 'Kunjungan tidak ditemukan');
         }
 
@@ -422,19 +443,19 @@ class AsesmenPerawatController extends Controller
         $questions_asuhan = DB::table('mt_acc_erm')->whereBetween('kd_periksa', [50300, 50999])->orderBy('kd_periksa')->get();
         $questions_discharge = DB::table('mt_acc_erm')->whereBetween('kd_periksa', [15000, 15999])->orderBy('kd_periksa')->get();
         $skalaNyeri = DB::table('mt_acc_erm')
-            ->where(function($q) {
+            ->where(function ($q) {
                 $q->whereBetween('kd_periksa', [36000, 36999])
-                  ->orWhereBetween('kd_periksa', [38000, 38999])
-                  ->orWhereBetween('kd_periksa', [13000, 13999])
-                  ->orWhereBetween('kd_periksa', [14000, 14999])
-                  ->orWhereBetween('kd_periksa', [12000, 12999]);
+                    ->orWhereBetween('kd_periksa', [38000, 38999])
+                    ->orWhereBetween('kd_periksa', [13000, 13999])
+                    ->orWhereBetween('kd_periksa', [14000, 14999])
+                    ->orWhereBetween('kd_periksa', [12000, 12999]);
             })
             ->orderBy('kd_periksa')
             ->get();
         $resikoJatuh = DB::table('mt_acc_erm')->whereBetween('kd_periksa', [16100, 16999])->orderBy('kd_periksa')->get();
         $skriningGizi = DB::table('mt_acc_erm')->whereBetween('kd_periksa', [99000, 99499])->orderBy('kd_periksa')->get();
 
-        $mapQuestions = function($questions) use ($existingAnswers) {
+        $mapQuestions = function ($questions) use ($existingAnswers) {
             $mapped = [];
             foreach ($questions as $q) {
                 $options = [];
@@ -454,19 +475,26 @@ class AsesmenPerawatController extends Controller
                     'ket' => $q->ket,
                     'options' => $options,
                     'answer' => $ans ? $ans->hasil : '',
-                    'answer2' => $ans ? $ans->hasil2 : ''
+                    'answer2' => $ans ? $ans->hasil2 : '',
                 ];
             }
+
             return $mapped;
         };
 
         $emr = DB::table('tc_emr_form')->where('no_kunjungan', $no_kunjungan)->pluck('kode_rm')->toArray();
         $radiogroup = '1';
-        if (in_array(64, $emr)) $radiogroup = '1';
-        elseif (in_array(66, $emr)) $radiogroup = '2';
-        elseif (in_array(53, $emr)) $radiogroup = '3';
-        elseif (in_array(54, $emr)) $radiogroup = '4';
-        elseif (in_array(52, $emr)) $radiogroup = '5';
+        if (in_array(64, $emr)) {
+            $radiogroup = '1';
+        } elseif (in_array(66, $emr)) {
+            $radiogroup = '2';
+        } elseif (in_array(53, $emr)) {
+            $radiogroup = '3';
+        } elseif (in_array(54, $emr)) {
+            $radiogroup = '4';
+        } elseif (in_array(52, $emr)) {
+            $radiogroup = '5';
+        }
 
         return Inertia::render('Poli/Asesmen/AsesmenLanjutanForm', [
             'pasien' => $pasien,
@@ -477,7 +505,7 @@ class AsesmenPerawatController extends Controller
             'resikoJatuh' => $mapQuestions($resikoJatuh),
             'skriningGizi' => $mapQuestions($skriningGizi),
             'radiogroup_val' => $radiogroup,
-            'mode' => 'create'
+            'mode' => 'create',
         ]);
     }
 
@@ -490,32 +518,38 @@ class AsesmenPerawatController extends Controller
         $no_registrasi = $request->no_registrasi;
         $no_mr = $request->no_mr;
         $kode_bagian = $request->kode_bagian;
-        $answers = $request->answers; 
-        $radiogroup = $request->radiogroup; 
+        $answers = $request->answers;
+        $radiogroup = $request->radiogroup;
 
         DB::beginTransaction();
         try {
             DB::table('tc_emr_form')->where('no_kunjungan', $no_kunjungan)->whereIn('kode_rm', [64, 66, 53, 54, 52])->delete();
             $kode_rm = 64;
-            if ($radiogroup == '1') $kode_rm = 64;
-            elseif ($radiogroup == '2') $kode_rm = 66;
-            elseif ($radiogroup == '3') $kode_rm = 53;
-            elseif ($radiogroup == '4') $kode_rm = 54;
-            elseif ($radiogroup == '5') $kode_rm = 52;
+            if ($radiogroup == '1') {
+                $kode_rm = 64;
+            } elseif ($radiogroup == '2') {
+                $kode_rm = 66;
+            } elseif ($radiogroup == '3') {
+                $kode_rm = 53;
+            } elseif ($radiogroup == '4') {
+                $kode_rm = 54;
+            } elseif ($radiogroup == '5') {
+                $kode_rm = 52;
+            }
             DB::table('tc_emr_form')->insert([
                 'no_kunjungan' => $no_kunjungan,
                 'kode_rm' => $kode_rm,
             ]);
             DB::table('tc_pemeriksaan_erm')
                 ->where('no_kunjungan', $no_kunjungan)
-                ->where(function($query) {
+                ->where(function ($query) {
                     $query->whereBetween('kode_pemeriksaan', [50000, 50999])
-                          ->orWhereBetween('kode_pemeriksaan', [15000, 15999])
-                          ->orWhereBetween('kode_pemeriksaan', [36000, 36999])
-                          ->orWhereBetween('kode_pemeriksaan', [38000, 38999])
-                          ->orWhereBetween('kode_pemeriksaan', [13000, 13999])
-                          ->orWhereBetween('kode_pemeriksaan', [14000, 14999])
-                          ->orWhereBetween('kode_pemeriksaan', [12000, 12999]);
+                        ->orWhereBetween('kode_pemeriksaan', [15000, 15999])
+                        ->orWhereBetween('kode_pemeriksaan', [36000, 36999])
+                        ->orWhereBetween('kode_pemeriksaan', [38000, 38999])
+                        ->orWhereBetween('kode_pemeriksaan', [13000, 13999])
+                        ->orWhereBetween('kode_pemeriksaan', [14000, 14999])
+                        ->orWhereBetween('kode_pemeriksaan', [12000, 12999]);
                 })
                 ->delete();
 
@@ -525,7 +559,7 @@ class AsesmenPerawatController extends Controller
                     $sekor = 0;
                     if ($ans['kd_type'] == '2' && in_array($ans['kd_periksa'], [99101, 99104, 99105, 99106, 99107, 99108, 99109, 99110])) {
                         if ($ans['answer'] == '2') {
-                            $sekor = 0; 
+                            $sekor = 0;
                         }
                     }
 
@@ -547,7 +581,7 @@ class AsesmenPerawatController extends Controller
                 }
             }
 
-            if (!empty($inserts)) {
+            if (! empty($inserts)) {
                 DB::table('tc_pemeriksaan_erm')->insert($inserts);
             }
 
@@ -557,10 +591,14 @@ class AsesmenPerawatController extends Controller
             if ($tinggi && $berat && $tinggi > 0) {
                 $tinggi_cm = $tinggi / 100;
                 $bmi = $berat / ($tinggi_cm * $tinggi_cm);
-                $hasil_bmi = "Normal";
-                if ($bmi < 18.5) $hasil_bmi = "Underweight";
-                elseif ($bmi >= 23 && $bmi < 25) $hasil_bmi = "Overweight";
-                elseif ($bmi >= 25) $hasil_bmi = "Obese";
+                $hasil_bmi = 'Normal';
+                if ($bmi < 18.5) {
+                    $hasil_bmi = 'Underweight';
+                } elseif ($bmi >= 23 && $bmi < 25) {
+                    $hasil_bmi = 'Overweight';
+                } elseif ($bmi >= 25) {
+                    $hasil_bmi = 'Obese';
+                }
 
                 DB::table('tc_pemeriksaan_erm')->updateOrInsert(
                     ['no_kunjungan' => $no_kunjungan, 'kode_pemeriksaan' => '50211'],
@@ -572,7 +610,7 @@ class AsesmenPerawatController extends Controller
                         'kode_bagian' => $kode_bagian,
                         'no_mr' => $no_mr,
                         'hasil' => number_format($bmi, 2),
-                        'ket_hasil_bmi' => $hasil_bmi
+                        'ket_hasil_bmi' => $hasil_bmi,
                     ]
                 );
             }
@@ -580,11 +618,17 @@ class AsesmenPerawatController extends Controller
             // Radiogroup Nyeri
             if ($radiogroup) {
                 $kode_rm = null;
-                if ($radiogroup == '1') $kode_rm = 64;
-                elseif ($radiogroup == '2') $kode_rm = 66;
-                elseif ($radiogroup == '3') $kode_rm = 53;
-                elseif ($radiogroup == '4') $kode_rm = 54;
-                elseif ($radiogroup == '5') $kode_rm = 52;
+                if ($radiogroup == '1') {
+                    $kode_rm = 64;
+                } elseif ($radiogroup == '2') {
+                    $kode_rm = 66;
+                } elseif ($radiogroup == '3') {
+                    $kode_rm = 53;
+                } elseif ($radiogroup == '4') {
+                    $kode_rm = 54;
+                } elseif ($radiogroup == '5') {
+                    $kode_rm = 52;
+                }
 
                 if ($kode_rm) {
                     DB::table('tc_emr_form')->updateOrInsert(
@@ -593,7 +637,7 @@ class AsesmenPerawatController extends Controller
                             'no_mr' => $no_mr,
                             'no_kunjungan' => $no_kunjungan,
                             'tgl_update' => Carbon::now(),
-                            'id_user' => Session::get('id_dd_user') ?? auth()->id() ?? 1
+                            'id_user' => Session::get('id_dd_user') ?? auth()->id() ?? 1,
                         ]
                     );
                 }
@@ -603,16 +647,18 @@ class AsesmenPerawatController extends Controller
             DB::table('tc_registrasi')->where('no_registrasi', $no_registrasi)->update([
                 'st_ass_awal_lanjutan' => 1,
                 'tgl_jam_ass_awal_lanjutan' => Carbon::now(),
-                'id_user_perawat' => Session::get('id_dd_user') ?? auth()->id() ?? 1
+                'id_user_perawat' => Session::get('id_dd_user') ?? auth()->id() ?? 1,
             ]);
 
             DB::table('mt_master_pasien')->where('no_mr', $no_mr)->update(['st_resum' => 1]);
 
             DB::commit();
+
             return redirect()->back()->with('success', 'Asesmen Lanjutan berhasil disimpan');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->withErrors('Gagal menyimpan asesmen lanjutan: ' . $e->getMessage());
+
+            return redirect()->back()->withErrors('Gagal menyimpan asesmen lanjutan: '.$e->getMessage());
         }
     }
 
@@ -638,7 +684,7 @@ class AsesmenPerawatController extends Controller
             ->where('tc_kunjungan.no_kunjungan', $no_kunjungan)
             ->first();
 
-        if (!$pasien) {
+        if (! $pasien) {
             abort(404, 'Kunjungan tidak ditemukan');
         }
 
@@ -651,17 +697,23 @@ class AsesmenPerawatController extends Controller
 
         $emr = DB::table('tc_emr_form')->where('no_kunjungan', $no_kunjungan)->pluck('kode_rm')->toArray();
         $skala_nyeri = 'Wong Baker Faces';
-        if (in_array(64, $emr)) $skala_nyeri = 'Wong Baker Faces';
-        elseif (in_array(66, $emr)) $skala_nyeri = 'Numeric Rating Scale';
-        elseif (in_array(53, $emr)) $skala_nyeri = 'FLACC';
-        elseif (in_array(54, $emr)) $skala_nyeri = 'CPOT';
-        elseif (in_array(52, $emr)) $skala_nyeri = 'NIPS';
+        if (in_array(64, $emr)) {
+            $skala_nyeri = 'Wong Baker Faces';
+        } elseif (in_array(66, $emr)) {
+            $skala_nyeri = 'Numeric Rating Scale';
+        } elseif (in_array(53, $emr)) {
+            $skala_nyeri = 'FLACC';
+        } elseif (in_array(54, $emr)) {
+            $skala_nyeri = 'CPOT';
+        } elseif (in_array(52, $emr)) {
+            $skala_nyeri = 'NIPS';
+        }
 
         return Inertia::render('Poli/Asesmen/AsesmenLanjutanPrint', [
             'pasien' => $pasien,
             'answers' => $answers,
             'skala_nyeri' => $skala_nyeri,
-            'petugas' => DB::table('dd_user')->where('id_dd_user', auth()->id() ?? 1)->value('nama_lengkap') ?? 'Perawat Poli'
+            'petugas' => DB::table('dd_user')->where('id_dd_user', auth()->id() ?? 1)->value('nama_lengkap') ?? 'Perawat Poli',
         ]);
     }
 
@@ -689,9 +741,10 @@ class AsesmenPerawatController extends Controller
                 'ket' => $q->ket,
                 'options' => $options,
                 'answer' => $ans ? $ans->hasil : '',
-                'answer2' => $ans ? $ans->hasil2 : ''
+                'answer2' => $ans ? $ans->hasil2 : '',
             ];
         }
+
         return $mapped;
     }
 
@@ -718,7 +771,9 @@ class AsesmenPerawatController extends Controller
             ->where('tc_kunjungan.no_kunjungan', $no_kunjungan)
             ->first();
 
-        if (!$pasien) abort(404, 'Kunjungan tidak ditemukan');
+        if (! $pasien) {
+            abort(404, 'Kunjungan tidak ditemukan');
+        }
 
         $pasien->umur = Carbon::parse($pasien->tgl_lhr)->diffInYears(Carbon::now());
 
@@ -735,12 +790,12 @@ class AsesmenPerawatController extends Controller
         $questions_discharge = DB::table('mt_acc_erm')->whereBetween('kd_periksa', [15000, 15999])->orderBy('kd_periksa')->get();
 
         $skalaNyeri = DB::table('mt_acc_erm')
-            ->where(function($q) {
+            ->where(function ($q) {
                 $q->whereBetween('kd_periksa', [36000, 36999])
-                  ->orWhereBetween('kd_periksa', [38000, 38999])
-                  ->orWhereBetween('kd_periksa', [13000, 13999])
-                  ->orWhereBetween('kd_periksa', [14000, 14999])
-                  ->orWhereBetween('kd_periksa', [12000, 12999]);
+                    ->orWhereBetween('kd_periksa', [38000, 38999])
+                    ->orWhereBetween('kd_periksa', [13000, 13999])
+                    ->orWhereBetween('kd_periksa', [14000, 14999])
+                    ->orWhereBetween('kd_periksa', [12000, 12999]);
             })
             ->orderBy('kd_periksa')
             ->get();
@@ -763,24 +818,24 @@ class AsesmenPerawatController extends Controller
         $no_registrasi = $request->no_registrasi;
         $no_mr = $request->no_mr;
         $kode_bagian = $request->kode_bagian;
-        $answers = $request->answers; 
-        $radiogroup = $request->radiogroup; 
+        $answers = $request->answers;
+        $radiogroup = $request->radiogroup;
 
         DB::beginTransaction();
         try {
             DB::table('tc_pemeriksaan_erm')
                 ->where('no_kunjungan', $no_kunjungan)
-                ->where(function($query) {
+                ->where(function ($query) {
                     $query->whereBetween('kode_pemeriksaan', [95100, 95599])
-                          ->orWhereBetween('kode_pemeriksaan', [20000, 20999])
-                          ->orWhereBetween('kode_pemeriksaan', [16100, 16199])
-                          ->orWhereBetween('kode_pemeriksaan', [99300, 99399])
-                          ->orWhereBetween('kode_pemeriksaan', [15000, 15999])
-                          ->orWhereBetween('kode_pemeriksaan', [36000, 36999])
-                          ->orWhereBetween('kode_pemeriksaan', [38000, 38999])
-                          ->orWhereBetween('kode_pemeriksaan', [13000, 13999])
-                          ->orWhereBetween('kode_pemeriksaan', [14000, 14999])
-                          ->orWhereBetween('kode_pemeriksaan', [12000, 12999]);
+                        ->orWhereBetween('kode_pemeriksaan', [20000, 20999])
+                        ->orWhereBetween('kode_pemeriksaan', [16100, 16199])
+                        ->orWhereBetween('kode_pemeriksaan', [99300, 99399])
+                        ->orWhereBetween('kode_pemeriksaan', [15000, 15999])
+                        ->orWhereBetween('kode_pemeriksaan', [36000, 36999])
+                        ->orWhereBetween('kode_pemeriksaan', [38000, 38999])
+                        ->orWhereBetween('kode_pemeriksaan', [13000, 13999])
+                        ->orWhereBetween('kode_pemeriksaan', [14000, 14999])
+                        ->orWhereBetween('kode_pemeriksaan', [12000, 12999]);
                 })
                 ->delete();
 
@@ -805,11 +860,13 @@ class AsesmenPerawatController extends Controller
                 }
             }
 
-            if (!empty($inserts)) DB::table('tc_pemeriksaan_erm')->insert($inserts);
+            if (! empty($inserts)) {
+                DB::table('tc_pemeriksaan_erm')->insert($inserts);
+            }
 
             // Nyeri
             if ($radiogroup) {
-                $kode_rm = [1=>64, 2=>66, 3=>53, 4=>54, 5=>52][$radiogroup] ?? null;
+                $kode_rm = [1 => 64, 2 => 66, 3 => 53, 4 => 54, 5 => 52][$radiogroup] ?? null;
                 if ($kode_rm) {
                     DB::table('tc_emr_form')->updateOrInsert(
                         ['no_registrasi' => $no_registrasi, 'kode_rm' => $kode_rm],
@@ -821,15 +878,17 @@ class AsesmenPerawatController extends Controller
             DB::table('tc_registrasi')->where('no_registrasi', $no_registrasi)->update([
                 'st_ass_perawat_ANC' => 1,
                 'tgl_jam_ass_perawat_ANC' => Carbon::now(),
-                'id_user_perawat_ANC' => auth()->id() ?? 1
+                'id_user_perawat_ANC' => auth()->id() ?? 1,
             ]);
             DB::table('mt_master_pasien')->where('no_mr', $no_mr)->update(['st_resum' => 1]);
 
             DB::commit();
+
             return redirect()->back()->with('success', 'Asesmen ANC berhasil disimpan');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->withErrors('Gagal menyimpan: ' . $e->getMessage());
+
+            return redirect()->back()->withErrors('Gagal menyimpan: '.$e->getMessage());
         }
     }
 
@@ -840,13 +899,15 @@ class AsesmenPerawatController extends Controller
             ->join('mt_master_pasien', 'tc_kunjungan.no_mr', '=', 'mt_master_pasien.no_mr')
             ->select('tc_kunjungan.no_kunjungan', 'tc_kunjungan.no_mr', 'mt_master_pasien.nama_pasien', 'mt_master_pasien.jen_kelamin', 'mt_master_pasien.tgl_lhr')
             ->where('tc_kunjungan.no_kunjungan', $no_kunjungan)->first();
-        if (!$pasien) abort(404);
+        if (! $pasien) {
+            abort(404);
+        }
         $pasien->umur = Carbon::parse($pasien->tgl_lhr)->diffInYears(Carbon::now());
-        
+
         return Inertia::render('Poli/Asesmen/AsesmenANCPrint', [
             'pasien' => $pasien,
             'answers' => DB::table('tc_pemeriksaan_erm')->where('no_kunjungan', $no_kunjungan)->get(),
-            'petugas' => DB::table('dd_user')->where('id_dd_user', auth()->id() ?? 1)->value('nama_lengkap') ?? 'Perawat Poli'
+            'petugas' => DB::table('dd_user')->where('id_dd_user', auth()->id() ?? 1)->value('nama_lengkap') ?? 'Perawat Poli',
         ]);
     }
 
@@ -862,17 +923,19 @@ class AsesmenPerawatController extends Controller
             ->select('tc_kunjungan.no_kunjungan', 'tc_kunjungan.no_registrasi', 'tc_kunjungan.no_mr', 'tc_kunjungan.kode_bagian_tujuan as kode_bagian', 'mt_master_pasien.nama_pasien', 'mt_master_pasien.jen_kelamin', 'mt_master_pasien.tgl_lhr', 'mt_nasabah.nama_kelompok as nm_nasabah', 'tc_registrasi.kode_kelompok')
             ->where('tc_kunjungan.no_kunjungan', $no_kunjungan)->first();
 
-        if (!$pasien) abort(404, 'Kunjungan tidak ditemukan');
+        if (! $pasien) {
+            abort(404, 'Kunjungan tidak ditemukan');
+        }
         $pasien->umur = Carbon::parse($pasien->tgl_lhr)->diffInYears(Carbon::now());
         $existingAnswers = DB::table('tc_pemeriksaan_erm')->where('no_kunjungan', $no_kunjungan)->get()->keyBy('kode_pemeriksaan');
 
         $skalaNyeri = DB::table('mt_acc_erm')
-            ->where(function($q) {
+            ->where(function ($q) {
                 $q->whereBetween('kd_periksa', [36000, 36999])
-                  ->orWhereBetween('kd_periksa', [38000, 38999])
-                  ->orWhereBetween('kd_periksa', [13000, 13999])
-                  ->orWhereBetween('kd_periksa', [14000, 14999])
-                  ->orWhereBetween('kd_periksa', [12000, 12999]);
+                    ->orWhereBetween('kd_periksa', [38000, 38999])
+                    ->orWhereBetween('kd_periksa', [13000, 13999])
+                    ->orWhereBetween('kd_periksa', [14000, 14999])
+                    ->orWhereBetween('kd_periksa', [12000, 12999]);
             })
             ->orderBy('kd_periksa')
             ->get();
@@ -895,24 +958,24 @@ class AsesmenPerawatController extends Controller
         $no_registrasi = $request->no_registrasi;
         $no_mr = $request->no_mr;
         $kode_bagian = $request->kode_bagian;
-        $answers = $request->answers; 
-        $radiogroup = $request->radiogroup; 
+        $answers = $request->answers;
+        $radiogroup = $request->radiogroup;
 
         DB::beginTransaction();
         try {
             DB::table('tc_pemeriksaan_erm')
                 ->where('no_kunjungan', $no_kunjungan)
-                ->where(function($query) {
+                ->where(function ($query) {
                     $query->whereBetween('kode_pemeriksaan', [95100, 95599])
-                          ->orWhereBetween('kode_pemeriksaan', [83000, 83999])
-                          ->orWhereBetween('kode_pemeriksaan', [16100, 16199])
-                          ->orWhereBetween('kode_pemeriksaan', [99300, 99399])
-                          ->orWhereBetween('kode_pemeriksaan', [15000, 15999])
-                          ->orWhereBetween('kode_pemeriksaan', [36000, 36999])
-                          ->orWhereBetween('kode_pemeriksaan', [38000, 38999])
-                          ->orWhereBetween('kode_pemeriksaan', [13000, 13999])
-                          ->orWhereBetween('kode_pemeriksaan', [14000, 14999])
-                          ->orWhereBetween('kode_pemeriksaan', [12000, 12999]);
+                        ->orWhereBetween('kode_pemeriksaan', [83000, 83999])
+                        ->orWhereBetween('kode_pemeriksaan', [16100, 16199])
+                        ->orWhereBetween('kode_pemeriksaan', [99300, 99399])
+                        ->orWhereBetween('kode_pemeriksaan', [15000, 15999])
+                        ->orWhereBetween('kode_pemeriksaan', [36000, 36999])
+                        ->orWhereBetween('kode_pemeriksaan', [38000, 38999])
+                        ->orWhereBetween('kode_pemeriksaan', [13000, 13999])
+                        ->orWhereBetween('kode_pemeriksaan', [14000, 14999])
+                        ->orWhereBetween('kode_pemeriksaan', [12000, 12999]);
                 })->delete();
 
             $inserts = [];
@@ -926,10 +989,12 @@ class AsesmenPerawatController extends Controller
                     ];
                 }
             }
-            if (!empty($inserts)) DB::table('tc_pemeriksaan_erm')->insert($inserts);
+            if (! empty($inserts)) {
+                DB::table('tc_pemeriksaan_erm')->insert($inserts);
+            }
 
             if ($radiogroup) {
-                $kode_rm = [1=>64, 2=>66, 3=>53, 4=>54, 5=>52][$radiogroup] ?? null;
+                $kode_rm = [1 => 64, 2 => 66, 3 => 53, 4 => 54, 5 => 52][$radiogroup] ?? null;
                 if ($kode_rm) {
                     DB::table('tc_emr_form')->updateOrInsert(
                         ['no_registrasi' => $no_registrasi, 'kode_rm' => $kode_rm],
@@ -941,15 +1006,17 @@ class AsesmenPerawatController extends Controller
             DB::table('tc_registrasi')->where('no_registrasi', $no_registrasi)->update([
                 'st_ass_perawat_PNC' => 1,
                 'tgl_jam_ass_perawat_PNC' => Carbon::now(),
-                'id_user_perawat_PNC' => auth()->id() ?? 1
+                'id_user_perawat_PNC' => auth()->id() ?? 1,
             ]);
             DB::table('mt_master_pasien')->where('no_mr', $no_mr)->update(['st_resum' => 1]);
 
             DB::commit();
+
             return redirect()->back()->with('success', 'Asesmen PNC berhasil disimpan');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->withErrors('Gagal menyimpan: ' . $e->getMessage());
+
+            return redirect()->back()->withErrors('Gagal menyimpan: '.$e->getMessage());
         }
     }
 
@@ -960,13 +1027,15 @@ class AsesmenPerawatController extends Controller
             ->join('mt_master_pasien', 'tc_kunjungan.no_mr', '=', 'mt_master_pasien.no_mr')
             ->select('tc_kunjungan.no_kunjungan', 'tc_kunjungan.no_mr', 'mt_master_pasien.nama_pasien', 'mt_master_pasien.jen_kelamin', 'mt_master_pasien.tgl_lhr')
             ->where('tc_kunjungan.no_kunjungan', $no_kunjungan)->first();
-        if (!$pasien) abort(404);
+        if (! $pasien) {
+            abort(404);
+        }
         $pasien->umur = Carbon::parse($pasien->tgl_lhr)->diffInYears(Carbon::now());
-        
+
         return Inertia::render('Poli/Asesmen/AsesmenPNCPrint', [
             'pasien' => $pasien,
             'answers' => DB::table('tc_pemeriksaan_erm')->where('no_kunjungan', $no_kunjungan)->get(),
-            'petugas' => DB::table('dd_user')->where('id_dd_user', auth()->id() ?? 1)->value('nama_lengkap') ?? 'Perawat Poli'
+            'petugas' => DB::table('dd_user')->where('id_dd_user', auth()->id() ?? 1)->value('nama_lengkap') ?? 'Perawat Poli',
         ]);
     }
 
@@ -982,9 +1051,11 @@ class AsesmenPerawatController extends Controller
             ->select('tc_kunjungan.no_kunjungan', 'tc_kunjungan.no_registrasi', 'tc_kunjungan.no_mr', 'tc_kunjungan.kode_bagian_tujuan as kode_bagian', 'mt_master_pasien.nama_pasien', 'mt_master_pasien.jen_kelamin', 'mt_master_pasien.tgl_lhr', 'mt_nasabah.nama_kelompok as nm_nasabah', 'tc_registrasi.kode_kelompok')
             ->where('tc_kunjungan.no_kunjungan', $no_kunjungan)->first();
 
-        if (!$pasien) abort(404);
+        if (! $pasien) {
+            abort(404);
+        }
         $pasien->umur = Carbon::parse($pasien->tgl_lhr)->diffInYears(Carbon::now());
-        
+
         $existingAnswers = DB::table('tc_riwayat_hamil_det')->where('no_kunjungan', $no_kunjungan)->get()->keyBy('kode_pemeriksaan');
         $questions = DB::table('mt_acc_erm')->whereBetween('kd_periksa', [21300, 21399])->orderBy('kd_periksa')->get();
 
@@ -1005,11 +1076,11 @@ class AsesmenPerawatController extends Controller
         DB::beginTransaction();
         try {
             $riwayat = DB::table('tc_riwayat_hamil')->where('no_kunjungan', $no_kunjungan)->first();
-            if (!$riwayat) {
+            if (! $riwayat) {
                 $no_urut_hamil = DB::table('tc_riwayat_hamil')->max('no_urut_hamil') + 1;
                 DB::table('tc_riwayat_hamil')->insert([
                     'no_urut_hamil' => $no_urut_hamil, 'no_kunjungan' => $no_kunjungan, 'no_registrasi' => $no_registrasi,
-                    'kode_bagian' => $kode_bagian, 'no_mr' => $no_mr, 'tgl_jam' => Carbon::now(), 'user_id' => auth()->id() ?? 1
+                    'kode_bagian' => $kode_bagian, 'no_mr' => $no_mr, 'tgl_jam' => Carbon::now(), 'user_id' => auth()->id() ?? 1,
                 ]);
             } else {
                 $no_urut_hamil = $riwayat->no_urut_hamil;
@@ -1023,11 +1094,13 @@ class AsesmenPerawatController extends Controller
                     $inserts[] = [
                         'no_urut_hamil' => $no_urut_hamil, 'no_kunjungan' => $no_kunjungan, 'no_registrasi' => $no_registrasi,
                         'kd_type' => $ans['kd_type'], 'kode_pemeriksaan' => $ans['kd_periksa'], 'nama_pemeriksaan' => $ans['nama_pemeriksaan'],
-                        'hasil' => $ans['answer'], 'kd_lev' => $ans['kd_lev'], 'ket' => $ans['ket']
+                        'hasil' => $ans['answer'], 'kd_lev' => $ans['kd_lev'], 'ket' => $ans['ket'],
                     ];
                 }
             }
-            if (!empty($inserts)) DB::table('tc_riwayat_hamil_det')->insert($inserts);
+            if (! empty($inserts)) {
+                DB::table('tc_riwayat_hamil_det')->insert($inserts);
+            }
 
             DB::table('tc_emr_form')->updateOrInsert(
                 ['no_registrasi' => $no_registrasi, 'kode_rm' => 88],
@@ -1035,10 +1108,12 @@ class AsesmenPerawatController extends Controller
             );
 
             DB::commit();
+
             return redirect()->back()->with('success', 'Riwayat Kehamilan berhasil disimpan');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->withErrors('Gagal: ' . $e->getMessage());
+
+            return redirect()->back()->withErrors('Gagal: '.$e->getMessage());
         }
     }
 
@@ -1049,12 +1124,14 @@ class AsesmenPerawatController extends Controller
             ->join('mt_master_pasien', 'tc_kunjungan.no_mr', '=', 'mt_master_pasien.no_mr')
             ->select('tc_kunjungan.no_kunjungan', 'tc_kunjungan.no_mr', 'mt_master_pasien.nama_pasien', 'mt_master_pasien.jen_kelamin', 'mt_master_pasien.tgl_lhr')
             ->where('tc_kunjungan.no_kunjungan', $no_kunjungan)->first();
-        if (!$pasien) abort(404);
+        if (! $pasien) {
+            abort(404);
+        }
         $pasien->umur = Carbon::parse($pasien->tgl_lhr)->diffInYears(Carbon::now());
-        
+
         return Inertia::render('Poli/Asesmen/RiwayatHamilPrint', [
             'pasien' => $pasien,
-            'answers' => DB::table('tc_riwayat_hamil_det')->where('no_kunjungan', $no_kunjungan)->get()
+            'answers' => DB::table('tc_riwayat_hamil_det')->where('no_kunjungan', $no_kunjungan)->get(),
         ]);
     }
 
@@ -1070,14 +1147,16 @@ class AsesmenPerawatController extends Controller
             ->select('tc_kunjungan.no_kunjungan', 'tc_kunjungan.no_registrasi', 'tc_kunjungan.no_mr', 'tc_kunjungan.kode_bagian_tujuan as kode_bagian', 'mt_master_pasien.nama_pasien', 'mt_master_pasien.jen_kelamin', 'mt_master_pasien.tgl_lhr', 'mt_nasabah.nama_kelompok as nm_nasabah', 'tc_registrasi.kode_kelompok')
             ->where('tc_kunjungan.no_kunjungan', $no_kunjungan)->first();
 
-        if (!$pasien) abort(404);
+        if (! $pasien) {
+            abort(404);
+        }
         $pasien->umur = Carbon::parse($pasien->tgl_lhr)->diffInYears(Carbon::now());
-        
+
         $existing = DB::table('tc_hasil_pemeriksaan_luar')->where('no_registrasi', $pasien->no_registrasi)->first();
 
         return Inertia::render('Poli/Asesmen/PemLuarForm', [
             'pasien' => $pasien,
-            'existing' => $existing
+            'existing' => $existing,
         ]);
     }
 
@@ -1087,7 +1166,7 @@ class AsesmenPerawatController extends Controller
         $no_registrasi = $request->no_registrasi;
         $no_mr = $request->no_mr;
         $kesimpulan = $request->kesimpulan;
-        
+
         DB::beginTransaction();
         try {
             $existing = DB::table('tc_hasil_pemeriksaan_luar')->where('no_registrasi', $no_registrasi)->first();
@@ -1096,17 +1175,17 @@ class AsesmenPerawatController extends Controller
             if ($request->hasFile('foto')) {
                 $file = $request->file('foto');
                 $ext = $file->getClientOriginalExtension();
-                $nama_dest = $no_registrasi . '.' . $ext;
+                $nama_dest = $no_registrasi.'.'.$ext;
                 $file->storeAs('public/hasil_luar', $nama_dest);
             }
 
-            if (!$existing) {
+            if (! $existing) {
                 DB::table('tc_hasil_pemeriksaan_luar')->insert([
-                    'no_registrasi' => $no_registrasi, 'kesimpulan' => $kesimpulan, 'nama_file' => $nama_dest, 'kode_dokter' => auth()->id() ?? 1
+                    'no_registrasi' => $no_registrasi, 'kesimpulan' => $kesimpulan, 'nama_file' => $nama_dest, 'kode_dokter' => auth()->id() ?? 1,
                 ]);
             } else {
                 DB::table('tc_hasil_pemeriksaan_luar')->where('no_registrasi', $no_registrasi)->update([
-                    'kesimpulan' => $kesimpulan, 'nama_file' => $nama_dest, 'kode_dokter' => auth()->id() ?? 1
+                    'kesimpulan' => $kesimpulan, 'nama_file' => $nama_dest, 'kode_dokter' => auth()->id() ?? 1,
                 ]);
             }
 
@@ -1118,10 +1197,12 @@ class AsesmenPerawatController extends Controller
             );
 
             DB::commit();
+
             return redirect()->back()->with('success', 'Pemeriksaan Luar berhasil disimpan');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->withErrors('Gagal menyimpan: ' . $e->getMessage());
+
+            return redirect()->back()->withErrors('Gagal menyimpan: '.$e->getMessage());
         }
     }
 
@@ -1132,15 +1213,17 @@ class AsesmenPerawatController extends Controller
             ->join('mt_master_pasien', 'tc_kunjungan.no_mr', '=', 'mt_master_pasien.no_mr')
             ->select('tc_kunjungan.no_kunjungan', 'tc_kunjungan.no_registrasi', 'tc_kunjungan.no_mr', 'mt_master_pasien.nama_pasien', 'mt_master_pasien.jen_kelamin', 'mt_master_pasien.tgl_lhr')
             ->where('tc_kunjungan.no_kunjungan', $no_kunjungan)->first();
-        if (!$pasien) abort(404);
+        if (! $pasien) {
+            abort(404);
+        }
         $pasien->umur = Carbon::parse($pasien->tgl_lhr)->diffInYears(Carbon::now());
-        
+
         $existing = DB::table('tc_hasil_pemeriksaan_luar')->where('no_registrasi', $pasien->no_registrasi)->first();
 
         return Inertia::render('Poli/Asesmen/PemLuarPrint', [
             'pasien' => $pasien,
             'existing' => $existing,
-            'petugas' => DB::table('dd_user')->where('id_dd_user', auth()->id() ?? 1)->value('nama_lengkap') ?? 'Perawat Poli'
+            'petugas' => DB::table('dd_user')->where('id_dd_user', auth()->id() ?? 1)->value('nama_lengkap') ?? 'Perawat Poli',
         ]);
     }
 }

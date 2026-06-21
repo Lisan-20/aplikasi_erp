@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Laporan;
 
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
-use Carbon\Carbon;
 
 class LaporanKasirController extends Controller
 {
@@ -22,7 +22,7 @@ class LaporanKasirController extends Controller
             ->get();
 
         return Inertia::render('Laporan/LaporanKasir', [
-            'users' => $users
+            'users' => $users,
         ]);
     }
 
@@ -31,10 +31,10 @@ class LaporanKasirController extends Controller
      */
     public function print(Request $request)
     {
-        // Parameter bisa dilempar sebagai query string, 
+        // Parameter bisa dilempar sebagai query string,
         // lalu kita fetch datanya di backend atau langsung lempar params ke view.
         // Di sini kita fetch di backend agar data konsisten saat di-print
-        
+
         $data = $this->fetchData($request);
 
         return Inertia::render('Laporan/LaporanKasirPrint', [
@@ -42,7 +42,7 @@ class LaporanKasirController extends Controller
             'rekap' => $data['rekap'],
             'filters' => $request->all(),
             'waktu_cetak' => now()->format('d/m/Y H:i:s'),
-            'pencetak' => DB::table('dd_user')->where('id_dd_user', auth()->id() ?? 1)->value('nama_lengkap') ?? 'Sistem'
+            'pencetak' => DB::table('dd_user')->where('id_dd_user', auth()->id() ?? 1)->value('nama_lengkap') ?? 'Sistem',
         ]);
     }
 
@@ -90,15 +90,15 @@ class LaporanKasirController extends Controller
             ->whereDate('t.tgl_jam', '>=', $tglAwal)
             ->whereDate('t.tgl_jam', '<=', $tglAkhir);
 
-        if ($petugas !== 'all' && !empty($petugas)) {
+        if ($petugas !== 'all' && ! empty($petugas)) {
             $query->where('t.no_induk', $petugas);
         }
 
-        if ($shift !== 'all' && !empty($shift)) {
+        if ($shift !== 'all' && ! empty($shift)) {
             $query->where('t.kode_shift', $shift);
         }
 
-        if ($loket !== 'all' && !empty($loket)) {
+        if ($loket !== 'all' && ! empty($loket)) {
             $query->where('t.kode_loket', $loket);
         }
 
@@ -113,13 +113,14 @@ class LaporanKasirController extends Controller
             'debet' => 0,
             'diskon' => 0,
             'adm_cc' => 0,
-            'total_bersih' => 0
+            'total_bersih' => 0,
         ];
 
         foreach ($detail as $row) {
             // Jika batal, tidak masuk ke rekap pendapatan, tapi dihitung total batalnya
             if ($row->status_batal == 1) {
                 $rekap['total_batal']++;
+
                 continue;
             }
 
@@ -140,7 +141,7 @@ class LaporanKasirController extends Controller
         }
 
         // Mapping Data untuk tampilan
-        $mappedDetail = $detail->map(function($item) {
+        $mappedDetail = $detail->map(function ($item) {
             return [
                 'no_transaksi' => $item->kode_tc_trans_kasir,
                 'no_registrasi' => $item->no_registrasi,
@@ -158,15 +159,16 @@ class LaporanKasirController extends Controller
                 'uang_diterima' => $item->uang_diterima ?? 0,
                 'uang_kembali' => $item->uang_kembali ?? 0,
                 'status' => $item->status_batal == 1 ? 'Batal' : 'Sukses',
-                'status_batal' => $item->status_batal
+                'status_batal' => $item->status_batal,
             ];
         });
 
         return [
             'rekap' => $rekap,
-            'detail' => $mappedDetail
+            'detail' => $mappedDetail,
         ];
     }
+
     /**
      * Export data Laporan ke format CSV
      */
@@ -174,22 +176,22 @@ class LaporanKasirController extends Controller
     {
         $data = $this->fetchData($request);
         $detail = $data['detail'];
-        
+
         $tglAwal = $request->input('tgl_awal', date('Y-m-d'));
         $tglAkhir = $request->input('tgl_akhir', date('Y-m-d'));
         $fileName = "Laporan_Kasir_$tglAwal_sd_$tglAkhir.csv";
 
         $headers = [
-            "Content-type"        => "text/csv",
-            "Content-Disposition" => "attachment; filename=$fileName",
-            "Pragma"              => "no-cache",
-            "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
-            "Expires"             => "0"
+            'Content-type' => 'text/csv',
+            'Content-Disposition' => "attachment; filename=$fileName",
+            'Pragma' => 'no-cache',
+            'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
+            'Expires' => '0',
         ];
 
         $columns = ['No Transaksi', 'No Registrasi', 'Tanggal', 'No RM', 'Pasien', 'Petugas', 'Shift', 'Loket', 'Total Tagihan', 'Tunai', 'Kredit', 'Debet', 'Diskon', 'Status'];
 
-        $callback = function() use($detail, $columns) {
+        $callback = function () use ($detail, $columns) {
             $file = fopen('php://output', 'w');
             fputcsv($file, $columns);
 
@@ -208,7 +210,7 @@ class LaporanKasirController extends Controller
                     $row['kredit'],
                     $row['debet'],
                     $row['diskon'],
-                    $row['status']
+                    $row['status'],
                 ]);
             }
 

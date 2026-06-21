@@ -2,12 +2,14 @@
 
 namespace App\Services;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 class OllamaAiService
 {
     protected $apiUrl;
+
     protected $modelName;
 
     public function __construct()
@@ -26,8 +28,8 @@ class OllamaAiService
         }
 
         $inputString = implode(', ', $cartItemNames);
-        $systemInstruction = "Anda adalah asisten kasir cerdas di Sistem ERP. Tugas Anda adalah memberikan 1 rekomendasi barang (cross-selling/upselling) berdasarkan barang yang dibeli oleh pelanggan. Balas HANYA dengan format JSON yang valid: {\"rekomendasi\": \"NAMA BARANG\"}.";
-        $userPrompt = "Pelanggan membeli barang berikut: [" . $inputString . "]. Tolong rekomendasikan 1 barang terkait.";
+        $systemInstruction = 'Anda adalah asisten kasir cerdas di Sistem ERP. Tugas Anda adalah memberikan 1 rekomendasi barang (cross-selling/upselling) berdasarkan barang yang dibeli oleh pelanggan. Balas HANYA dengan format JSON yang valid: {"rekomendasi": "NAMA BARANG"}.';
+        $userPrompt = 'Pelanggan membeli barang berikut: ['.$inputString.']. Tolong rekomendasikan 1 barang terkait.';
 
         try {
             $response = Http::timeout(30)->post($this->apiUrl, [
@@ -35,34 +37,34 @@ class OllamaAiService
                 'system' => $systemInstruction,
                 'prompt' => $userPrompt,
                 'stream' => false,
-                'format' => 'json'
+                'format' => 'json',
             ]);
 
             if ($response->successful()) {
                 $data = $response->json();
-                
+
                 if (isset($data['response'])) {
                     $jsonText = trim($data['response']);
-                    Log::info('Ollama Raw Output: ' . $jsonText);
-                    
+                    Log::info('Ollama Raw Output: '.$jsonText);
+
                     // Bersihkan tag markdown ```json dan ``` jika Ollama mengirimkannya
                     $jsonText = preg_replace('/```json\s*/', '', $jsonText);
                     $jsonText = preg_replace('/```\s*/', '', $jsonText);
                     $jsonText = trim($jsonText);
-                    
+
                     $decoded = json_decode($jsonText, true);
                     $recommendationText = $decoded['rekomendasi'] ?? '';
-                    
-                    if (!empty($recommendationText)) {
+
+                    if (! empty($recommendationText)) {
                         return $this->parseAndFetchItemDetails($recommendationText);
                     }
                 }
             } else {
-                Log::error('Ollama API Error: ' . $response->body());
+                Log::error('Ollama API Error: '.$response->body());
             }
 
         } catch (\Exception $e) {
-            Log::error('Ollama API Exception: ' . $e->getMessage());
+            Log::error('Ollama API Exception: '.$e->getMessage());
         }
 
         return null;
@@ -74,17 +76,17 @@ class OllamaAiService
     private function parseAndFetchItemDetails($aiOutputName)
     {
         $cleanName = str_replace(['"', '\''], '', $aiOutputName);
-        
+
         // Ambil kata pertama saja agar pencarian SQL lebih longgar
         // Contoh: AI menjawab "MAP REKAM MEDIS", kita cari "%MAP%"
         $words = explode(' ', $cleanName);
         $searchKeyword = $words[0] ?? $cleanName;
-        
-        $barang = \Illuminate\Support\Facades\DB::table('mt_barang_nm as b')
+
+        $barang = DB::table('mt_barang_nm as b')
             ->join('mt_depo_stok_nm as s', 'b.kode_brg', '=', 's.kode_brg')
             ->where('s.kode_bagian', '070101')
             ->where('s.jml_sat_kcl', '>', 0)
-            ->where('b.nama_brg', 'like', '%' . $searchKeyword . '%')
+            ->where('b.nama_brg', 'like', '%'.$searchKeyword.'%')
             ->select('b.kode_brg', 'b.nama_brg', 'b.harga_jual', 's.jml_sat_kcl', 'b.satuan_kecil')
             ->first();
 
@@ -96,8 +98,8 @@ class OllamaAiService
                     'harga_jual' => $barang->harga_jual,
                     'jml_sat_kcl' => $barang->jml_sat_kcl,
                     'satuan_kecil' => $barang->satuan_kecil,
-                    'frequency' => 999
-                ]
+                    'frequency' => 999,
+                ],
             ];
         }
 

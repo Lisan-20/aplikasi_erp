@@ -15,9 +15,9 @@ class ModularController extends Controller
 
         if ($request->has('search') && $request->search != '') {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('nama_modular', 'like', "%{$search}%")
-                  ->orWhere('kd_modular', 'like', "%{$search}%");
+                    ->orWhere('kd_modular', 'like', "%{$search}%");
             });
         }
 
@@ -60,7 +60,7 @@ class ModularController extends Controller
     public function destroy($id)
     {
         $modular = DcModular::findOrFail($id);
-        
+
         // Check if there are modules related
         if ($modular->moduls()->count() > 0) {
             return redirect()->route('admin.modular')->with('error', 'Tidak dapat menghapus kelompok modul karena masih memiliki modul.');

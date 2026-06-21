@@ -15,8 +15,8 @@ class BarangController extends Controller
 
         if ($request->has('search') && $request->search != '') {
             $search = $request->search;
-            $query->where('nama_brg', 'LIKE', '%' . $search . '%')
-                  ->orWhere('kode_brg', 'LIKE', '%' . $search . '%');
+            $query->where('nama_brg', 'LIKE', '%'.$search.'%')
+                ->orWhere('kode_brg', 'LIKE', '%'.$search.'%');
         }
 
         // Urutkan berdasarkan nama
@@ -24,7 +24,7 @@ class BarangController extends Controller
 
         return Inertia::render('Master/Barang/Index', [
             'barang' => $barang,
-            'filters' => $request->only('search')
+            'filters' => $request->only('search'),
         ]);
     }
 
@@ -53,7 +53,7 @@ class BarangController extends Controller
 
             return redirect()->back()->with('success', 'Master Barang berhasil ditambahkan.');
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Gagal menambahkan barang: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Gagal menambahkan barang: '.$e->getMessage());
         }
     }
 
@@ -79,7 +79,7 @@ class BarangController extends Controller
 
             return redirect()->back()->with('success', 'Data Barang berhasil diperbarui.');
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Gagal memperbarui barang: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Gagal memperbarui barang: '.$e->getMessage());
         }
     }
 
@@ -88,9 +88,10 @@ class BarangController extends Controller
         try {
             // Daripada menghapus permanen, kita ubah status jadi 0
             DB::table('mt_barang_nm')->where('kode_brg', $id)->update(['status' => 0]);
+
             return redirect()->back()->with('success', 'Barang berhasil dinonaktifkan.');
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Gagal menonaktifkan barang: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Gagal menonaktifkan barang: '.$e->getMessage());
         }
     }
 }

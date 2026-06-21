@@ -15,9 +15,9 @@ class SupplierController extends Controller
 
         if ($request->has('search') && $request->search != '') {
             $search = $request->search;
-            $query->where('namasupplier', 'LIKE', '%' . $search . '%')
-                  ->orWhere('kodesupplier', 'LIKE', '%' . $search . '%')
-                  ->orWhere('kontakperson', 'LIKE', '%' . $search . '%');
+            $query->where('namasupplier', 'LIKE', '%'.$search.'%')
+                ->orWhere('kodesupplier', 'LIKE', '%'.$search.'%')
+                ->orWhere('kontakperson', 'LIKE', '%'.$search.'%');
         }
 
         // Urutkan berdasarkan ID terbaru atau nama
@@ -25,7 +25,7 @@ class SupplierController extends Controller
 
         return Inertia::render('Master/Supplier/Index', [
             'suppliers' => $suppliers,
-            'filters' => $request->only('search')
+            'filters' => $request->only('search'),
         ]);
     }
 
@@ -51,7 +51,7 @@ class SupplierController extends Controller
 
             return redirect()->back()->with('success', 'Supplier berhasil ditambahkan.');
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Gagal menambahkan supplier: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Gagal menambahkan supplier: '.$e->getMessage());
         }
     }
 
@@ -76,7 +76,7 @@ class SupplierController extends Controller
 
             return redirect()->back()->with('success', 'Data supplier berhasil diperbarui.');
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Gagal memperbarui supplier: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Gagal memperbarui supplier: '.$e->getMessage());
         }
     }
 
@@ -86,9 +86,10 @@ class SupplierController extends Controller
             // Daripada menghapus permanen, kita nonaktifkan (soft delete via status)
             // Cek dulu apakah kolom status_aktif ada
             DB::table('mt_supplier')->where('id_mt_supplier', $id)->update(['status_aktif' => 0]);
+
             return redirect()->back()->with('success', 'Supplier berhasil dinonaktifkan.');
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Gagal menonaktifkan supplier: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Gagal menonaktifkan supplier: '.$e->getMessage());
         }
     }
 }

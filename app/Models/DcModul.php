@@ -10,7 +10,9 @@ class DcModul extends Model
     use HasFactory;
 
     protected $table = 'dc_modul';
+
     protected $primaryKey = 'id_dc_modul';
+
     public $timestamps = false;
 
     protected $fillable = [

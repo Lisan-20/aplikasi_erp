@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Gudang;
 
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
-use Carbon\Carbon;
 
 class PenerimaanBarangController extends Controller
 {
@@ -27,11 +27,11 @@ class PenerimaanBarangController extends Controller
 
         if ($request->has('search') && $request->search != '') {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('a.kode_penerimaan', 'like', "%{$search}%")
-                  ->orWhere('a.no_faktur', 'like', "%{$search}%")
-                  ->orWhere('a.no_po', 'like', "%{$search}%")
-                  ->orWhere('b.namasupplier', 'like', "%{$search}%");
+                    ->orWhere('a.no_faktur', 'like', "%{$search}%")
+                    ->orWhere('a.no_po', 'like', "%{$search}%")
+                    ->orWhere('b.namasupplier', 'like', "%{$search}%");
             });
         }
 
@@ -39,7 +39,7 @@ class PenerimaanBarangController extends Controller
 
         return Inertia::render('Gudang/Penerimaan/Index', [
             'penerimaan' => $penerimaan,
-            'filters' => $request->only(['search'])
+            'filters' => $request->only(['search']),
         ]);
     }
 
@@ -69,8 +69,9 @@ class PenerimaanBarangController extends Controller
                         'd.satuan'
                     )
                     ->get()
-                    ->map(function($item) {
+                    ->map(function ($item) {
                         $item->qty_terima = $item->qty_pesan;
+
                         return $item;
                     });
             }
@@ -78,7 +79,7 @@ class PenerimaanBarangController extends Controller
 
         return Inertia::render('Gudang/Penerimaan/FormPenerimaan', [
             'po' => $po,
-            'po_details' => $po_details
+            'po_details' => $po_details,
         ]);
     }
 
@@ -90,17 +91,17 @@ class PenerimaanBarangController extends Controller
 
         if ($request->has('search') && $request->search != '') {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('a.no_po', 'like', "%{$search}%")
-                  ->orWhere('b.namasupplier', 'like', "%{$search}%");
+                    ->orWhere('b.namasupplier', 'like', "%{$search}%");
             });
         }
-        
+
         $pos = $query->take(20)->get([
-            'a.id_tc_po as value', 
-            DB::raw("CONCAT(a.no_po, ' - ', ISNULL(b.namasupplier, 'Unknown')) as label")
+            'a.id_tc_po as value',
+            DB::raw("CONCAT(a.no_po, ' - ', ISNULL(b.namasupplier, 'Unknown')) as label"),
         ]);
-        
+
         return response()->json($pos);
     }
 
@@ -114,6 +115,7 @@ class PenerimaanBarangController extends Controller
         }
 
         $barang = $query->take(20)->get();
+
         return response()->json($barang);
     }
 
@@ -135,7 +137,7 @@ class PenerimaanBarangController extends Controller
             $countToday = DB::table('tc_penerimaan_barang_nm')
                 ->whereDate('tgl_penerimaan', $date->toDateString())
                 ->count();
-            $kode_penerimaan = 'LPB-NM-' . $date->format('Ymd') . '-' . str_pad($countToday + 1, 4, '0', STR_PAD_LEFT);
+            $kode_penerimaan = 'LPB-NM-'.$date->format('Ymd').'-'.str_pad($countToday + 1, 4, '0', STR_PAD_LEFT);
 
             $po = DB::table('tc_po_nm')->where('id_tc_po', $request->id_tc_po)->first();
 
@@ -154,7 +156,9 @@ class PenerimaanBarangController extends Controller
             $total_pesan_all = 0;
 
             foreach ($request->items as $item) {
-                if ($item['qty_terima'] <= 0) continue;
+                if ($item['qty_terima'] <= 0) {
+                    continue;
+                }
 
                 $harga_total = $item['qty_terima'] * $item['harga_satuan'];
                 $total_hutang += $harga_total;
@@ -170,13 +174,13 @@ class PenerimaanBarangController extends Controller
                     'id_tc_po_det' => $item['id_tc_po_det'],
                     'harga' => $item['harga_satuan'],
                     'harga_total' => $harga_total,
-                    'satuan' => $item['satuan'] ?? '-'
+                    'satuan' => $item['satuan'] ?? '-',
                 ]);
 
                 // Update mt_depo_stok_nm for gudang (using kode_bagian 1 for generic warehouse)
                 $stokExist = DB::table('mt_depo_stok_nm')
                     ->where('kode_brg', $item['kode_brg'])
-                    ->where('kode_bagian', 1) 
+                    ->where('kode_bagian', 1)
                     ->first();
 
                 $stok_awal = 0;
@@ -190,7 +194,7 @@ class PenerimaanBarangController extends Controller
                     DB::table('mt_depo_stok_nm')->insert([
                         'kode_brg' => $item['kode_brg'],
                         'kode_bagian' => 1,
-                        'jumlah_stok' => $item['qty_terima']
+                        'jumlah_stok' => $item['qty_terima'],
                     ]);
                 }
 
@@ -203,8 +207,8 @@ class PenerimaanBarangController extends Controller
                     'pemasukan' => $item['qty_terima'],
                     'pengeluaran' => 0,
                     'stok_akhir' => $stok_awal + $item['qty_terima'],
-                    'keterangan' => 'Penerimaan Barang ' . $kode_penerimaan,
-                    'id_user' => auth()->id() ?? 1
+                    'keterangan' => 'Penerimaan Barang '.$kode_penerimaan,
+                    'id_user' => auth()->id() ?? 1,
                 ]);
             }
 
@@ -221,11 +225,11 @@ class PenerimaanBarangController extends Controller
                 'jml_diskon' => $diskon_proporsional,
                 'jumlah_ppn' => $ppn_proporsional,
                 'total' => $grand_total_hutang,
-                'keterangan' => 'Hutang Faktur ' . $request->no_faktur . ' (PO: ' . $po->no_po . ')',
+                'keterangan' => 'Hutang Faktur '.$request->no_faktur.' (PO: '.$po->no_po.')',
                 'tgl_tempo' => $date->copy()->addDays(30)->toDateTimeString(),
                 'status_bayar' => 0,
                 'inp_tgl' => now(),
-                'inp_id' => auth()->id() ?? 1
+                'inp_id' => auth()->id() ?? 1,
             ]);
 
             $status_kirim = 1;
@@ -235,11 +239,13 @@ class PenerimaanBarangController extends Controller
             DB::table('tc_po_nm')->where('id_tc_po', $po->id_tc_po)->update(['status_kirim' => $status_kirim]);
 
             DB::commit();
-            return redirect()->route('gudang.penerimaan.index')->with('success', "Barang berhasil diterima dan stok telah di-update!");
+
+            return redirect()->route('gudang.penerimaan.index')->with('success', 'Barang berhasil diterima dan stok telah di-update!');
 
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()->with('error', 'Gagal memproses penerimaan: ' . $e->getMessage());
+
+            return back()->with('error', 'Gagal memproses penerimaan: '.$e->getMessage());
         }
     }
 }

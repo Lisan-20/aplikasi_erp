@@ -11,7 +11,7 @@ class ConsentController extends Controller
     public function generalConsent(Request $request)
     {
         $no_mr = $request->query('no_mr');
-        $type  = $request->query('type', 'umum');
+        $type = $request->query('type', 'umum');
 
         $pasien = null;
         if ($no_mr) {
@@ -19,8 +19,8 @@ class ConsentController extends Controller
         }
 
         return Inertia::render('Poli/GeneralConsent', [
-            'type'         => $type,
-            'pasien'       => $pasien,
+            'type' => $type,
+            'pasien' => $pasien,
             'current_date' => date('Y-m-d H:i:s'),
         ]);
     }
@@ -29,7 +29,7 @@ class ConsentController extends Controller
     {
         $pasien = DB::table('mt_master_pasien')->where('no_mr', $no_mr)->first();
 
-        if (!$pasien) {
+        if (! $pasien) {
             abort(404, 'Pasien tidak ditemukan');
         }
 

@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Pengadaan;
 
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
-use Carbon\Carbon;
 
 class PengadaanController extends Controller
 {
@@ -29,9 +29,9 @@ class PengadaanController extends Controller
 
         if ($request->has('search') && $request->search != '') {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('a.kode_permohonan', 'like', "%{$search}%")
-                  ->orWhere('b.namasupplier', 'like', "%{$search}%");
+                    ->orWhere('b.namasupplier', 'like', "%{$search}%");
             });
         }
 
@@ -55,7 +55,7 @@ class PengadaanController extends Controller
 
         return Inertia::render('Gudang/PermintaanPembelian/Index', [
             'prs' => $prs,
-            'filters' => $request->only(['search'])
+            'filters' => $request->only(['search']),
         ]);
     }
 
@@ -71,6 +71,7 @@ class PengadaanController extends Controller
             $query->where('namasupplier', 'like', "%{$request->search}%");
         }
         $suppliers = $query->take(50)->get(['kodesupplier', 'namasupplier']);
+
         return response()->json($suppliers);
     }
 
@@ -82,7 +83,7 @@ class PengadaanController extends Controller
             ->whereNotNull('a.no_acc')
             ->where('a.status_batal', 0)
             ->where('b.status_batal', 0)
-            ->where(function($q) {
+            ->where(function ($q) {
                 $q->whereNull('b.status_po')->orWhere('b.status_po', 0);
             })
             ->select(
@@ -95,22 +96,22 @@ class PengadaanController extends Controller
                 'b.jumlah_besar as qty',
                 'b.satuan as satuan_besar'
             );
-            
+
         if ($request->has('search') && $request->search != '') {
             $query->where('a.kode_permohonan', 'like', "%{$request->search}%");
         }
-        
+
         $prs = $query->get();
-        
+
         // Group by PR
         $grouped = [];
         foreach ($prs as $pr) {
-            if (!isset($grouped[$pr->id_tc_permohonan])) {
+            if (! isset($grouped[$pr->id_tc_permohonan])) {
                 $grouped[$pr->id_tc_permohonan] = [
                     'id_tc_permohonan' => $pr->id_tc_permohonan,
                     'kode_permohonan' => $pr->kode_permohonan,
                     'kodesupplier' => $pr->kodesupplier,
-                    'items' => []
+                    'items' => [],
                 ];
             }
             $grouped[$pr->id_tc_permohonan]['items'][] = [
@@ -119,10 +120,10 @@ class PengadaanController extends Controller
                 'nama_brg' => $pr->nama_brg,
                 'qty' => $pr->qty,
                 'satuan_besar' => $pr->satuan_besar,
-                'harga_beli' => 0 // to be filled by user
+                'harga_beli' => 0, // to be filled by user
             ];
         }
-        
+
         return response()->json(array_values($grouped));
     }
 
@@ -130,12 +131,13 @@ class PengadaanController extends Controller
     {
         $query = DB::table('mt_barang_nm')
             ->select('kode_brg', 'nama_brg', 'satuan_besar as satuan');
-            
+
         if ($request->has('search') && $request->search != '') {
             $query->where('nama_brg', 'like', "%{$request->search}%");
         }
-        
+
         $barang = $query->take(20)->get();
+
         return response()->json($barang);
     }
 
@@ -161,7 +163,7 @@ class PengadaanController extends Controller
             $countToday = DB::table('tc_po_nm')
                 ->whereDate('tgl_po', $date->toDateString())
                 ->count();
-            $no_po = 'PO-NM-' . $date->format('Ymd') . '-' . str_pad($countToday + 1, 4, '0', STR_PAD_LEFT);
+            $no_po = 'PO-NM-'.$date->format('Ymd').'-'.str_pad($countToday + 1, 4, '0', STR_PAD_LEFT);
 
             $total_sbl_ppn = 0;
             $discount_harga = $request->discount_harga ?? 0;
@@ -203,9 +205,9 @@ class PengadaanController extends Controller
                     'jumlah_harga_netto' => $jumlah_harga,
                     'satuan' => $item['satuan_besar'] ?? '-',
                     'status_batal' => 0,
-                    'status_close' => 0
+                    'status_close' => 0,
                 ]);
-                
+
                 // Update PR status_po
                 if (isset($item['id_tc_permohonan_det'])) {
                     DB::table('tc_permohonan_nm_det')
@@ -220,7 +222,8 @@ class PengadaanController extends Controller
 
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()->with('error', 'Gagal membuat PO: ' . $e->getMessage());
+
+            return back()->with('error', 'Gagal membuat PO: '.$e->getMessage());
         }
     }
 }

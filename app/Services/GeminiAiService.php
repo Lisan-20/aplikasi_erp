@@ -2,13 +2,16 @@
 
 namespace App\Services;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 class GeminiAiService
 {
     protected $apiKey;
+
     protected $tunedModel;
+
     protected $baseUrl = 'https://generativelanguage.googleapis.com/v1beta/models/';
 
     public function __construct()
@@ -24,6 +27,7 @@ class GeminiAiService
     {
         if (empty($this->apiKey)) {
             Log::warning('GEMINI_API_KEY belum diatur di .env');
+
             return null;
         }
 
@@ -32,13 +36,13 @@ class GeminiAiService
         }
 
         $inputString = implode(', ', $cartItemNames);
-        $userPrompt = "Pelanggan saat ini membeli barang berikut: [" . $inputString . "]. Tolong rekomendasikan 1 barang terkait yang mungkin juga mereka butuhkan.";
-        
-        $systemInstruction = "Anda adalah asisten kasir cerdas di Sistem ERP. Tugas Anda adalah memberikan 1 rekomendasi barang (cross-selling/upselling) berdasarkan barang yang sedang dibeli oleh pelanggan. Balas HANYA dengan format JSON yang valid: {\"rekomendasi\": \"NAMA BARANG\"}. Dilarang memberikan penjelasan atau pemikiran (thought process).";
+        $userPrompt = 'Pelanggan saat ini membeli barang berikut: ['.$inputString.']. Tolong rekomendasikan 1 barang terkait yang mungkin juga mereka butuhkan.';
+
+        $systemInstruction = 'Anda adalah asisten kasir cerdas di Sistem ERP. Tugas Anda adalah memberikan 1 rekomendasi barang (cross-selling/upselling) berdasarkan barang yang sedang dibeli oleh pelanggan. Balas HANYA dengan format JSON yang valid: {"rekomendasi": "NAMA BARANG"}. Dilarang memberikan penjelasan atau pemikiran (thought process).';
 
         $cleanTunedModel = trim($this->tunedModel);
         $cleanApiKey = trim($this->apiKey);
-        $endpoint = $this->baseUrl . $cleanTunedModel . ':generateContent?key=' . $cleanApiKey;
+        $endpoint = $this->baseUrl.$cleanTunedModel.':generateContent?key='.$cleanApiKey;
 
         try {
             $response = Http::post($endpoint, [
@@ -46,43 +50,43 @@ class GeminiAiService
                     [
                         'role' => 'user',
                         'parts' => [
-                            ['text' => $userPrompt]
-                        ]
-                    ]
+                            ['text' => $userPrompt],
+                        ],
+                    ],
                 ],
                 'systemInstruction' => [
                     'role' => 'system',
                     'parts' => [
-                        ['text' => $systemInstruction]
-                    ]
+                        ['text' => $systemInstruction],
+                    ],
                 ],
                 'generationConfig' => [
                     'temperature' => 0.1,
                     'topK' => 40,
                     'topP' => 0.95,
                     'maxOutputTokens' => 1024,
-                    'responseMimeType' => 'application/json'
-                ]
+                    'responseMimeType' => 'application/json',
+                ],
             ]);
 
             if ($response->successful()) {
                 $data = $response->json();
-                
+
                 if (isset($data['candidates'][0]['content']['parts'][0]['text'])) {
                     $jsonText = trim($data['candidates'][0]['content']['parts'][0]['text']);
                     $decoded = json_decode($jsonText, true);
                     $recommendationText = $decoded['rekomendasi'] ?? '';
-                    
-                    if (!empty($recommendationText)) {
+
+                    if (! empty($recommendationText)) {
                         return $this->parseAndFetchItemDetails($recommendationText);
                     }
                 }
             } else {
-                Log::error('Gemini API Error: ' . $response->body());
+                Log::error('Gemini API Error: '.$response->body());
             }
 
         } catch (\Exception $e) {
-            Log::error('Gemini API Exception: ' . $e->getMessage());
+            Log::error('Gemini API Exception: '.$e->getMessage());
         }
 
         return null;
@@ -94,15 +98,15 @@ class GeminiAiService
     private function parseAndFetchItemDetails($aiOutputName)
     {
         $cleanName = str_replace(['"', '\''], '', $aiOutputName);
-        
+
         $words = explode(' ', $cleanName);
         $searchKeyword = $words[0] ?? $cleanName;
-        
-        $barang = \Illuminate\Support\Facades\DB::table('mt_barang_nm as b')
+
+        $barang = DB::table('mt_barang_nm as b')
             ->join('mt_depo_stok_nm as s', 'b.kode_brg', '=', 's.kode_brg')
             ->where('s.kode_bagian', '070101')
             ->where('s.jml_sat_kcl', '>', 0)
-            ->where('b.nama_brg', 'like', '%' . $searchKeyword . '%')
+            ->where('b.nama_brg', 'like', '%'.$searchKeyword.'%')
             ->select('b.kode_brg', 'b.nama_brg', 'b.harga_jual', 's.jml_sat_kcl', 'b.satuan_kecil')
             ->first();
 
@@ -114,8 +118,8 @@ class GeminiAiService
                     'harga_jual' => $barang->harga_jual,
                     'jml_sat_kcl' => $barang->jml_sat_kcl,
                     'satuan_kecil' => $barang->satuan_kecil,
-                    'frequency' => 999 // dummy value to match UI format
-                ]
+                    'frequency' => 999, // dummy value to match UI format
+                ],
             ];
         }
 

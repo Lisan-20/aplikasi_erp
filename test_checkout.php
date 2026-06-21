@@ -1,7 +1,8 @@
 <?php
+
 $data = [
     'items' => [
-        ['kode_brg' => 'K02003034', 'qty' => 1, 'harga_jual' => 10000]
+        ['kode_brg' => 'K02003034', 'qty' => 1, 'harga_jual' => 10000],
     ],
     'tunai' => 10000,
     'kredit' => 0,
@@ -9,7 +10,7 @@ $data = [
     'adm_cc' => 0,
     'diskon' => 0,
     'diskon_pers' => 0,
-    'bill' => 10000
+    'bill' => 10000,
 ];
 
 $ch = curl_init('http://localhost:8000/kasir/checkout');
@@ -18,7 +19,7 @@ curl_setopt($ch, CURLOPT_POST, true);
 curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
 curl_setopt($ch, CURLOPT_HTTPHEADER, [
     'Content-Type: application/json',
-    'Accept: application/json'
+    'Accept: application/json',
 ]);
 
 $response = curl_exec($ch);

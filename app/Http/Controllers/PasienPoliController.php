@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
-use Carbon\Carbon;
 
 class PasienPoliController extends Controller
 {
@@ -28,7 +28,7 @@ class PasienPoliController extends Controller
             ->orWhere('kode_poli', $kode_poli)
             ->first();
 
-        if (!$pasien) {
+        if (! $pasien) {
             abort(404, 'Data Pasien tidak ditemukan');
         }
 
@@ -42,7 +42,7 @@ class PasienPoliController extends Controller
             $nm_nasabah = $perusahaan ? $perusahaan->nama_perusahaan : '';
             if ($pasien->kode_kelompok == 11) {
                 $kelompok = DB::table('mt_nasabah')->where('kode_kelompok', 11)->first();
-                $nm_nasabah = ($kelompok ? $kelompok->nama_kelompok . ' ' : '') . $nm_nasabah;
+                $nm_nasabah = ($kelompok ? $kelompok->nama_kelompok.' ' : '').$nm_nasabah;
             }
         } else {
             $nasabah = DB::table('mt_nasabah')->where('kode_kelompok', $pasien->kode_kelompok)->first();
@@ -71,7 +71,7 @@ class PasienPoliController extends Controller
             'nama_dokter' => $pasien->nama_dokter,
             'kode_dokter' => $pasien->kode_dokter,
             'kode_bagian' => $pasien->kode_bagian ?? $pasien->kode_bagian_poli,
-            'nm_nasabah' => $nm_nasabah . ($nama_penanggung ? ' / ' . $nama_penanggung : ''),
+            'nm_nasabah' => $nm_nasabah.($nama_penanggung ? ' / '.$nama_penanggung : ''),
             'kode_kelompok' => $pasien->kode_kelompok,
             'kode_perusahaan' => $pasien->kode_perusahaan,
             'status_periksa' => $pasien->status_periksa,
@@ -109,11 +109,12 @@ class PasienPoliController extends Controller
             } elseif ($patient['kode_kelompok'] > 5) {
                 $total = $item->total_bpjs;
             }
+
             return [
                 'kode_tarif' => $item->kode_tarif,
                 'nama_tarif' => $item->nama_tarif,
                 'kode_tindakan' => $item->kode_tindakan,
-                'total' => $total
+                'total' => $total,
             ];
         });
 
@@ -136,7 +137,7 @@ class PasienPoliController extends Controller
             'tindakanList' => $tindakanList,
             'tarifList' => $tarifData,
             'paramedisList' => $paramedisList,
-            'riwayat' => $riwayat
+            'riwayat' => $riwayat,
         ]);
     }
 
@@ -150,12 +151,12 @@ class PasienPoliController extends Controller
         $kode_tarif = $request->input('kode_tarif');
         $jumlah = $request->input('jumlah', 1);
 
-        if (!$kode_tarif) {
+        if (! $kode_tarif) {
             return redirect()->back()->withErrors(['kode_tarif' => 'Pilih tindakan/tarif terlebih dahulu']);
         }
 
         $tarif = DB::table('mt_tarif_v')->where('kode_tarif', $kode_tarif)->first();
-        if (!$tarif) {
+        if (! $tarif) {
             return redirect()->back()->withErrors(['kode_tarif' => 'Tarif tidak ditemukan']);
         }
 
@@ -224,7 +225,7 @@ class PasienPoliController extends Controller
         ]);
 
         try {
-            DB::statement("EXEC diskon_flat_perusahaan @no_registrasi = ?", [$patient['no_registrasi']]);
+            DB::statement('EXEC diskon_flat_perusahaan @no_registrasi = ?', [$patient['no_registrasi']]);
         } catch (\Exception $e) {
             // Ignore error in execution of stored procedure for now
         }
@@ -260,7 +261,7 @@ class PasienPoliController extends Controller
                 ->where('no_kunjungan', $patient['no_kunjungan'])
                 ->update([
                     'tgl_blpl' => now()->timezone('Asia/Jakarta')->format('Y-m-d H:i:s'),
-                    'status_blpl' => 1
+                    'status_blpl' => 1,
                 ]);
 
             // Update pl_tc_poli
@@ -268,14 +269,16 @@ class PasienPoliController extends Controller
                 ->where('no_kunjungan', $patient['no_kunjungan'])
                 ->update([
                     'status_keluar' => 1,
-                    'status_periksa' => 1 // 1 = Selesai
+                    'status_periksa' => 1, // 1 = Selesai
                 ]);
 
             DB::commit();
+
             return redirect()->route('poli.antrian-poli')->with('success', 'Pasien telah selesai ditindak.');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->withErrors(['error' => 'Gagal memproses pasien selesai: ' . $e->getMessage()]);
+
+            return redirect()->back()->withErrors(['error' => 'Gagal memproses pasien selesai: '.$e->getMessage()]);
         }
     }
 
@@ -292,7 +295,7 @@ class PasienPoliController extends Controller
             DB::table('pl_tc_poli')
                 ->where('no_kunjungan', $patient['no_kunjungan'])
                 ->update([
-                    'status_periksa' => 2 // 2 = Rujuk Rawat Inap
+                    'status_periksa' => 2, // 2 = Rujuk Rawat Inap
                 ]);
 
             // Generate kode_rujukan
@@ -307,7 +310,7 @@ class PasienPoliController extends Controller
                 'no_kunjungan_lama' => $patient['no_kunjungan'],
                 'no_registrasi' => $patient['no_registrasi'],
                 'status' => '0',
-                'tgl_input' => now()->timezone('Asia/Jakarta')->format('Y-m-d H:i:s')
+                'tgl_input' => now()->timezone('Asia/Jakarta')->format('Y-m-d H:i:s'),
             ]);
 
             // Insert tc_kunjungan baru untuk RI (kode bagian 030001)
@@ -323,14 +326,16 @@ class PasienPoliController extends Controller
                 'kode_bagian_tujuan' => '030001', // Ranap
                 'kode_bagian_asal' => $patient['kode_bagian'],
                 'tgl_masuk' => now()->timezone('Asia/Jakarta')->format('Y-m-d H:i:s'),
-                'status_masuk' => 1
+                'status_masuk' => 1,
             ]);
 
             DB::commit();
+
             return redirect()->route('poli.antrian-poli')->with('success', 'Pasien berhasil dirujuk ke Rawat Inap.');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->withErrors(['error' => 'Gagal merujuk pasien: ' . $e->getMessage()]);
+
+            return redirect()->back()->withErrors(['error' => 'Gagal merujuk pasien: '.$e->getMessage()]);
         }
     }
 }

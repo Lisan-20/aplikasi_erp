@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Manajemen;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Inertia\Inertia;
-use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Inertia\Inertia;
 
 class AccPurchasingController extends Controller
 {
@@ -30,16 +30,16 @@ class AccPurchasingController extends Controller
 
         if ($request->has('search') && $request->search != '') {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('a.kode_permohonan', 'like', "%{$search}%")
-                  ->orWhere('b.namasupplier', 'like', "%{$search}%");
+                    ->orWhere('b.namasupplier', 'like', "%{$search}%");
             });
         }
 
         if ($request->has('status') && $request->status != '') {
             if ($request->status == 'belum') {
                 $query->whereNull('a.no_acc');
-            } else if ($request->status == 'sudah') {
+            } elseif ($request->status == 'sudah') {
                 $query->whereNotNull('a.no_acc');
             }
         } else {
@@ -65,9 +65,9 @@ class AccPurchasingController extends Controller
                     'a.satuan'
                 )
                 ->get();
-            
+
             $detailsGrouped = $details->groupBy('id_tc_permohonan');
-            
+
             foreach ($prs->items() as $item) {
                 $item->items = isset($detailsGrouped[$item->id_tc_permohonan]) ? $detailsGrouped[$item->id_tc_permohonan] : [];
                 $item->jml_brg = count($item->items);
@@ -76,14 +76,14 @@ class AccPurchasingController extends Controller
 
         return Inertia::render('Manajemen/AccPurchasing/Index', [
             'prs' => $prs,
-            'filters' => $request->only(['search', 'status'])
+            'filters' => $request->only(['search', 'status']),
         ]);
     }
 
     public function approve(Request $request, $id)
     {
         $pr = DB::table('tc_permohonan_nm')->where('id_tc_permohonan', $id)->first();
-        if (!$pr) {
+        if (! $pr) {
             return back()->withErrors(['error' => 'Permintaan Pembelian tidak ditemukan.']);
         }
 
@@ -103,16 +103,17 @@ class AccPurchasingController extends Controller
                     'no_acc' => $noAcc,
                     'tgl_acc' => Carbon::now(),
                     'user_id_acc' => 1, // hardcode for now
-                    'status_kirim' => 1
+                    'status_kirim' => 1,
                 ]);
 
             DB::commit();
 
-            return back()->with('success', 'Permintaan Pembelian berhasil disetujui (No ACC: ' . $noAcc . ').');
+            return back()->with('success', 'Permintaan Pembelian berhasil disetujui (No ACC: '.$noAcc.').');
 
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()->withErrors(['error' => 'Gagal menyetujui: ' . $e->getMessage()]);
+
+            return back()->withErrors(['error' => 'Gagal menyetujui: '.$e->getMessage()]);
         }
     }
 }
