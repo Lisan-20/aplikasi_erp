@@ -1,23 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Head, Link, usePage } from '@inertiajs/react';
 import {
-    Menu, X, ChevronDown, ChevronRight,
-    Home, Users, Settings, Briefcase,
+    Menu, X, ChevronDown,
+    Users, Settings, Briefcase,
     FileText, LogOut, LayoutDashboard,
     Sun, Moon, Boxes, Database, Layers, Activity
 } from 'lucide-react';
-
-// A mapping function to guess an icon based on menu name
-const getMenuIcon = (name) => {
-    const n = name?.toLowerCase() || '';
-    if (n.includes('pasien') || n.includes('user') || n.includes('sdm') || n.includes('pegawai')) return <Users size={20} />;
-    if (n.includes('rekam') || n.includes('laporan') || n.includes('dokumen')) return <FileText size={20} />;
-    if (n.includes('setting') || n.includes('pengaturan')) return <Settings size={20} />;
-    if (n.includes('medis') || n.includes('klinik') || n.includes('layanan') || n.includes('poli')) return <Briefcase size={20} />;
-    if (n.includes('antrean') || n.includes('queue') || n.includes('transaksi') || n.includes('kasir')) return <Database size={20} />;
-    if (n.includes('gudang') || n.includes('stok') || n.includes('inventori')) return <Boxes size={20} />;
-    return <Layers size={20} />;
-};
 
 export default function DashboardLayout({ children }) {
     const page = usePage();
@@ -27,34 +15,19 @@ export default function DashboardLayout({ children }) {
     const module_name = dashboard?.module_name || 'Dashboard';
     const menus = dashboard?.menus || [];
 
-    const [isSidebarOpen, setSidebarOpen] = useState(() => {
-        if (typeof window !== 'undefined') {
-            const saved = localStorage.getItem('sidebarOpen');
-            if (saved !== null) return saved === 'true';
-            return window.innerWidth > 768;
-        }
-        return true;
-    });
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [openMenus, setOpenMenus] = useState({});
 
+    // Close dropdowns when clicking outside
     useEffect(() => {
-        if (typeof window !== 'undefined') {
-            localStorage.setItem('sidebarOpen', isSidebarOpen);
-        }
-    }, [isSidebarOpen]);
-
-    // Simpan status menu yang terbuka ke sessionStorage agar tidak tertutup saat ganti halaman
-    const [openMenus, setOpenMenus] = useState(() => {
-        try {
-            const saved = sessionStorage.getItem('medilink_open_menus');
-            return saved ? JSON.parse(saved) : {};
-        } catch {
-            return {};
-        }
-    });
-
-    useEffect(() => {
-        sessionStorage.setItem('medilink_open_menus', JSON.stringify(openMenus));
-    }, [openMenus]);
+        const handleClickOutside = (e) => {
+            if (!e.target.closest('.dash-nav-item-container')) {
+                setOpenMenus({});
+            }
+        };
+        document.addEventListener('click', handleClickOutside);
+        return () => document.removeEventListener('click', handleClickOutside);
+    }, []);
 
     const [currentTime, setCurrentTime] = useState(new Date());
     const [theme, setTheme] = useState('dark');
@@ -83,15 +56,12 @@ export default function DashboardLayout({ children }) {
         }
     };
 
-    const toggleSidebar = () => setSidebarOpen(!isSidebarOpen);
+    const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
 
-    const toggleMenu = (menuId) => {
+    const toggleMenu = (menuId, e) => {
+        if (e) e.stopPropagation();
         setOpenMenus(prev => {
-            // Jika menu yang sama diklik, tutup menu tersebut (return object kosong).
-            // Jika menu lain diklik, buka HANYA menu tersebut (tutup yang lain).
-            if (prev[menuId]) {
-                return {};
-            }
+            if (prev[menuId]) return {};
             return { [menuId]: true };
         });
     };
@@ -115,11 +85,11 @@ export default function DashboardLayout({ children }) {
         <div className="dash-layout" data-theme={theme}>
             <Head title={`${module_name || 'Dashboard'} - ERP`} />
 
-            {/* Top Navbar */}
+            {/* Top Navbar (Header) */}
             <header className="dash-navbar dash-glass-panel">
                 <div className="dash-nav-left">
-                    <button onClick={toggleSidebar} className="dash-icon-btn">
-                        {isSidebarOpen ? <X size={24} /> : <Menu size={24} />}
+                    <button onClick={toggleMobileMenu} className="dash-icon-btn mobile-menu-btn">
+                        {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
                     </button>
                     <div className="dash-brand">
                         <Boxes size={28} className="dash-brand-icon" />
@@ -154,83 +124,79 @@ export default function DashboardLayout({ children }) {
                 </div>
             </header>
 
+            {/* Top Navigation Menu (Horizontal) */}
+            <nav className={`dash-top-nav dash-glass-panel ${isMobileMenuOpen ? 'mobile-open' : ''}`}>
+                <div className="dash-nav-container">
+                    <ul className="dash-nav-list">
+                        {/* App Switcher / Back to Modules */}
+                        <li className="dash-nav-item-container">
+                            <Link href="/modul" className="dash-nav-item app-switcher-btn">
+                                <LayoutDashboard size={18} />
+                                <span>Ganti Modul</span>
+                            </Link>
+                        </li>
+                        
+                        <div className="dash-nav-divider"></div>
+
+                        {menus.map((menu, idx) => {
+                            const menuId = menu.id_menu || menu.id || idx;
+                            const submenus = menu.sub_menus || menu.submenus || menu.children || [];
+                            const isOpen = openMenus[menuId];
+                            const menuName = menu.nama_menu || menu.name || 'Menu';
+
+                            return (
+                                <li key={menuId} className="dash-nav-item-container">
+                                    <button
+                                        className={`dash-nav-item ${isOpen ? 'active' : ''}`}
+                                        onClick={(e) => toggleMenu(menuId, e)}
+                                    >
+                                        <span className="dash-nav-text">{menuName}</span>
+                                        {submenus.length > 0 && (
+                                            <ChevronDown size={14} className={`dash-nav-arrow ${isOpen ? 'rotate' : ''}`} />
+                                        )}
+                                    </button>
+
+                                    {/* Dropdown Menu */}
+                                    {submenus.length > 0 && (
+                                        <div className={`dash-dropdown-menu ${isOpen ? 'show' : ''}`}>
+                                            <ul className="dash-dropdown-list">
+                                                {submenus.map((sub, sIdx) => {
+                                                    const subUrl  = sub.url_sub_menu_baru || null;
+                                                    const subName = sub.nama_sub_menu || sub.name || 'Submenu';
+                                                    const isActive = subUrl && (activeUrl === subUrl || activeUrl.startsWith(subUrl + '?'));
+
+                                                    return (
+                                                        <li key={sub.id_dc_sub_menu || sub.id || sIdx}>
+                                                            {subUrl ? (
+                                                                <Link href={subUrl} className={`dash-dropdown-item ${isActive ? 'active' : ''}`}>
+                                                                    {subName}
+                                                                </Link>
+                                                            ) : (
+                                                                <span className="dash-dropdown-item disabled" title="URL belum dikonfigurasi">
+                                                                    {subName}
+                                                                </span>
+                                                            )}
+                                                        </li>
+                                                    );
+                                                })}
+                                            </ul>
+                                        </div>
+                                    )}
+                                </li>
+                            );
+                        })}
+                    </ul>
+                </div>
+            </nav>
+
             <div className="dash-body">
-                {/* Overlay Backdrop for Mobile */}
-                <div 
-                    className={`dash-sidebar-overlay ${isSidebarOpen ? 'show' : ''}`} 
-                    onClick={toggleSidebar}
-                ></div>
-
-                {/* Sidebar */}
-                <aside className={`dash-sidebar dash-glass-panel ${isSidebarOpen ? 'open' : 'closed'}`}>
-                    <div className="dash-sidebar-inner">
-                        <div className="dash-menu-section">
-                            <span className="dash-menu-label">Main Menu</span>
-                            <ul className="dash-menu-list">
-                                {menus.map((menu, idx) => {
-                                    const menuId = menu.id_menu || menu.id || idx;
-                                    const submenus = menu.sub_menus || menu.submenus || menu.children || [];
-                                    const isOpen = openMenus[menuId];
-                                    const menuName = menu.nama_menu || menu.name || 'Menu';
-
-                                    return (
-                                        <li key={menuId} className="dash-menu-group">
-                                            <button
-                                                className={`dash-menu-item ${isOpen ? 'active' : ''}`}
-                                                onClick={() => toggleMenu(menuId)}
-                                            >
-                                                {getMenuIcon(menuName)}
-                                                <span className="dash-menu-text">{menuName}</span>
-                                                {submenus.length > 0 && (
-                                                    isOpen ? <ChevronDown size={16} className="dash-menu-arrow" /> : <ChevronRight size={16} className="dash-menu-arrow" />
-                                                )}
-                                            </button>
-
-                                            {submenus.length > 0 && (
-                                                <ul className={`dash-submenu-list ${isOpen ? 'open' : ''}`}>
-                                                    {submenus.map((sub, sIdx) => {
-                                                        // Baca url_sub_menu_baru dari database (prioritas utama)
-                                                        const subUrl  = sub.url_sub_menu_baru || null;
-                                                        const subName = sub.nama_sub_menu || sub.name || 'Submenu';
-                                                        const isActive = subUrl && (activeUrl === subUrl || activeUrl.startsWith(subUrl + '?'));
-
-                                                        return (
-                                                            <li key={sub.id_dc_sub_menu || sub.id || sIdx}>
-                                                                {subUrl ? (
-                                                                    <Link href={subUrl} className={`dash-submenu-item ${isActive ? 'active' : ''}`}>
-                                                                        {subName}
-                                                                    </Link>
-                                                                ) : (
-                                                                    <span className="dash-submenu-item disabled" title="URL belum dikonfigurasi">
-                                                                        {subName}
-                                                                    </span>
-                                                                )}
-                                                            </li>
-                                                        );
-                                                    })}
-                                                </ul>
-                                            )}
-                                        </li>
-                                    );
-                                })}
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div className="dash-sidebar-footer">
-                        <Link href="/modul" className="dash-back-btn">
-                            &larr; <span className="dash-menu-text">Ganti Modul</span>
-                        </Link>
-                    </div>
-                </aside>
-
                 {/* Main Content Area */}
                 <main className="dash-content">
                     {children ? children : (
                         <>
                             <div className="dash-welcome dash-glass-panel">
                                 <h1>Selamat Datang di {module_name || 'Modul Sistem'}</h1>
-                                <p>Silakan gunakan menu navigasi di sebelah kiri untuk mengakses fitur yang tersedia dalam modul ini.</p>
+                                <p>Silakan gunakan menu navigasi di atas untuk mengakses fitur yang tersedia dalam modul ini.</p>
                             </div>
 
                             <div className="dash-widgets">
@@ -262,6 +228,7 @@ export default function DashboardLayout({ children }) {
                     --glass-bg: rgba(17, 24, 39, 0.7);
                     --glass-border: rgba(255, 255, 255, 0.06);
                     --glass-hover: rgba(31, 41, 55, 0.8);
+                    --glass-dropdown: rgba(17, 24, 39, 0.95);
 
                     /* Primary brand color */
                     --primary: #3b82f6;
@@ -273,12 +240,12 @@ export default function DashboardLayout({ children }) {
                     --text-muted: #9ca3af;
 
                     /* Layout */
-                    --sidebar-width: 260px;
-                    --sidebar-collapsed: 72px;
+                    --top-nav-height: 54px;
 
                     /* Shadows */
                     --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
                     --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+                    --shadow-dropdown: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
                 }
 
                 .dash-layout[data-theme="light"] {
@@ -286,17 +253,18 @@ export default function DashboardLayout({ children }) {
                     --glass-bg: #ffffff;
                     --glass-border: #e5e7eb;
                     --glass-hover: #f9fafb;
+                    --glass-dropdown: #ffffff;
                     --primary: #2563eb;
                     --text-main: #111827;
                     --text-muted: #4b5563;
                 }
 
-                /* Keep dark mode intact but make it solid instead of glass */
                 .dash-layout[data-theme="dark"] {
                     --bg-dark: #111827;
                     --glass-bg: #1f2937;
                     --glass-border: #374151;
                     --glass-hover: #374151;
+                    --glass-dropdown: #1f2937;
                     --primary: #3b82f6;
                     --text-main: #f9fafb;
                     --text-muted: #9ca3af;
@@ -317,7 +285,7 @@ export default function DashboardLayout({ children }) {
                     position: relative;
                 }
 
-                /* Glass Panel for generic use */
+                /* Glass Panel */
                 .dash-glass-panel {
                     background: var(--glass-bg);
                     backdrop-filter: blur(16px);
@@ -325,28 +293,25 @@ export default function DashboardLayout({ children }) {
                     border: 1px solid var(--glass-border);
                     box-shadow: var(--shadow-md);
                     border-radius: 12px;
-                    position: relative;
                     z-index: 1;
                 }
 
-                /* Navbar */
+                /* Navbar Header */
                 .dash-navbar {
                     height: 64px;
                     display: flex;
                     align-items: center;
                     justify-content: space-between;
-                    padding: 0 20px;
+                    padding: 0 24px;
                     border-bottom: 1px solid var(--glass-border);
-                    border-radius: 0; /* Remove radius for navbar */
-                    box-shadow: var(--shadow-sm);
+                    border-radius: 0;
+                    box-shadow: none;
                     z-index: 20;
+                    flex-shrink: 0;
                 }
 
-                .dash-nav-left {
-                    display: flex;
-                    align-items: center;
-                    gap: 20px;
-                }
+                .dash-nav-left { display: flex; align-items: center; gap: 20px; }
+                .mobile-menu-btn { display: none; } /* Hidden on desktop */
 
                 .dash-icon-btn {
                     background: transparent;
@@ -362,20 +327,12 @@ export default function DashboardLayout({ children }) {
                 }
                 .dash-icon-btn:hover { background: var(--glass-hover); color: var(--text-main); }
 
-                .dash-brand {
-                    display: flex;
-                    align-items: center;
-                    gap: 12px;
-                }
+                .dash-brand { display: flex; align-items: center; gap: 12px; }
                 .dash-brand-icon { color: var(--primary); }
                 .dash-brand h2 { margin: 0; font-size: 1.25rem; font-weight: 700; letter-spacing: 0.5px; color: var(--text-main); }
                 .dash-tag { font-size: 0.75rem; color: var(--primary); background: var(--primary-glow); padding: 2px 8px; border-radius: 4px; font-weight: 600; }
 
-                .dash-nav-right {
-                    display: flex;
-                    align-items: center;
-                    gap: 24px;
-                }
+                .dash-nav-right { display: flex; align-items: center; gap: 24px; }
                 .dash-clock { font-size: 0.85rem; color: var(--text-muted); font-weight: 500; }
                 .dash-user { display: flex; align-items: center; gap: 12px; }
                 .dash-user-info { display: flex; flex-direction: column; align-items: flex-end; }
@@ -385,219 +342,168 @@ export default function DashboardLayout({ children }) {
                 .dash-logout-btn { color: var(--text-muted); transition: color 0.2s; margin-left: 8px; }
                 .dash-logout-btn:hover { color: #ef4444; }
 
+                /* Top Navigation (Horizontal) */
+                .dash-top-nav {
+                    border-radius: 0;
+                    border-bottom: 1px solid var(--glass-border);
+                    border-top: none;
+                    border-left: none;
+                    border-right: none;
+                    z-index: 15;
+                    flex-shrink: 0;
+                }
+
+                .dash-nav-container {
+                    padding: 0 24px;
+                }
+
+                .dash-nav-list {
+                    list-style: none;
+                    padding: 0;
+                    margin: 0;
+                    display: flex;
+                    align-items: center;
+                    min-height: var(--top-nav-height);
+                    gap: 4px;
+                    flex-wrap: wrap;
+                }
+
+                .dash-nav-divider {
+                    width: 1px;
+                    height: 24px;
+                    background: var(--glass-border);
+                    margin: 0 8px;
+                }
+
+                .dash-nav-item-container {
+                    position: relative;
+                    display: flex;
+                    align-items: center;
+                    height: 100%;
+                }
+
+                .dash-nav-item {
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                    height: 38px;
+                    padding: 0 14px;
+                    border-radius: 6px;
+                    border: none;
+                    background: transparent;
+                    color: var(--text-muted);
+                    font-size: 0.9rem;
+                    font-weight: 500;
+                    cursor: pointer;
+                    text-decoration: none;
+                    transition: all 0.2s;
+                    white-space: nowrap;
+                }
+
+                .dash-nav-item.app-switcher-btn {
+                    color: var(--primary);
+                    font-weight: 600;
+                    background: var(--primary-glow);
+                }
+
+                .dash-nav-item:hover, .dash-nav-item.active {
+                    color: var(--text-main);
+                    background: var(--glass-hover);
+                }
+                .dash-nav-item.active {
+                    font-weight: 600;
+                }
+
+                .dash-nav-arrow {
+                    transition: transform 0.2s ease;
+                }
+                .dash-nav-arrow.rotate {
+                    transform: rotate(-180deg);
+                }
+
+                /* Dropdown Menu */
+                .dash-dropdown-menu {
+                    position: absolute;
+                    top: calc(100% - 4px);
+                    left: 0;
+                    min-width: 220px;
+                    background: var(--glass-dropdown);
+                    backdrop-filter: blur(16px);
+                    border: 1px solid var(--glass-border);
+                    border-radius: 8px;
+                    box-shadow: var(--shadow-dropdown);
+                    opacity: 0;
+                    visibility: hidden;
+                    transform: translateY(10px);
+                    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+                    z-index: 100;
+                    padding: 8px;
+                }
+
+                .dash-dropdown-menu.show {
+                    opacity: 1;
+                    visibility: visible;
+                    transform: translateY(0);
+                }
+
+                .dash-dropdown-list {
+                    list-style: none;
+                    padding: 0;
+                    margin: 0;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 2px;
+                }
+
+                .dash-dropdown-item {
+                    display: block;
+                    padding: 10px 14px;
+                    color: var(--text-muted);
+                    text-decoration: none;
+                    font-size: 0.85rem;
+                    border-radius: 6px;
+                    transition: all 0.2s;
+                    font-weight: 500;
+                }
+                
+                .dash-dropdown-item:hover {
+                    color: var(--text-main);
+                    background: var(--glass-hover);
+                }
+
+                .dash-dropdown-item.active {
+                    color: var(--primary);
+                    background: var(--primary-glow);
+                    font-weight: 600;
+                }
+
+                .dash-dropdown-item.disabled {
+                    opacity: 0.4;
+                    cursor: not-allowed;
+                    pointer-events: none;
+                    font-style: italic;
+                }
+
                 /* Body Layout */
                 .dash-body {
                     display: flex;
                     flex: 1;
                     overflow: hidden;
                     min-height: 0;
-                }
-
-                /* Sidebar */
-                .dash-sidebar {
-                    width: var(--sidebar-width);
-                    border-right: 1px solid var(--glass-border);
-                    display: flex;
-                    flex-direction: column;
-                    transition: width 0.3s ease;
-                    overflow-x: hidden;
-                    min-height: 0;
-                    border-radius: 0;
-                    box-shadow: none; /* Let the border do the work */
-                }
-                .dash-sidebar.closed {
-                    width: var(--sidebar-collapsed);
-                }
-                .dash-sidebar.closed .dash-menu-text,
-                .dash-sidebar.closed .dash-menu-arrow,
-                .dash-sidebar.closed .dash-menu-label {
-                    display: none;
-                }
-
-                .dash-sidebar-inner {
-                    flex: 1;
-                    overflow-y: auto;
-                    padding: 20px 12px;
-                    min-height: 0;
-                }
-
-                .dash-sidebar-inner::-webkit-scrollbar { width: 6px; }
-                .dash-sidebar-inner::-webkit-scrollbar-track { background: transparent; }
-                .dash-sidebar-inner::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 4px; }
-                .dash-sidebar-inner:hover::-webkit-scrollbar-thumb { background: #9ca3af; }
-
-                .dash-menu-label {
-                    font-size: 0.7rem;
-                    text-transform: uppercase;
-                    color: var(--text-muted);
-                    font-weight: 700;
-                    letter-spacing: 1px;
-                    margin-left: 12px;
-                    margin-bottom: 12px;
-                    margin-top: 10px;
-                    display: block;
-                }
-
-                .dash-menu-list {
-                    list-style: none;
-                    padding: 0;
-                    margin: 0;
-                    display: flex;
-                    flex-direction: column;
-                    gap: 4px;
-                }
-
-                .dash-menu-item {
-                    display: flex;
-                    align-items: center;
-                    width: 100%;
-                    padding: 10px 12px;
-                    border-radius: 6px;
-                    border: none;
-                    background: transparent;
-                    color: var(--text-main);
-                    font-size: 0.9rem;
-                    font-weight: 500;
-                    cursor: pointer;
-                    text-decoration: none;
-                    transition: all 0.2s;
-                }
-                .dash-menu-item:hover {
-                    background: var(--glass-hover);
-                }
-                .dash-menu-item.active {
-                    background: var(--primary-glow);
-                    color: var(--primary);
-                    font-weight: 600;
-                }
-
-                .dash-menu-icon { min-width: 20px; margin-right: 12px; color: var(--text-muted); }
-                .dash-menu-item.active .dash-menu-icon { color: var(--primary); }
-
-                .dash-sidebar.closed .dash-menu-icon { margin-right: 0; margin-left: 4px; }
-                .dash-menu-text { flex: 1; text-align: left; white-space: nowrap; }
-                .dash-menu-arrow { margin-left: auto; transition: transform 0.2s; color: var(--text-muted); }
-
-                .dash-submenu-list {
-                    list-style: none;
-                    padding: 0;
-                    margin: 0;
-                    max-height: 0;
-                    overflow: hidden;
-                    transition: max-height 0.3s ease;
-                }
-                .dash-submenu-list.open {
-                    max-height: 1000px;
-                    margin-top: 4px;
-                    margin-bottom: 8px;
-                }
-                .dash-submenu-item {
-                    display: block;
-                    padding: 8px 12px 8px 44px;
-                    color: var(--text-muted);
-                    text-decoration: none;
-                    font-size: 0.85rem;
-                    border-radius: 6px;
-                    transition: all 0.2s;
-                    white-space: nowrap;
                     position: relative;
                 }
-
-                /* Submenu indentation line indicator */
-                .dash-submenu-item::before {
-                    content: '';
-                    position: absolute;
-                    left: 20px;
-                    top: 0;
-                    bottom: 0;
-                    width: 1px;
-                    background: var(--glass-border);
-                }
-                /* Dot on the line */
-                .dash-submenu-item::after {
-                    content: '';
-                    position: absolute;
-                    left: 18.5px;
-                    top: 50%;
-                    transform: translateY(-50%);
-                    width: 4px;
-                    height: 4px;
-                    border-radius: 50%;
-                    background: var(--text-muted);
-                    transition: all 0.2s;
-                }
-
-                .dash-submenu-item:hover {
-                    color: var(--text-main);
-                    background: var(--glass-hover);
-                }
-                .dash-submenu-item:hover::after {
-                    background: var(--text-main);
-                    transform: translateY(-50%) scale(1.5);
-                }
-
-                .dash-submenu-item.active {
-                    color: var(--primary);
-                    font-weight: 600;
-                    background: var(--primary-glow);
-                }
-                .dash-submenu-item.active::before {
-                    background: var(--primary);
-                }
-                .dash-submenu-item.active::after {
-                    background: var(--primary);
-                    transform: translateY(-50%) scale(1.5);
-                }
-                .dash-submenu-item.disabled {
-                    opacity: 0.38;
-                    cursor: not-allowed;
-                    pointer-events: none;
-                    color: var(--text-muted, #888);
-                    font-style: italic;
-                }
-                .dash-sidebar-footer {
-                    padding: 15px;
-                    border-top: 1px solid var(--glass-border);
-                    background: var(--glass-bg);
-                }
-                .dash-back-btn {
-                    display: flex;
-                    align-items: center;
-                    gap: 8px;
-                    color: var(--text-muted);
-                    text-decoration: none;
-                    font-size: 0.85rem;
-                    font-weight: 500;
-                    padding: 10px;
-                    border-radius: 6px;
-                    transition: all 0.2s;
-                    justify-content: center;
-                    border: 1px solid var(--glass-border);
-                    background: var(--bg-dark);
-                }
-                .dash-back-btn:hover { background: var(--glass-hover); color: var(--text-main); border-color: #d1d5db; }
-                .dash-sidebar.closed .dash-back-btn { padding: 10px 0; }
 
                 /* Main Content Area */
                 .dash-content {
                     flex: 1;
-                    overflow: hidden;
+                    overflow: auto;
                     position: relative;
                     z-index: 1;
                     min-width: 0;
                     min-height: 0;
                     display: flex;
                     flex-direction: column;
-                }
-
-                .dash-content-inner {
-                    flex: 1;
                     padding: 24px;
-                    overflow: hidden;
-                    min-height: 0;
-                    display: flex;
-                    flex-direction: column;
-                    position: relative;
                 }
 
                 .dash-welcome {
@@ -628,166 +534,101 @@ export default function DashboardLayout({ children }) {
                 .dash-widget h3 { margin: 0 0 8px 0; font-size: 1.1rem; color: var(--text-main); }
                 .dash-widget p { margin: 0; color: var(--text-muted); font-size: 0.85rem; line-height: 1.5; }
 
-                /* Mobile Sidebar Overlay */
-                .dash-sidebar-overlay {
-                    display: none;
-                    position: fixed;
-                    top: 0;
-                    left: 0;
-                    right: 0;
-                    bottom: 0;
-                    background: rgba(0, 0, 0, 0.5);
-                    z-index: 5;
-                    opacity: 0;
-                    transition: opacity 0.3s;
-                }
-
-                /* ODOO STYLES */
+                /* Odoo Views Extracted to Generic Usage */
                 .odoo-control-panel {
-                    padding: 10px 24px;
+                    padding: 10px 0;
+                    margin-bottom: 15px;
                     border-bottom: 1px solid var(--glass-border);
                     display: flex;
                     align-items: center;
                     justify-content: space-between;
-                    background: var(--glass-bg);
                     min-height: 50px;
                 }
-                .odoo-breadcrumbs {
-                    display: flex;
-                    align-items: center;
-                    gap: 8px;
-                    font-size: 1.1rem;
-                    color: var(--text-muted);
-                }
-                .odoo-breadcrumbs span.active {
-                    color: var(--text-main);
-                    font-weight: 600;
-                }
-                .crumb-separator {
-                    color: var(--text-muted);
-                    opacity: 0.5;
-                }
-                .odoo-smart-buttons {
-                    display: flex;
-                    gap: 8px;
-                }
-                .odoo-smart-btn {
-                    background: var(--glass-bg);
-                    border: 1px solid var(--glass-border);
-                    padding: 6px 12px;
-                    border-radius: 6px;
-                    color: var(--text-main);
-                    font-size: 0.85rem;
-                    cursor: pointer;
-                    display: flex;
-                    align-items: center;
-                    gap: 6px;
-                    transition: all 0.2s;
-                }
-                .odoo-smart-btn:hover {
-                    background: var(--glass-hover);
-                }
 
-                .odoo-view-container {
-                    display: flex;
-                    flex: 1;
-                    height: calc(100vh - 120px);
-                    background: transparent;
-                }
-
-                .odoo-document-wrapper {
-                    flex: 1;
-                    overflow-y: auto;
-                    padding: 24px;
-                    display: flex;
-                    justify-content: center;
-                }
-
-                .odoo-document-sheet {
-                    background: var(--glass-bg);
-                    border: 1px solid var(--glass-border);
-                    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-                    border-radius: 4px;
-                    width: 100%;
-                    max-width: 900px;
-                    min-height: 800px;
-                    position: relative;
-                }
-
-                .odoo-pipeline {
-                    display: flex;
-                    background: rgba(0,0,0,0.1);
-                    border-bottom: 1px solid var(--glass-border);
-                    padding: 10px 20px;
-                    justify-content: flex-end;
-                }
-
-                .odoo-pipeline-status {
-                    padding: 6px 16px;
-                    background: var(--glass-border);
-                    color: var(--text-muted);
-                    font-size: 0.85rem;
-                    font-weight: 600;
-                    margin-left: -5px;
-                    clip-path: polygon(0% 0%, 95% 0%, 100% 50%, 95% 100%, 0% 100%, 5% 50%);
-                }
-                .odoo-pipeline-status.active {
-                    background: var(--primary);
-                    color: #fff;
-                }
-
-                .odoo-chatter {
-                    width: 350px;
-                    border-left: 1px solid var(--glass-border);
-                    background: rgba(0,0,0,0.02);
-                    display: flex;
-                    flex-direction: column;
-                }
-                .odoo-chatter-header {
-                    padding: 15px;
-                    border-bottom: 1px solid var(--glass-border);
-                    font-weight: 600;
-                    color: var(--text-main);
-                }
-                .odoo-chatter-body {
-                    padding: 15px;
-                    flex: 1;
-                    overflow-y: auto;
-                    font-size: 0.85rem;
-                    color: var(--text-muted);
-                }
-                .odoo-log-item {
-                    display: flex;
-                    gap: 10px;
-                    margin-bottom: 15px;
-                }
-                .odoo-log-avatar {
-                    width: 32px;
-                    height: 32px;
-                    border-radius: 50%;
-                    background: var(--primary);
-                    color: #fff;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    font-weight: bold;
-                }
-                .odoo-log-content {
-                    flex: 1;
-                }
-
-                /* Responsive */
+                /* Responsive Mobile */
                 @media (max-width: 768px) {
-                    .dash-sidebar { position: absolute; height: 100%; z-index: 10; background: var(--glass-bg); }
-                    .dash-sidebar.closed { transform: translateX(-100%); width: var(--sidebar-width); }
-                    .dash-sidebar-overlay.show { display: block; opacity: 1; }
-                    .dash-content-inner { padding: 12px; }
+                    .mobile-menu-btn { display: flex; }
                     .dash-nav-right .dash-clock, .dash-nav-right .dash-user-info { display: none; }
-                    .dash-brand h2 { font-size: 1rem; }
-                    .dash-tag { font-size: 0.65rem; }
+                    .dash-brand h2 { font-size: 1.1rem; }
+                    .dash-tag { display: none; }
+                    
+                    .dash-navbar { padding: 0 16px; }
+                    .dash-content { padding: 16px; }
+
+                    /* Mobile Top Nav Overlay (Turns into Sidebar basically, or full drop down) */
+                    .dash-top-nav {
+                        position: absolute;
+                        top: 64px;
+                        left: 0;
+                        right: 0;
+                        bottom: 0;
+                        background: var(--glass-dropdown);
+                        z-index: 30;
+                        border-radius: 0;
+                        border: none;
+                        flex-direction: column;
+                        overflow-y: auto;
+                        transform: translateX(-100%);
+                        transition: transform 0.3s ease;
+                        height: calc(100vh - 64px);
+                    }
+                    
+                    .dash-top-nav.mobile-open {
+                        transform: translateX(0);
+                    }
+
+                    .dash-nav-container { padding: 16px; }
+                    
+                    .dash-nav-list {
+                        flex-direction: column;
+                        align-items: flex-start;
+                        height: auto;
+                        gap: 8px;
+                    }
+
+                    .dash-nav-item-container {
+                        width: 100%;
+                        flex-direction: column;
+                        align-items: flex-start;
+                        height: auto;
+                    }
+
+                    .dash-nav-item {
+                        width: 100%;
+                        justify-content: space-between;
+                        padding: 12px 16px;
+                    }
+
+                    .dash-nav-divider {
+                        width: 100%;
+                        height: 1px;
+                        margin: 12px 0;
+                    }
+
+                    .dash-dropdown-menu {
+                        position: static;
+                        width: 100%;
+                        box-shadow: none;
+                        background: transparent;
+                        border: none;
+                        padding: 0;
+                        display: none;
+                        transform: none;
+                        opacity: 1;
+                        visibility: visible;
+                    }
+
+                    .dash-dropdown-menu.show {
+                        display: block;
+                        margin-top: 4px;
+                        padding-left: 16px;
+                    }
+
+                    .dash-dropdown-item {
+                        padding: 10px 16px;
+                    }
                 }
             `}</style>
         </div>
     );
 }
-
