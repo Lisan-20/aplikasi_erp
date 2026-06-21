@@ -106,21 +106,24 @@ The application serves as a bridge between established legacy database structure
 
 ## 🏗️ Architecture
 
-### Data Flow
+### Data Flow & SPA Hybrid Pattern
 
 ```
 Browser Request → Laravel Route → Controller → Inertia::render('PageName', $data)
     → React component renders with props → User interacts → Inertia navigates (no full reload)
 ```
 
-The application uses **Inertia.js** as the glue between Laravel and React. Instead of returning Blade views or building a separate JSON API, controllers return `Inertia::render()` calls that map directly to React page components. This eliminates the need for a dedicated API layer while still providing a modern SPA experience.
+The application uses **Inertia.js** as the primary glue between Laravel and React. Instead of returning Blade views or building a separate massive JSON API, controllers return `Inertia::render()` calls that map directly to React page components. 
+
+For high-speed, asynchronous features (like AI Assistants or Live Debounce Search), the system bypasses Inertia and utilizes lightweight **Fetch API** or **Axios** to communicate directly with isolated REST API endpoints, forming a true **Hybrid SPA** architecture.
 
 ### Key Patterns
 
-- **Shared Data**: The `HandleInertiaRequests` middleware injects auth user data, flash messages, and sidebar menu structure into every Inertia page response
-- **Permission System**: Module access is controlled by the `CheckPermission` middleware, which queries the `admin_hak_user_v` database view
-- **Legacy DB Helpers**: Two global functions (`read_tabel()`, `baca_tabel()`) in `app/Helpers/DatabaseHelper.php` provide backward-compatible database access to legacy tables
-- **SQL Server Collation**: The legacy schema uses case-sensitive collations; raw queries with `DB::select()` must account for this
+- **Shared Data**: The `HandleInertiaRequests` middleware injects auth user data, flash messages, and top navigation menu structure into every Inertia page response.
+- **Permission System**: Module access is controlled by the `CheckPermission` middleware, which queries the `admin_hak_user_v` database view.
+- **Odoo-Style Layouts**: The UI strictly separates "Form Views" (Document Sheet + Chatter/History) and "List Views" (Full-width data grids) to maximize screen real estate.
+- **High-Performance Analytics**: Dashboards rely on multi-result-set SQL Stored Procedures rather than Eloquent ORM to process massive datasets in milliseconds before sending them to React charts.
+- **Legacy DB Helpers**: Two global functions (`read_tabel()`, `baca_tabel()`) in `app/Helpers/DatabaseHelper.php` provide backward-compatible database access to legacy tables.
 
 ### Idempotent Migrations
 
