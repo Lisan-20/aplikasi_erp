@@ -53,7 +53,7 @@ The application serves as a bridge between established legacy database structure
   **3. Secure Login Screen**
   <img src="docs/images/screenshot-login.png" alt="Login" width="100%">
 
-  **4. Master Data Inventory (Odoo-style List View)**
+  **4. Master Data Inventory (Full-Width List View)**
   <img src="docs/images/screenshot-master-barang.png" alt="Master Barang" width="100%">
 </details>
 
@@ -138,10 +138,8 @@ For high-speed, asynchronous features (like AI Assistants or Live Debounce Searc
 ### Key Patterns
 
 - **Shared Data**: The `HandleInertiaRequests` middleware injects auth user data, flash messages, and top navigation menu structure into every Inertia page response.
-- **Permission System**: Module access is controlled by the `CheckPermission` middleware, which queries the `admin_hak_user_v` database view.
-- **Odoo-Style Layouts**: The UI strictly separates "Form Views" (Document Sheet + Chatter/History) and "List Views" (Full-width data grids) to maximize screen real estate.
+- **Structured Layouts**: The UI strictly separates "Form Views" (Document Sheet + History Panel) and "List Views" (Full-width data grids) to maximize screen real estate.
 - **High-Performance Analytics**: Dashboards rely on multi-result-set SQL Stored Procedures rather than Eloquent ORM to process massive datasets in milliseconds before sending them to React charts.
-- **Legacy DB Helpers**: Two global functions (`read_tabel()`, `baca_tabel()`) in `app/Helpers/DatabaseHelper.php` provide backward-compatible database access to legacy tables.
 
 ### Idempotent Migrations
 
