@@ -45,16 +45,16 @@ The application serves as a bridge between established legacy database structure
   <br/>
   
   **1. Dashboard & Module Navigation**
-  <img src="docs/images/screenshot-dashboard.png" alt="Dashboard" width="100%">
+  <img src="docs/images/pilihan-modul.jpg" alt="Dashboard" width="100%">
 
   **2. Point of Sales (Kasir) - Split View**
-  <img src="docs/images/screenshot-kasir.png" alt="Kasir" width="100%">
+  <img src="docs/images/kasir.jpg" alt="Kasir" width="100%">
 
   **3. Secure Login Screen**
-  <img src="docs/images/screenshot-login.png" alt="Login" width="100%">
+  <img src="docs/images/login.jpg" alt="Login" width="100%">
 
   **4. Master Data Inventory (Full-Width List View)**
-  <img src="docs/images/screenshot-master-barang.png" alt="Master Barang" width="100%">
+  <img src="docs/images/inventory.jpg" alt="Master Barang" width="100%">
 </details>
 
 ---
