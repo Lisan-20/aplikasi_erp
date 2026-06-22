@@ -1,5 +1,12 @@
 <?php
 
+// --- AUTO FIX IMPORTS ---
+use App\Http\Controllers\PerjanjianController;
+use App\Http\Controllers\VerifikasiOnlineController;
+use App\Http\Controllers\VerifikasiJknController;
+use App\Http\Controllers\PoliController;
+// ------------------------
+
 use App\Http\Controllers\Admin\MenuController;
 use App\Http\Controllers\Admin\ModularController;
 use App\Http\Controllers\Admin\ModulController;
@@ -8,6 +15,8 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\AdminPrivilegesController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\Registrasi\CariPasienController;
+use App\Http\Controllers\RegistrasiKunjunganController;
 use App\Http\Controllers\Gudang\PenerimaanBarangController;
 use App\Http\Controllers\Gudang\PermintaanPembelianController;
 use App\Http\Controllers\InformasiMedis1Controller;

@@ -105,4 +105,50 @@ class OllamaAiService
 
         return [];
     }
+
+    /**
+     * Memanggil Ollama API untuk mengekstrak data dari pesan mentah WhatsApp
+     */
+    public function extractCustomerRequest(string $rawMessage)
+    {
+        if (empty(trim($rawMessage))) {
+            return null;
+        }
+
+        $systemInstruction = 'Anda adalah AI ekstraktor data. Tugas Anda adalah mengekstrak data penting dari pesan WhatsApp pelanggan. Berikan respons HANYA dalam format JSON dengan struktur: {"nama_pelanggan": "nama atau null", "layanan_diminta": "deskripsi layanan atau null", "prioritas": "Normal atau High atau Urgent"}. Jika tidak disebutkan prioritas, default ke "Normal".';
+        $userPrompt = 'Ekstrak data dari pesan pelanggan ini: "' . $rawMessage . '"';
+
+        try {
+            $response = Http::timeout(45)->post($this->apiUrl, [
+                'model' => $this->modelName,
+                'system' => $systemInstruction,
+                'prompt' => $userPrompt,
+                'stream' => false,
+                'format' => 'json',
+            ]);
+
+            if ($response->successful()) {
+                $data = $response->json();
+
+                if (isset($data['response'])) {
+                    $jsonText = trim($data['response']);
+                    Log::info('Ollama Webhook Extraction Raw: '.$jsonText);
+
+                    // Bersihkan markdown
+                    $jsonText = preg_replace('/```json\s*/', '', $jsonText);
+                    $jsonText = preg_replace('/```\s*/', '', $jsonText);
+                    $jsonText = trim($jsonText);
+
+                    return json_decode($jsonText, true);
+                }
+            } else {
+                Log::error('Ollama API Error (Webhook): '.$response->body());
+            }
+
+        } catch (\Exception $e) {
+            Log::error('Ollama API Exception (Webhook): '.$e->getMessage());
+        }
+
+        return null;
+    }
 }

@@ -1,4 +1,4 @@
-# Panduan Proyek (Rulebook) Aplikasi ERP
+﻿# Panduan Proyek (Rulebook) Aplikasi ERP
 
 Dokumen ini berfungsi sebagai **Ingatan Jangka Panjang (Long-Term Memory)** bagi Agen AI. Di setiap sesi percakapan baru, Agen wajib membaca dokumen ini terlebih dahulu untuk memastikan konsistensi pemahaman, arsitektur, dan konteks bisnis proyek.
 
@@ -10,12 +10,12 @@ Dokumen ini berfungsi sebagai **Ingatan Jangka Panjang (Long-Term Memory)** bagi
 
 **Aturan Penamaan & Istilah Dasar:**
 Dilarang keras menggunakan istilah-istilah medis pada antarmuka pengguna (UI) maupun respons diskusi, kecuali ada modul spesifik yang mengharuskannya. Gunakan pemetaan berikut:
-- ❌ `Pasien` ➔ ✅ `Pelanggan` / `Klien`
-- ❌ `No. RM (Rekam Medis)` ➔ ✅ `ID Pelanggan`
-- ❌ `Poli / Poliklinik` ➔ ✅ `Departemen` / `Divisi` / `Outlet`
-- ❌ `Dokter / Perawat` ➔ ✅ `Staf` / `PIC` / `Sales`
-- ❌ `Rumah Sakit / RS Fikri Medika` ➔ ✅ `Perusahaan` / `Sistem ERP`
-- ❌ `Registrasi Pasien` ➔ ✅ `Pendaftaran Klien` / `Reservasi`
+- âŒ `Pasien` âž” âœ… `Pelanggan` / `Klien`
+- âŒ `No. RM (Rekam Medis)` âž” âœ… `ID Pelanggan`
+- âŒ `Poli / Poliklinik` âž” âœ… `Departemen` / `Divisi` / `Outlet`
+- âŒ `Dokter / Perawat` âž” âœ… `Staf` / `PIC` / `Sales`
+- âŒ `Rumah Sakit / RS Fikri Medika` âž” âœ… `Perusahaan` / `Sistem ERP`
+- âŒ `Registrasi Pasien` âž” âœ… `Pendaftaran Klien` / `Reservasi`
 
 **Path & Identitas Sistem:**
 - Folder *root* proyek lokal adalah `aplikasi_erp_laravel`.
@@ -83,7 +83,7 @@ Maka Agen AI akan memuat dokumen ini dan langsung memiliki ingatan yang seragam.
 > Daftar ini merupakan rangkuman (summary) dari seluruh pencapaian, perombakan, dan penambahan fitur yang telah diselesaikan oleh Agen AI (Antigravity) sejak awal proyek hingga saat ini.
 
 ### Tahap 1: Rebranding & Fondasi Sistem Baru
-- **Transisi Sistem (SIMRS ➔ ERP):** Mengubah seluruh identitas aplikasi dari basis "Sistem Informasi Rumah Sakit" (`aplikasi_rs_laravel`) menjadi **Sistem ERP Generik** (`aplikasi_erp_laravel`).
+- **Transisi Sistem (SIMRS âž” ERP):** Mengubah seluruh identitas aplikasi dari basis "Sistem Informasi Rumah Sakit" (`aplikasi_rs_laravel`) menjadi **Sistem ERP Generik** (`aplikasi_erp_laravel`).
 - **Pembersihan Istilah:** Menghilangkan seluruh jejak penamaan medis di UI/UX (seperti mengganti "Pasien" menjadi "Pelanggan/Klien", "Poli" menjadi "Outlet", dsb).
 - **Pembaruan Lingkungan:** Menyesuaikan *path* komponen *React*, nama kontainer Docker (`aplikasi_erp_app`), serta konfigurasi NPM (`package.json`) dan Vite agar selaras dengan nama proyek baru.
 
@@ -152,19 +152,19 @@ Maka Agen AI akan memuat dokumen ini dan langsung memiliki ingatan yang seragam.
   - **Auto-collapse Sidebar:** Menerapkan deteksi jendela proaktif (`window.innerWidth > 768`) di mana *Sidebar* (menu kiri) otomatis dalam mode tertutup saat diakses lewat layar HP untuk memprioritaskan ruang konten.
   - **Wraparound Actions:** Menyematkan `flex-wrap` pada deretan tombol agar baris tak terpotong (*overflow*) pada layar sempit.
   - **Horizontal Scroll Table:** Mewajibkan penyematan `<div className="overflow-x-auto">` untuk membungkus tabel data transaksional agar mencegah *layout breaking* saat dibuka di ponsel.
-# # #   T a h a p   1 4 :   M i g r a s i   T a t a   L e t a k   N a v i g a s i   ( O d o o - s t y l e   T o p   N a v ) 
- -   * * T o p   H o r i z o n t a l   N a v i g a t i o n : * *   M e n i a d a k a n   S i d e b a r   s e c a r a   p e r m a n e n   d a r i   l a y a r   d e s k t o p   u t a m a   u n t u k   m e m a k s i m a l k a n   l e b a r   l a y a r   d e m i   t a b e l   d a t a   y a n g   e k s t e n s i f   ( 1 0 0 %   w i d t h ) .   M e m i n d a h k a n   s e l u r u h   m e n u   u t a m a   k e   d e r e t a n   m e n d a t a r   ( h o r i z o n t a l )   d i   b a w a h   h e a d e r ,   m e n i r u   t a t a   l e t a k   O d o o   1 7 . 
- -   * * D r o p d o w n   C l i p p i n g   ( C S S   O v e r f l o w s ) : * *   M e n d o k u m e n t a s i k a n   a t u r a n   C S S   a b s o l u t   t e r k a i t   M e n u   D r o p d o w n :   * * D i l a r a n g   k e r a s   m e n g g u n a k a n   \ o v e r f l o w - x :   a u t o \ * *   p a d a   k o n t a i n e r   i n d u k   ( \ p a r e n t \ )   j i k a   d i   d a l a m n y a   t e r d a p a t   e l e m e n   \ p o s i t i o n :   a b s o l u t e \   ( s e p e r t i   d r o p d o w n   m e l a y a n g )   y a n g   d i t u j u k a n   u n t u k   m e l a m p a u i   b a t a s   t i n g g i   k o n t a i n e r .   H a l   i n i   a k a n   m e n y e b a b k a n   m e n u   d r o p d o w n   t e r p o t o n g   ( * c l i p p e d *   /   * i n v i s i b l e * ) .   S o l u s i n y a   a d a l a h   m e n g h a p u s   \ o v e r f l o w - x :   a u t o \   d a n   m e n g g u n a k a n   f i t u r   p e m b u n g k u s   o t o m a t i s   ( \  l e x - w r a p :   w r a p \ ) .  
- 
- # # #   T a h a p   1 5 :   R e b r a n d i n g   G l o b a l   D o k u m e n   ( R E A D M E . m d ) 
- -   * * M i g r a s i   I d e n t i t a s : * *   S e c a r a   r e s m i   m e n g u b a h   s e l u r u h   r e f e r e n s i   ' S I M R S   ( S i s t e m   I n f o r m a s i   M a n a j e m e n   R u m a h   S a k i t ) '   p a d a   b e r k a s   u t a m a   \ R E A D M E . m d \   m e n j a d i   ' S i s t e m   E R P   ( E n t e r p r i s e   R e s o u r c e   P l a n n i n g ) ' . 
- -   * * G e n e r a l i s a s i   I s t i l a h : * *   M e n g o n v e r s i   i s t i l a h   o p e r a s i o n a l   m e d i s   m e n j a d i   i s t i l a h   b i s n i s   g e n e r i k   ( m i s a l :   ' P a t i e n t   R e g i s t r a t i o n '   m e n j a d i   ' C u s t o m e r   &   C l i e n t   M a n a g e m e n t ' ,   ' P o l i / I G D '   m e n j a d i   ' D e p a r t m e n t a l   O p e r a t i o n s ' ,   ' F a r m a s i '   m e n j a d i   ' I n v e n t o r y   &   P O S ' ) . 
- -   * * D o k u m e n t a s i   A r s i t e k t u r   H i b r i d a : * *   M e n a m b a h k a n   p e n j a b a r a n   s e c a r a   r e s m i   b a h w a   a p l i k a s i   m e r u p a k a n   ' H y b r i d   S P A '   y a n g   t i d a k   s e k a d a r   m e n g a n d a l k a n   I n e r t i a . j s   u n t u k   r e n d e r   U I ,   m e l a i n k a n   t u r u t   m e n g g u n a k a n   * F e t c h   A P I / A x i o s *   s e c a r a   t e r i s o l a s i   u n t u k   f i t u r   s u p e r - c e p a t   y a n g   b e r s i f a t   a s i n k r o n   ( m i s a l :   L i v e   S e a r c h   &   A I ) . 
- -   * * T a t a   L e t a k   O d o o : * *   M e r e s m i k a n   p o l a   t a t a   l e t a k   U I   y a n g   m e m i s a h k a n   * L i s t   V i e w s *   ( F u l l   W i d t h   G r i d )   d e n g a n   * F o r m   V i e w s *   ( D o c u m e n t   S h e e t   +   C h a t t e r ) . 
-  
- 
- # # #   T a h a p   1 6 :   Q u a l i t y   C o n t r o l ,   C o d e   F o r m a t t i n g ,   &   K o n f i g u r a s i   W a k t u 
- -   * * L i n t i n g   &   F o r m a t t i n g : * *   M e l a k u k a n   p e m b e r s i h a n   d a n   p e r a p i a n   k o d e   m a s s a l   m e n g g u n a k a n   L a r a v e l   P i n t   ( u n t u k   B a c k e n d   P H P )   d a n   E S L i n t   F i x   ( u n t u k   F r o n t e n d   R e a c t ) .   S t a n d a r   k o d i n g a n   s a a t   i n i   m e n g i k u t i   * C l e a n   C o d e *   b a w a a n   * f r a m e w o r k *   s e c a r a   k e t a t . 
- -   * * K o n f i g u r a s i   Z o n a   W a k t u : * *   M e n g u b a h   \ 	 i m e z o n e \   d e f a u l t   d i   \ c o n f i g / a p p . p h p \   d a r i   \ U T C \   m e n j a d i   \ A s i a / J a k a r t a \   ( W I B ,   + 0 7 : 0 0 )   a g a r   a k t i v i t a s   l o g   d a n   w a k t u   a p l i k a s i   s e l a r a s   d e n g a n   w a k t u   P C   l o k a l . 
-  
- 
+### Tahap 14: Migrasi Tata Letak Navigasi (Odoo-style Top Nav)
+- **Top Horizontal Navigation:** Meniadakan Sidebar secara permanen dari layar desktop utama untuk memaksimalkan lebar layar demi tabel data yang ekstensif (100% width). Memindahkan seluruh menu utama ke deretan mendatar (horizontal) di bawah header, meniru tata letak Odoo 17.
+- **Dropdown Clipping (CSS Overflows):** Mendokumentasikan aturan CSS absolut terkait Menu Dropdown: **Dilarang keras menggunakan \overflow-x: auto\** pada kontainer induk (\parent\) jika di dalamnya terdapat elemen \position: absolute\ (seperti dropdown melayang) yang ditujukan untuk melampaui batas tinggi kontainer. Hal ini akan menyebabkan menu dropdown terpotong (*clipped* / *invisible*). Solusinya adalah menghapus \overflow-x: auto\ dan menggunakan fitur pembungkus otomatis (\lex-wrap: wrap\).
+
+### Tahap 15: Rebranding Global Dokumen (README.md)
+- **Migrasi Identitas:** Secara resmi mengubah seluruh referensi 'SIMRS (Sistem Informasi Manajemen Rumah Sakit)' pada berkas utama \README.md\ menjadi 'Sistem ERP (Enterprise Resource Planning)'.
+- **Generalisasi Istilah:** Mengonversi istilah operasional medis menjadi istilah bisnis generik (misal: 'Patient Registration' menjadi 'Customer & Client Management', 'Poli/IGD' menjadi 'Departmental Operations', 'Farmasi' menjadi 'Inventory & POS').
+- **Dokumentasi Arsitektur Hibrida:** Menambahkan penjabaran secara resmi bahwa aplikasi merupakan 'Hybrid SPA' yang tidak sekadar mengandalkan Inertia.js untuk render UI, melainkan turut menggunakan *Fetch API/Axios* secara terisolasi untuk fitur super-cepat yang bersifat asinkron (misal: Live Search & AI).
+- **Tata Letak Odoo:** Meresmikan pola tata letak UI yang memisahkan *List Views* (Full Width Grid) dengan *Form Views* (Document Sheet + Chatter).
+
+
+### Tahap 16: Quality Control, Code Formatting, & Konfigurasi Waktu
+- **Linting & Formatting:** Melakukan pembersihan dan perapian kode massal menggunakan Laravel Pint (untuk Backend PHP) dan ESLint Fix (untuk Frontend React). Standar kodingan saat ini mengikuti *Clean Code* bawaan *framework* secara ketat.
+- **Konfigurasi Zona Waktu:** Mengubah \	imezone\ default di \config/app.php\ dari \UTC\ menjadi \Asia/Jakarta\ (WIB, +07:00) agar aktivitas log dan waktu aplikasi selaras dengan waktu PC lokal.
+
+
