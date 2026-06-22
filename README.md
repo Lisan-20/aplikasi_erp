@@ -116,9 +116,8 @@ The application serves as a bridge between established legacy database structure
 - **Custom Filters** — Filter reports by date, shift, and user without freezing the UI.
 - **Export Capabilities** — Export transactional data to Excel/CSV.
 
-### 🔄 Legacy System Integration
-- **Legacy Module Viewer** — Safely embed older PHP modules via iframe while preserving the SPA experience.
-- **External API Integrations** — Connect to third-party APIs and government services effortlessly.
+### 🔄 System Integration
+- **External API Integrations** — Connect to third-party APIs and external services effortlessly.
 
 ---
 
@@ -245,7 +244,7 @@ php artisan test                           # Run all tests (SQLite in-memory)
 ├── app/
 │   ├── Console/                  # Artisan commands
 │   ├── Exceptions/               # Error handlers
-│   ├── Helpers/                  # Legacy DB helpers (global scope)
+│   ├── Helpers/                  # Global helper functions
 │   ├── Http/
 │   │   ├── Controllers/          # Request handlers
 │   │   │   ├── Registrasi/       # Registration sub-controllers
@@ -259,7 +258,7 @@ php artisan test                           # Run all tests (SQLite in-memory)
 ├── bootstrap/
 ├── config/                       # Application configuration (15 files)
 ├── database/
-│   ├── migrations/               # 4,315+ migrations (legacy schema)
+│   ├── migrations/               # Database migrations
 │   ├── factories/
 │   └── seeders/
 ├── deploy/                       # Docker deployment configurations
@@ -305,18 +304,18 @@ php artisan test                           # Run all tests (SQLite in-memory)
 
 ### Authentication
 
-The application uses a **custom session-based authentication** system against the legacy `dd_user` table:
+The application uses a **custom session-based authentication** system:
 
 1. User submits credentials to `POST /login`
-2. Password is verified using MD5 hashing with case-sensitive SQL collation (`Latin1_General_CS_AS`)
-3. On success, user session data is stored and login is logged to `log_user_login` / `log_user_login_detail`
-4. Users are redirected to the module selection screen (or directly to their assigned module)
+2. Password and credentials are securely verified against the database
+3. On success, user session data is stored and login activity is logged
+4. Users are redirected to the module selection screen based on their role
 
 ### Authorization
 
-Access control is handled by the `CheckPermission` middleware (aliased as `check.permission` in `Kernel.php`), which:
+Access control is handled by the `CheckPermission` middleware, which:
 
-- Queries the `admin_hak_user_v` database view
+- Queries the role-based access control database view
 - Validates user access at the module, menu, and sub-menu levels
 - Redirects unauthorized users appropriately
 
