@@ -141,13 +141,6 @@ For high-speed, asynchronous features (like AI Assistants or Live Debounce Searc
 - **Structured Layouts**: The UI strictly separates "Form Views" (Document Sheet + History Panel) and "List Views" (Full-width data grids) to maximize screen real estate.
 - **High-Performance Analytics**: Dashboards rely on multi-result-set SQL Stored Procedures rather than Eloquent ORM to process massive datasets in milliseconds before sending them to React charts.
 
-### Idempotent Migrations
-
-All **4,315+ migration files** are designed to be safe for re-running against an existing legacy database. They extensively use:
-
-- `Schema::hasTable()` guards before `Schema::create()`
-- `CREATE OR ALTER VIEW` / `CREATE OR ALTER PROCEDURE` for views and stored procedures
-- `sys.foreign_keys` existence checks for foreign key constraints
 
 ---
 
