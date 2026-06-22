@@ -1,4 +1,4 @@
-﻿# Panduan Proyek (Rulebook) Aplikasi ERP
+# Panduan Proyek (Rulebook) Aplikasi ERP
 
 Dokumen ini berfungsi sebagai **Ingatan Jangka Panjang (Long-Term Memory)** bagi Agen AI. Di setiap sesi percakapan baru, Agen wajib membaca dokumen ini terlebih dahulu untuk memastikan konsistensi pemahaman, arsitektur, dan konteks bisnis proyek.
 
@@ -10,12 +10,12 @@ Dokumen ini berfungsi sebagai **Ingatan Jangka Panjang (Long-Term Memory)** bagi
 
 **Aturan Penamaan & Istilah Dasar:**
 Dilarang keras menggunakan istilah-istilah medis pada antarmuka pengguna (UI) maupun respons diskusi, kecuali ada modul spesifik yang mengharuskannya. Gunakan pemetaan berikut:
-- âŒ `Pasien` âž” âœ… `Pelanggan` / `Klien`
-- âŒ `No. RM (Rekam Medis)` âž” âœ… `ID Pelanggan`
-- âŒ `Poli / Poliklinik` âž” âœ… `Departemen` / `Divisi` / `Outlet`
-- âŒ `Dokter / Perawat` âž” âœ… `Staf` / `PIC` / `Sales`
-- âŒ `Rumah Sakit / RS Fikri Medika` âž” âœ… `Perusahaan` / `Sistem ERP`
-- âŒ `Registrasi Pasien` âž” âœ… `Pendaftaran Klien` / `Reservasi`
+- ❌ `Pasien` ➔ ✅ `Pelanggan` / `Klien`
+- ❌ `No. RM (Rekam Medis)` ➔ ✅ `ID Pelanggan`
+- ❌ `Poli / Poliklinik` ➔ ✅ `Departemen` / `Divisi` / `Outlet`
+- ❌ `Dokter / Perawat` ➔ ✅ `Staf` / `PIC` / `Sales`
+- ❌ `Rumah Sakit / RS Fikri Medika` ➔ ✅ `Perusahaan` / `Sistem ERP`
+- ❌ `Registrasi Pasien` ➔ ✅ `Pendaftaran Klien` / `Reservasi`
 
 **Path & Identitas Sistem:**
 - Folder *root* proyek lokal adalah `aplikasi_erp_laravel`.
@@ -83,7 +83,7 @@ Maka Agen AI akan memuat dokumen ini dan langsung memiliki ingatan yang seragam.
 > Daftar ini merupakan rangkuman (summary) dari seluruh pencapaian, perombakan, dan penambahan fitur yang telah diselesaikan oleh Agen AI (Antigravity) sejak awal proyek hingga saat ini.
 
 ### Tahap 1: Rebranding & Fondasi Sistem Baru
-- **Transisi Sistem (SIMRS âž” ERP):** Mengubah seluruh identitas aplikasi dari basis "Sistem Informasi Rumah Sakit" (`aplikasi_rs_laravel`) menjadi **Sistem ERP Generik** (`aplikasi_erp_laravel`).
+- **Transisi Sistem (SIMRS ➔ ERP):** Mengubah seluruh identitas aplikasi dari basis "Sistem Informasi Rumah Sakit" (`aplikasi_rs_laravel`) menjadi **Sistem ERP Generik** (`aplikasi_erp_laravel`).
 - **Pembersihan Istilah:** Menghilangkan seluruh jejak penamaan medis di UI/UX (seperti mengganti "Pasien" menjadi "Pelanggan/Klien", "Poli" menjadi "Outlet", dsb).
 - **Pembaruan Lingkungan:** Menyesuaikan *path* komponen *React*, nama kontainer Docker (`aplikasi_erp_app`), serta konfigurasi NPM (`package.json`) dan Vite agar selaras dengan nama proyek baru.
 
@@ -152,26 +152,27 @@ Maka Agen AI akan memuat dokumen ini dan langsung memiliki ingatan yang seragam.
   - **Auto-collapse Sidebar:** Menerapkan deteksi jendela proaktif (`window.innerWidth > 768`) di mana *Sidebar* (menu kiri) otomatis dalam mode tertutup saat diakses lewat layar HP untuk memprioritaskan ruang konten.
   - **Wraparound Actions:** Menyematkan `flex-wrap` pada deretan tombol agar baris tak terpotong (*overflow*) pada layar sempit.
   - **Horizontal Scroll Table:** Mewajibkan penyematan `<div className="overflow-x-auto">` untuk membungkus tabel data transaksional agar mencegah *layout breaking* saat dibuka di ponsel.
+
 ### Tahap 14: Migrasi Tata Letak Navigasi (Odoo-style Top Nav)
 - **Top Horizontal Navigation:** Meniadakan Sidebar secara permanen dari layar desktop utama untuk memaksimalkan lebar layar demi tabel data yang ekstensif (100% width). Memindahkan seluruh menu utama ke deretan mendatar (horizontal) di bawah header, meniru tata letak Odoo 17.
-- **Dropdown Clipping (CSS Overflows):** Mendokumentasikan aturan CSS absolut terkait Menu Dropdown: **Dilarang keras menggunakan \overflow-x: auto\** pada kontainer induk (\parent\) jika di dalamnya terdapat elemen \position: absolute\ (seperti dropdown melayang) yang ditujukan untuk melampaui batas tinggi kontainer. Hal ini akan menyebabkan menu dropdown terpotong (*clipped* / *invisible*). Solusinya adalah menghapus \overflow-x: auto\ dan menggunakan fitur pembungkus otomatis (\lex-wrap: wrap\).
+- **Dropdown Clipping (CSS Overflows):** Mendokumentasikan aturan CSS absolut terkait Menu Dropdown: **Dilarang keras menggunakan `overflow-x: auto`** pada kontainer induk (parent) jika di dalamnya terdapat elemen `position: absolute` (seperti dropdown melayang) yang ditujukan untuk melampaui batas tinggi kontainer. Hal ini akan menyebabkan menu dropdown terpotong (*clipped* / *invisible*). Solusinya adalah menghapus `overflow-x: auto` dan menggunakan fitur pembungkus otomatis (`flex-wrap: wrap`).
 
 ### Tahap 15: Rebranding Global Dokumen (README.md)
-- **Migrasi Identitas:** Secara resmi mengubah seluruh referensi 'SIMRS (Sistem Informasi Manajemen Rumah Sakit)' pada berkas utama \README.md\ menjadi 'Sistem ERP (Enterprise Resource Planning)'.
+- **Migrasi Identitas:** Secara resmi mengubah seluruh referensi 'SIMRS (Sistem Informasi Manajemen Rumah Sakit)' pada berkas utama `README.md` menjadi 'Sistem ERP (Enterprise Resource Planning)'.
 - **Generalisasi Istilah:** Mengonversi istilah operasional medis menjadi istilah bisnis generik (misal: 'Patient Registration' menjadi 'Customer & Client Management', 'Poli/IGD' menjadi 'Departmental Operations', 'Farmasi' menjadi 'Inventory & POS').
 - **Dokumentasi Arsitektur Hibrida:** Menambahkan penjabaran secara resmi bahwa aplikasi merupakan 'Hybrid SPA' yang tidak sekadar mengandalkan Inertia.js untuk render UI, melainkan turut menggunakan *Fetch API/Axios* secara terisolasi untuk fitur super-cepat yang bersifat asinkron (misal: Live Search & AI).
 - **Tata Letak Odoo:** Meresmikan pola tata letak UI yang memisahkan *List Views* (Full Width Grid) dengan *Form Views* (Document Sheet + Chatter).
 
-
 ### Tahap 16: Quality Control, Code Formatting, & Konfigurasi Waktu
 - **Linting & Formatting:** Melakukan pembersihan dan perapian kode massal menggunakan Laravel Pint (untuk Backend PHP) dan ESLint Fix (untuk Frontend React). Standar kodingan saat ini mengikuti *Clean Code* bawaan *framework* secara ketat.
-- **Konfigurasi Zona Waktu:** Mengubah \	imezone\ default di \config/app.php\ dari \UTC\ menjadi \Asia/Jakarta\ (WIB, +07:00) agar aktivitas log dan waktu aplikasi selaras dengan waktu PC lokal.
+- **Konfigurasi Zona Waktu:** Mengubah `timezone` default di `config/app.php` dari `UTC` menjadi `Asia/Jakarta` (WIB, +07:00) agar aktivitas log dan waktu aplikasi selaras dengan waktu PC lokal.
 
+### Tahap 17: Integrasi Ekstraksi Otomatis via Webhook WhatsApp & Ollama AI
+- **Automated Data Extraction:** Membangun *Webhook* API publik (`/api/webhook/whatsapp`) untuk menangkap muatan pesan dari klien perpesanan (WhatsApp/Postman).
+- **AI-Orchestrated Workflow (Ollama):** Menggunakan model **gemma4:31b-cloud** lewat *service* Ollama lokal untuk membaca pesan tak terstruktur, mengenali nama pelanggan, jenis layanan yang diminta, dan menentukan tingkat prioritas (*Urgent*, *High*, *Normal*, *Low*) secara otomatis berdasarkan sentimen bahasa alami.
+- **Isolasi Database Migration:** Membuat dua tabel khusus (`crm_clients` dan `department_queues`) secara terisolasi tanpa menyentuh ribuan tabel *legacy* lainnya. Menggunakan perintah eksekusi *migration* terspesifikasi jalur (`--path`) di dalam Docker.
+- **Troubleshooting Laravel Routing:** Mendiagnosis dan memperbaiki *Fatal Error* (ReflectionException) pada *router* Laravel akibat hilangnya berbagai *import class* (seperti `CariPasienController`, `PerjanjianController`) di `routes/web.php` peninggalan versi lawas, yang sebelumnya melumpuhkan seluruh aplikasi dengan respons 404/500.
 
-
- # # #   T a h a p   1 7 :   I n t e g r a s i   E k s t r a k s i   O t o m a t i s   v i a   W e b h o o k   W h a t s A p p   &   O l l a m a   A I 
- -   * * A u t o m a t e d   D a t a   E x t r a c t i o n : * *   M e m b a n g u n   * W e b h o o k *   A P I   p u b l i k   ( \ / a p i / w e b h o o k / w h a t s a p p \ )   u n t u k   m e n a n g k a p   m u a t a n   p e s a n   d a r i   k l i e n   p e r p e s a n a n   ( W h a t s A p p / P o s t m a n ) . 
- -   * * A I - O r c h e s t r a t e d   W o r k f l o w   ( O l l a m a ) : * *   M e n g g u n a k a n   m o d e l   * * g e m m a 4 : 3 1 b - c l o u d * *   l e w a t   * s e r v i c e *   O l l a m a   l o k a l   u n t u k   m e m b a c a   p e s a n   t a k   t e r s t r u k t u r ,   m e n g e n a l i   n a m a   p e l a n g g a n ,   j e n i s   l a y a n a n   y a n g   d i m i n t a ,   d a n   m e n e n t u k a n   t i n g k a t   p r i o r i t a s   ( * U r g e n t * ,   * H i g h * ,   * N o r m a l * ,   * L o w * )   s e c a r a   o t o m a t i s   b e r d a s a r k a n   s e n t i m e n   b a h a s a   a l a m i . 
- -   * * I s o l a s i   D a t a b a s e   M i g r a t i o n : * *   M e m b u a t   d u a   t a b e l   k h u s u s   ( \ c r m _ c l i e n t s \   d a n   \ d e p a r t m e n t _ q u e u e s \ )   s e c a r a   t e r i s o l a s i   t a n p a   m e n y e n t u h   r i b u a n   t a b e l   * l e g a c y *   l a i n n y a .   M e n g g u n a k a n   p e r i n t a h   e k s e k u s i   * m i g r a t i o n *   t e r s p e s i f i k a s i   j a l u r   ( \ - - p a t h \ )   d i   d a l a m   D o c k e r . 
- -   * * T r o u b l e s h o o t i n g   L a r a v e l   R o u t i n g : * *   M e n d i a g n o s i s   d a n   m e m p e r b a i k i   * F a t a l   E r r o r *   ( R e f l e c t i o n E x c e p t i o n )   p a d a   * r o u t e r *   L a r a v e l   a k i b a t   h i l a n g n y a   b e r b a g a i   * i m p o r t   c l a s s *   ( s e p e r t i   \ C a r i P a s i e n C o n t r o l l e r \ ,   \ P e r j a n j i a n C o n t r o l l e r \ )   d i   \  o u t e s / w e b . p h p \   p e n i n g g a l a n   v e r s i   l a w a s ,   y a n g   s e b e l u m n y a   m e l u m p u h k a n   s e l u r u h   a p l i k a s i   d e n g a n   r e s p o n s   4 0 4 / 5 0 0 .  
- 
+### Tahap 18: Panduan Eksekutif untuk Wawancara (Konteks ERP vs Legacy Medis)
+- **Anomali Istilah Medis:** Mengingat proyek ini menggunakan *database* lawas (`rs_fikri_live`) dan *controller* bawaan dari sistem Rumah Sakit sebelumnya, Anda mungkin masih menemukan nama tabel atau variabel berbau medis di dalam kode sumber (seperti `PoliController` atau `CariPasienController`).
+- **Konsistensi Rebranding (ERP Murni):** Saat menceritakan portofolio ini, sangat disarankan untuk **mengubah seluruh istilah medis tersebut menjadi istilah bisnis ERP generik**. Contoh: Gunakan istilah 'Customer/Klien' alih-alih 'Pasien'. Gunakan istilah 'Departemen/Layanan' alih-alih 'Poli/IGD'. Gunakan istilah 'Inventory/Retail' alih-alih 'Apotek/Farmasi'. Hal ini bertujuan untuk mempertahankan narasi bahwa aplikasi ini telah berevolusi menjadi Sistem ERP Murni yang dapat digunakan oleh segala jenis industri.
