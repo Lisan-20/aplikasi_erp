@@ -39,6 +39,24 @@
 
 The application serves as a bridge between established legacy database structures (Microsoft SQL Server) and a modern **Single Page Application (SPA)** frontend, ensuring a smooth transition from the legacy system without disrupting existing operations.
 
+### 📸 Screenshots
+<details open>
+  <summary>Click to view application interfaces</summary>
+  <br/>
+  
+  **1. Dashboard & Module Navigation**
+  <img src="docs/images/screenshot-dashboard.png" alt="Dashboard" width="100%">
+
+  **2. Point of Sales (Kasir) - Split View**
+  <img src="docs/images/screenshot-kasir.png" alt="Kasir" width="100%">
+
+  **3. Secure Login Screen**
+  <img src="docs/images/screenshot-login.png" alt="Login" width="100%">
+
+  **4. Master Data Inventory (Odoo-style List View)**
+  <img src="docs/images/screenshot-master-barang.png" alt="Master Barang" width="100%">
+</details>
+
 ---
 
 ## 🛠️ Tech Stack
@@ -358,4 +376,7 @@ All three checks **must** pass cleanly before changes are considered complete.
 
 ## 📄 License
 
-This project is open-sourced under the [MIT license](https://opensource.org/licenses/MIT).
+Copyright (c) 2026 LisanSidqi (Lisan-20). **All Rights Reserved.**
+
+This repository is provided strictly for **portfolio, educational, and demonstration purposes**. 
+You may view the source code, but you are **not permitted** to use, copy, reproduce, modify, distribute, or sell any part of this software without explicit written permission from the author.
