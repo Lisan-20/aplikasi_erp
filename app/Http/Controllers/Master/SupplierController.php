@@ -3,93 +3,100 @@
 namespace App\Http\Controllers\Master;
 
 use App\Http\Controllers\Controller;
+use App\Models\Master\MtErpSupplier;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class SupplierController extends Controller
 {
+    /**
+     * Display a listing of the resource.
+     */
     public function index(Request $request)
     {
-        $query = DB::table('mt_supplier');
+        $query = MtErpSupplier::query()->where('is_active', true);
 
         if ($request->has('search') && $request->search != '') {
-            $search = $request->search;
-            $query->where('namasupplier', 'LIKE', '%'.$search.'%')
-                ->orWhere('kodesupplier', 'LIKE', '%'.$search.'%')
-                ->orWhere('kontakperson', 'LIKE', '%'.$search.'%');
+            $searchTerm = $request->search;
+            $query->where(function ($q) use ($searchTerm) {
+                $q->where('nama_supplier', 'like', '%' . $searchTerm . '%')
+                  ->orWhere('alamat', 'like', '%' . $searchTerm . '%')
+                  ->orWhere('kode_supplier', 'like', '%' . $searchTerm . '%');
+            });
         }
 
-        // Urutkan berdasarkan ID terbaru atau nama
-        $suppliers = $query->orderBy('namasupplier', 'asc')->paginate(20)->withQueryString();
+        $suppliers = $query->orderBy('nama_supplier')->paginate(20)->withQueryString();
 
         return Inertia::render('Master/Supplier/Index', [
             'suppliers' => $suppliers,
-            'filters' => $request->only('search'),
+            'filters' => $request->only('search')
         ]);
     }
 
+    /**
+     * Store a newly created resource in storage.
+     */
     public function store(Request $request)
     {
-        $request->validate([
-            'kodesupplier' => 'required|max:50',
-            'namasupplier' => 'required|max:255',
-            'alamat' => 'nullable|max:500',
-            'telpon1' => 'nullable|max:50',
-            'kontakperson' => 'nullable|max:100',
+        $validated = $request->validate([
+            'kode_supplier' => 'required|string|max:50|unique:mt_erp_supplier,kode_supplier',
+            'nama_supplier' => 'required|string|max:150',
+            'alamat' => 'nullable|string',
+            'provinsi_id' => 'nullable|integer|exists:mt_erp_provinsi,id',
+            'kota_id' => 'nullable|integer|exists:mt_erp_kota,id',
+            'kota' => 'nullable|string|max:100',
+            'provinsi' => 'nullable|string|max:100',
+            'kodepos' => 'nullable|string|max:20',
+            'telepon_1' => 'nullable|string|max:30',
+            'telepon_2' => 'nullable|string|max:30',
+            'kontak_person' => 'nullable|string|max:100',
+            'npwp' => 'nullable|string|max:50',
+            'izin_usaha' => 'nullable|string|max:100',
+            'nama_bank' => 'nullable|string|max:100',
         ]);
 
-        try {
-            DB::table('mt_supplier')->insert([
-                'kodesupplier' => $request->kodesupplier,
-                'namasupplier' => $request->namasupplier,
-                'alamat' => $request->alamat,
-                'telpon1' => $request->telpon1,
-                'kontakperson' => $request->kontakperson,
-                'status_aktif' => 1, // Default aktif
-            ]);
+        MtErpSupplier::create($validated);
 
-            return redirect()->back()->with('success', 'Supplier berhasil ditambahkan.');
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Gagal menambahkan supplier: '.$e->getMessage());
-        }
+        return redirect()->back()->with('success', 'Supplier berhasil ditambahkan.');
     }
 
-    public function update(Request $request, $id)
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, string $id)
     {
-        $request->validate([
-            'kodesupplier' => 'required|max:50',
-            'namasupplier' => 'required|max:255',
-            'alamat' => 'nullable|max:500',
-            'telpon1' => 'nullable|max:50',
-            'kontakperson' => 'nullable|max:100',
+        $supplier = MtErpSupplier::findOrFail($id);
+
+        $validated = $request->validate([
+            'kode_supplier' => 'required|string|max:50|unique:mt_erp_supplier,kode_supplier,' . $supplier->id,
+            'nama_supplier' => 'required|string|max:150',
+            'alamat' => 'nullable|string',
+            'provinsi_id' => 'nullable|integer|exists:mt_erp_provinsi,id',
+            'kota_id' => 'nullable|integer|exists:mt_erp_kota,id',
+            'kota' => 'nullable|string|max:100',
+            'provinsi' => 'nullable|string|max:100',
+            'kodepos' => 'nullable|string|max:20',
+            'telepon_1' => 'nullable|string|max:30',
+            'telepon_2' => 'nullable|string|max:30',
+            'kontak_person' => 'nullable|string|max:100',
+            'npwp' => 'nullable|string|max:50',
+            'izin_usaha' => 'nullable|string|max:100',
+            'nama_bank' => 'nullable|string|max:100',
         ]);
 
-        try {
-            DB::table('mt_supplier')->where('id_mt_supplier', $id)->update([
-                'kodesupplier' => $request->kodesupplier,
-                'namasupplier' => $request->namasupplier,
-                'alamat' => $request->alamat,
-                'telpon1' => $request->telpon1,
-                'kontakperson' => $request->kontakperson,
-            ]);
+        $supplier->update($validated);
 
-            return redirect()->back()->with('success', 'Data supplier berhasil diperbarui.');
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Gagal memperbarui supplier: '.$e->getMessage());
-        }
+        return redirect()->back()->with('success', 'Supplier berhasil diperbarui.');
     }
 
-    public function destroy($id)
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id)
     {
-        try {
-            // Daripada menghapus permanen, kita nonaktifkan (soft delete via status)
-            // Cek dulu apakah kolom status_aktif ada
-            DB::table('mt_supplier')->where('id_mt_supplier', $id)->update(['status_aktif' => 0]);
+        $supplier = MtErpSupplier::findOrFail($id);
+        $supplier->update(['is_active' => false]);
 
-            return redirect()->back()->with('success', 'Supplier berhasil dinonaktifkan.');
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Gagal menonaktifkan supplier: '.$e->getMessage());
-        }
+        return redirect()->back()->with('success', 'Supplier berhasil dihapus.');
     }
 }

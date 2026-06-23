@@ -193,10 +193,35 @@ Route::middleware(['web', 'check.permission'])->group(function () {
         Route::delete('/privileges/group/{id}', [AdminPrivilegesController::class, 'destroyGroup'])->name('privileges.group.destroy');
         Route::get('/privileges/matrix', [AdminPrivilegesController::class, 'matrix'])->name('privileges.matrix');
         Route::post('/privileges/matrix', [AdminPrivilegesController::class, 'updateMatrix'])->name('privileges.matrix.update');
+        
+        // Master Wilayah (Di luar prefix master, tapi tetap dalam admin)
+        Route::get('/wilayah', [\App\Http\Controllers\Master\WilayahController::class, 'index'])->name('wilayah.index');
+        
+        Route::prefix('wilayah/api')->group(function () {
+            Route::get('/provinsi', [\App\Http\Controllers\Master\WilayahController::class, 'getProvinsi']);
+            Route::post('/provinsi', [\App\Http\Controllers\Master\WilayahController::class, 'storeProvinsi']);
+            Route::put('/provinsi/{id}', [\App\Http\Controllers\Master\WilayahController::class, 'updateProvinsi']);
+            Route::delete('/provinsi/{id}', [\App\Http\Controllers\Master\WilayahController::class, 'destroyProvinsi']);
+
+            Route::get('/kota', [\App\Http\Controllers\Master\WilayahController::class, 'getKota']);
+            Route::post('/kota', [\App\Http\Controllers\Master\WilayahController::class, 'storeKota']);
+            Route::put('/kota/{id}', [\App\Http\Controllers\Master\WilayahController::class, 'updateKota']);
+            Route::delete('/kota/{id}', [\App\Http\Controllers\Master\WilayahController::class, 'destroyKota']);
+
+            Route::get('/kecamatan', [\App\Http\Controllers\Master\WilayahController::class, 'getKecamatan']);
+            Route::post('/kecamatan', [\App\Http\Controllers\Master\WilayahController::class, 'storeKecamatan']);
+            Route::put('/kecamatan/{id}', [\App\Http\Controllers\Master\WilayahController::class, 'updateKecamatan']);
+            Route::delete('/kecamatan/{id}', [\App\Http\Controllers\Master\WilayahController::class, 'destroyKecamatan']);
+
+            Route::get('/kelurahan', [\App\Http\Controllers\Master\WilayahController::class, 'getKelurahan']);
+            Route::post('/kelurahan', [\App\Http\Controllers\Master\WilayahController::class, 'storeKelurahan']);
+            Route::put('/kelurahan/{id}', [\App\Http\Controllers\Master\WilayahController::class, 'updateKelurahan']);
+            Route::delete('/kelurahan/{id}', [\App\Http\Controllers\Master\WilayahController::class, 'destroyKelurahan']);
+        });
     });
 
     Route::prefix('master')->name('master.')->group(function () {
-        Route::get('/supplier', [SupplierController::class, 'index'])->name('supplier');
+        Route::get('/supplier', [SupplierController::class, 'index'])->name('supplier.index');
         Route::post('/supplier', [SupplierController::class, 'store'])->name('supplier.store');
         Route::put('/supplier/{id}', [SupplierController::class, 'update'])->name('supplier.update');
         Route::delete('/supplier/{id}', [SupplierController::class, 'destroy'])->name('supplier.destroy');
@@ -206,6 +231,7 @@ Route::middleware(['web', 'check.permission'])->group(function () {
         Route::put('/barang/{id}', [BarangController::class, 'update'])->name('barang.update');
         Route::delete('/barang/{id}', [BarangController::class, 'destroy'])->name('barang.destroy');
     });
+
 
     Route::prefix('manajemen')->name('manajemen.')->group(function () {
         Route::get('/acc-purchasing', [AccPurchasingController::class, 'index']);
