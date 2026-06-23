@@ -16,7 +16,7 @@ as
 truncate table  tc_kartu_hutang
 truncate table  tc_kartu_piutang
 truncate table  tc_kartu_stok
-truncate table  tc_kartu_stok_nm
+truncate table  tc_kartu_stok_brg_jasa
 truncate table  tc_kartu_stokbebas
 truncate table  tc_kartu_stokcito
 truncate table  tc_trans_pelayanan

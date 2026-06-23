@@ -19,6 +19,7 @@ use App\Http\Controllers\Registrasi\CariPasienController;
 use App\Http\Controllers\RegistrasiKunjunganController;
 use App\Http\Controllers\Gudang\PenerimaanBarangController;
 use App\Http\Controllers\Gudang\PermintaanPembelianController;
+use App\Http\Controllers\Gudang\StokGudangController;
 use App\Http\Controllers\InformasiMedis1Controller;
 use App\Http\Controllers\InformasiMedis2Controller;
 use App\Http\Controllers\InformasiMedis3Controller;
@@ -248,6 +249,9 @@ Route::middleware(['web', 'check.permission'])->group(function () {
     });
 
     Route::prefix('gudang')->name('gudang.')->group(function () {
+        Route::get('/stok-gudang', [StokGudangController::class, 'index'])->name('stok-gudang.index');
+        Route::post('/stok-gudang', [StokGudangController::class, 'store'])->name('stok-gudang.store');
+
         Route::get('/permintaan-pembelian', [PermintaanPembelianController::class, 'index']);
         Route::get('/permintaan-pembelian/create', [PermintaanPembelianController::class, 'create'])->name('permintaan-pembelian.create');
         Route::post('/permintaan-pembelian', [PermintaanPembelianController::class, 'store'])->name('permintaan-pembelian.store');

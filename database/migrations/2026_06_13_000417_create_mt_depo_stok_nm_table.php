@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        if (Schema::hasTable('mt_depo_stok_nm')) {
+        if (Schema::hasTable('mt_depo_stok_brg_jasa')) {
             return;
         }
 
-        Schema::create('mt_depo_stok_nm', function (Blueprint $table) {
+        Schema::create('mt_depo_stok_brg_jasa', function (Blueprint $table) {
             $table->increments('kode_depo_stok');
             $table->string('kode_brg', 20)->nullable();
             $table->integer('stok_minimum')->nullable();
@@ -27,7 +27,7 @@ return new class extends Migration
             $table->string('nama_rak', 50)->nullable();
             $table->float('jml_sat_kcly', 53, 0)->nullable();
 
-            $table->primary(['kode_depo_stok'], 'pk_mt_depo_stok_nm_1');
+            $table->primary(['kode_depo_stok'], 'pk_mt_depo_stok_brg_jasa_1');
         });
     }
 
@@ -36,6 +36,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('mt_depo_stok_nm');
+        Schema::dropIfExists('mt_depo_stok_brg_jasa');
     }
 };

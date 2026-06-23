@@ -152,7 +152,7 @@ truncate 	table	tc_penerimaan_barang_nm_detail
 truncate 	table	tc_kunjungan_tarik
 truncate 	table	tc_penerimaan_retur
 truncate 	table	tc_hutang_supplier_inv
-truncate 	table	tc_kartu_stok_nm
+truncate 	table	tc_kartu_stok_brg_jasa
 truncate 	table	tc_hutang_supplier_vcr
 truncate 	table	tc_tindakan_TC
 truncate 	table	tc_retur_unit

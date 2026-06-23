@@ -147,7 +147,7 @@ class LaporanKasirController extends Controller
                 'no_registrasi' => $item->no_registrasi,
                 'tgl_jam' => Carbon::parse($item->tgl_jam)->format('d/m/Y H:i'),
                 'no_mr' => $item->no_mr ?? '-',
-                'nama_pasien' => $item->nama_pasien ?? 'UMUM',
+                'nama_pasien' => $item->nama_pasien ?? '-',
                 'petugas' => $item->nama_petugas ?? '-',
                 'shift' => $item->kode_shift,
                 'loket' => $item->kode_loket,

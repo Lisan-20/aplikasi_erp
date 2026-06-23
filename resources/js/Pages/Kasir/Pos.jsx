@@ -230,7 +230,7 @@ export default function Pos() {
     const handleReturParsialClick = async (no_registrasi) => {
         try {
             Swal.fire({ title: 'Memuat...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
-            const res = await axios.get(`/kasir/transaksi/${no_registrasi}/detail`);
+            const res = await axios.get(`/kasir/detail/${no_registrasi}`);
             setReturItems(res.data.map(d => ({...d, qty_retur_input: 0})));
             setReturNoReg(no_registrasi);
             setReturAlasan('');

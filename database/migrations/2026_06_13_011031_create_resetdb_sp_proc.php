@@ -75,7 +75,7 @@ truncate table tc_po_nm_det
 truncate table tc_stok_opname
 truncate table tc_stok_opname_nm
 truncate table tc_kartu_stok
-truncate table tc_kartu_stok_nm
+truncate table tc_kartu_stok_brg_jasa
 truncate table tc_kartu_stokbebas
 truncate table tc_kartu_stokcito
 

@@ -153,18 +153,20 @@ export default function StrukKasir({ header, details, nama_kasir, rs_name }) {
                         const qtyBeli = parseFloat(item.qty);
                         const qtyRetur = parseFloat(item.qty_retur || 0);
                         const effectiveQty = qtyBeli - qtyRetur;
-                        if (effectiveQty <= 0) return null;
-                        
-                        const effectiveSubtotal = effectiveQty * parseFloat(item.harga_jual);
+                        const isFullyReturned = effectiveQty <= 0;
+                        const displayQty = isFullyReturned ? qtyBeli : effectiveQty;
+                        const displaySubtotal = displayQty * parseFloat(item.harga_jual);
 
                         return (
-                            <div className="item-row" key={idx}>
+                            <div className="item-row" key={idx} style={isFullyReturned ? { textDecoration: 'line-through', color: '#888' } : {}}>
                                 <div className="item-name">
-                                    {item.nama_brg} {qtyRetur > 0 && <span style={{fontSize: '10px', fontStyle: 'italic'}}>(Retur {qtyRetur})</span>}
+                                    {item.nama_brg} 
+                                    {qtyRetur > 0 && !isFullyReturned && <span style={{fontSize: '10px', fontStyle: 'italic'}}> (Retur {qtyRetur})</span>}
+                                    {isFullyReturned && <span style={{fontSize: '10px', fontWeight: 'bold'}}> (DIRETUR)</span>}
                                 </div>
                                 <div className="item-detail">
-                                    <span>{effectiveQty} x {formatRp(item.harga_jual)}</span>
-                                    <span className="font-bold">{formatRp(effectiveSubtotal)}</span>
+                                    <span>{displayQty} x {formatRp(item.harga_jual)}</span>
+                                    <span className="font-bold">{formatRp(displaySubtotal)}</span>
                                 </div>
                             </div>
                         );

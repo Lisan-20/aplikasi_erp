@@ -11,6 +11,8 @@ export default function BarangIndex({ barang, filters }) {
     const { data, setData, post, put, delete: destroy, processing, errors, reset, clearErrors } = useForm({
         kode_brg: '',
         nama_brg: '',
+        kd_tipe_brg: '1',
+        kode_kategori: '',
         satuan_besar: '',
         satuan_kecil: '',
         harga_beli: '',
@@ -30,6 +32,8 @@ export default function BarangIndex({ barang, filters }) {
             setData({
                 kode_brg: item.kode_brg || '',
                 nama_brg: item.nama_brg || '',
+                kd_tipe_brg: item.kd_tipe_brg || '1',
+                kode_kategori: item.kode_kategori || '',
                 satuan_besar: item.satuan_besar || '',
                 satuan_kecil: item.satuan_kecil || '',
                 harga_beli: item.harga_beli || '',
@@ -194,9 +198,9 @@ export default function BarangIndex({ barang, filters }) {
                                         className="premium-input w-full" 
                                         value={data.kode_brg} 
                                         onChange={e => setData('kode_brg', e.target.value)} 
-                                        required 
-                                        disabled={isEdit} // Tidak boleh ganti kode saat edit
+                                        disabled={isEdit} 
                                         title={isEdit ? "Kode barang tidak dapat diubah" : ""}
+                                        placeholder={!isEdit ? "Kosongkan untuk Auto-Generate" : ""}
                                     />
                                     {errors.kode_brg && <p className="text-red-500 text-xs mt-1">{errors.kode_brg}</p>}
                                 </div>
@@ -211,6 +215,40 @@ export default function BarangIndex({ barang, filters }) {
                                         required 
                                     />
                                     {errors.nama_brg && <p className="text-red-500 text-xs mt-1">{errors.nama_brg}</p>}
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Tipe Item</label>
+                                    <select 
+                                        className="premium-input w-full"
+                                        value={data.kd_tipe_brg}
+                                        onChange={e => setData('kd_tipe_brg', e.target.value)}
+                                        required
+                                    >
+                                        <option value="1">Barang Fisik (Membutuhkan Stok)</option>
+                                        <option value="2">Jasa / Layanan (Tanpa Stok)</option>
+                                    </select>
+                                    {errors.kd_tipe_brg && <p className="text-red-500 text-xs mt-1">{errors.kd_tipe_brg}</p>}
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Kategori (Opsional)</label>
+                                    <input 
+                                        type="text" 
+                                        list="kategori-list"
+                                        className="premium-input w-full" 
+                                        value={data.kode_kategori} 
+                                        onChange={e => setData('kode_kategori', e.target.value)} 
+                                        placeholder="Pilih atau ketik kategori..."
+                                    />
+                                    <datalist id="kategori-list">
+                                        <option value="Biaya Layanan" />
+                                        <option value="Jasa Teknisi" />
+                                        <option value="Biaya Admin" />
+                                        <option value="Alat Tulis" />
+                                        <option value="Suku Cadang" />
+                                        <option value="Peralatan Medis" />
+                                    </datalist>
                                 </div>
 
                                 <div>

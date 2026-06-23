@@ -11,7 +11,8 @@ class BarangController extends Controller
 {
     public function index(Request $request)
     {
-        $query = DB::table('mt_barang_jasa');
+        $query = DB::table('mt_barang_jasa')
+            ->select('mt_barang_jasa.*', DB::raw('ISNULL((SELECT SUM(jml_sat_kcl) FROM mt_depo_stok_brg_jasa WHERE mt_depo_stok_brg_jasa.kode_brg = mt_barang_jasa.kode_brg), 0) as jml_stok_brg'));
 
         if ($request->has('search') && $request->search != '') {
             $search = $request->search;
@@ -31,8 +32,10 @@ class BarangController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'kode_brg' => 'required|max:50|unique:mt_barang_jasa,kode_brg',
+            'kode_brg' => 'nullable|max:50|unique:mt_barang_jasa,kode_brg',
             'nama_brg' => 'required|max:255',
+            'kd_tipe_brg' => 'required|in:1,2',
+            'kode_kategori' => 'nullable|max:50',
             'satuan_besar' => 'nullable|max:50',
             'satuan_kecil' => 'nullable|max:50',
             'harga_beli' => 'nullable|numeric',
@@ -40,9 +43,30 @@ class BarangController extends Controller
         ]);
 
         try {
+            $kode_brg = $request->kode_brg;
+            if (empty($kode_brg)) {
+                $prefix = ($request->kd_tipe_brg == 2) ? 'JSA-' : 'BRG-';
+                $lastItem = DB::table('mt_barang_jasa')
+                    ->where('kode_brg', 'like', $prefix.'%')
+                    ->orderByRaw('CAST(SUBSTRING(kode_brg, 5, LEN(kode_brg)) AS INT) DESC')
+                    ->first();
+                
+                if ($lastItem) {
+                    $lastNumber = (int) substr($lastItem->kode_brg, 4);
+                    $kode_brg = $prefix . str_pad($lastNumber + 1, 4, '0', STR_PAD_LEFT);
+                } else {
+                    $kode_brg = $prefix . '0001';
+                }
+            }
+
+            $maxId = DB::table('mt_barang_jasa')->max('id_barang') ?? 0;
+
             DB::table('mt_barang_jasa')->insert([
-                'kode_brg' => $request->kode_brg,
+                'id_barang' => $maxId + 1,
+                'kode_brg' => $kode_brg,
                 'nama_brg' => $request->nama_brg,
+                'kd_tipe_brg' => $request->kd_tipe_brg,
+                'kode_kategori' => $request->kode_kategori,
                 'satuan_besar' => $request->satuan_besar,
                 'satuan_kecil' => $request->satuan_kecil,
                 'harga_beli' => $request->harga_beli ?? 0,
@@ -62,6 +86,8 @@ class BarangController extends Controller
         // $id is kode_brg
         $request->validate([
             'nama_brg' => 'required|max:255',
+            'kd_tipe_brg' => 'required|in:1,2',
+            'kode_kategori' => 'nullable|max:50',
             'satuan_besar' => 'nullable|max:50',
             'satuan_kecil' => 'nullable|max:50',
             'harga_beli' => 'nullable|numeric',
@@ -71,6 +97,8 @@ class BarangController extends Controller
         try {
             DB::table('mt_barang_jasa')->where('kode_brg', $id)->update([
                 'nama_brg' => $request->nama_brg,
+                'kd_tipe_brg' => $request->kd_tipe_brg,
+                'kode_kategori' => $request->kode_kategori,
                 'satuan_besar' => $request->satuan_besar,
                 'satuan_kecil' => $request->satuan_kecil,
                 'harga_beli' => $request->harga_beli ?? 0,

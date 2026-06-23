@@ -108,7 +108,8 @@ class PenerimaanBarangController extends Controller
     public function searchBarangNm(Request $request)
     {
         $query = DB::table('mt_barang_jasa')
-            ->select('kode_brg', 'nama_brg', 'satuan_besar as satuan');
+            ->select('kode_brg', 'nama_brg', 'satuan_besar as satuan')
+            ->where('status', 1);
 
         if ($request->has('search') && $request->search != '') {
             $query->where('nama_brg', 'like', "%{$request->search}%");
@@ -177,8 +178,8 @@ class PenerimaanBarangController extends Controller
                     'satuan' => $item['satuan'] ?? '-',
                 ]);
 
-                // Update mt_depo_stok_nm for gudang (using kode_bagian 1 for generic warehouse)
-                $stokExist = DB::table('mt_depo_stok_nm')
+                // Update mt_depo_stok_brg_jasa for gudang (using kode_bagian 1 for generic warehouse)
+                $stokExist = DB::table('mt_depo_stok_brg_jasa')
                     ->where('kode_brg', $item['kode_brg'])
                     ->where('kode_bagian', 1)
                     ->first();
@@ -186,20 +187,20 @@ class PenerimaanBarangController extends Controller
                 $stok_awal = 0;
                 if ($stokExist) {
                     $stok_awal = $stokExist->jumlah_stok;
-                    DB::table('mt_depo_stok_nm')
+                    DB::table('mt_depo_stok_brg_jasa')
                         ->where('kode_brg', $item['kode_brg'])
                         ->where('kode_bagian', 1)
                         ->update(['jumlah_stok' => $stok_awal + $item['qty_terima']]);
                 } else {
-                    DB::table('mt_depo_stok_nm')->insert([
+                    DB::table('mt_depo_stok_brg_jasa')->insert([
                         'kode_brg' => $item['kode_brg'],
                         'kode_bagian' => 1,
                         'jumlah_stok' => $item['qty_terima'],
                     ]);
                 }
 
-                // Insert into tc_kartu_stok_nm
-                DB::table('tc_kartu_stok_nm')->insert([
+                // Insert into tc_kartu_stok_brg_jasa
+                DB::table('tc_kartu_stok_brg_jasa')->insert([
                     'kode_brg' => $item['kode_brg'],
                     'kode_bagian' => 1,
                     'tgl_input' => now(),

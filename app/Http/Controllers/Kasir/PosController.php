@@ -21,15 +21,16 @@ class PosController extends Controller
         $keyword = $request->query('q', '');
 
         $query = DB::table('mt_barang_jasa')
-            ->leftJoin('mt_depo_stok_nm', function ($join) {
-                $join->on('mt_barang_jasa.kode_brg', '=', 'mt_depo_stok_nm.kode_brg')
-                    ->where('mt_depo_stok_nm.kode_bagian', '070101');
+            ->leftJoin('mt_depo_stok_brg_jasa', function ($join) {
+                $join->on('mt_barang_jasa.kode_brg', '=', 'mt_depo_stok_brg_jasa.kode_brg')
+                    ->where('mt_depo_stok_brg_jasa.kode_bagian', '070101');
             })
             ->where(function ($q) {
-                $q->where('mt_depo_stok_nm.jml_sat_kcl', '>', 0)
+                $q->where('mt_depo_stok_brg_jasa.jml_sat_kcl', '>', 0)
                     ->orWhere('mt_barang_jasa.kd_tipe_brg', 2);
             })
-            ->select('mt_barang_jasa.*', 'mt_depo_stok_nm.jml_sat_kcl');
+            ->where('mt_barang_jasa.status', 1)
+            ->select('mt_barang_jasa.*', 'mt_depo_stok_brg_jasa.jml_sat_kcl');
 
         if ($keyword) {
             $query->where('mt_barang_jasa.nama_brg', 'like', '%'.$keyword.'%');
@@ -65,7 +66,7 @@ class PosController extends Controller
                 AND d1.kode_brg != d2.kode_brg
             JOIN mt_barang_jasa b 
                 ON d2.kode_brg = b.kode_brg
-            JOIN mt_depo_stok_nm s
+            JOIN mt_depo_stok_brg_jasa s
                 ON b.kode_brg = s.kode_brg
             WHERE d1.kode_brg IN ($placeholders)
               AND d2.kode_brg NOT IN ($placeholders)
@@ -166,7 +167,7 @@ class PosController extends Controller
 
                 if ($kd_tipe_brg == 1) {
                     // Get initial stock
-                    $stok_awal = DB::table('mt_depo_stok_nm')
+                    $stok_awal = DB::table('mt_depo_stok_brg_jasa')
                         ->where('kode_brg', $kode_brg)
                         ->where('kode_bagian', '070101')
                         ->value('jml_sat_kcl');
@@ -178,22 +179,23 @@ class PosController extends Controller
                         throw new \Exception("Stok barang dengan kode {$kode_brg} tidak mencukupi (sisa: {$stok_awal}).");
                     }
 
-                    // Update mt_depo_stok_nm
-                    DB::table('mt_depo_stok_nm')
+                    // Update mt_depo_stok_brg_jasa
+                    DB::table('mt_depo_stok_brg_jasa')
                         ->where('kode_brg', $kode_brg)
                         ->where('kode_bagian', '070101')
                         ->update([
                             'jml_sat_kcl' => $stok_akhir,
                         ]);
 
-                    // Insert to tc_kartu_stok_nm
-                    DB::table('tc_kartu_stok_nm')->insert([
+                    // Insert to tc_kartu_stok_brg_jasa
+                    DB::table('tc_kartu_stok_brg_jasa')->insert([
                         'tgl_input' => $tglJam,
                         'kode_brg' => $kode_brg,
                         'stok_awal' => $stok_awal,
                         'pengeluaran' => $qty,
                         'pemasukan' => 0,
                         'stok_akhir' => $stok_akhir,
+                        'jenis_transaksi' => 6,
                         'kode_bagian' => '070101',
                         'petugas' => $id_dd_user,
                         'keterangan' => 'Penjualan No. '.$no_registrasi,
@@ -327,8 +329,8 @@ class PosController extends Controller
                 $kd_tipe_brg = $barang ? (int) $barang->kd_tipe_brg : 1;
 
                 if ($kd_tipe_brg == 1) {
-                    // Update mt_depo_stok_nm
-                    $stok_awal = DB::table('mt_depo_stok_nm')
+                    // Update mt_depo_stok_brg_jasa
+                    $stok_awal = DB::table('mt_depo_stok_brg_jasa')
                         ->where('kode_brg', $kode_brg)
                         ->where('kode_bagian', '070101')
                         ->value('jml_sat_kcl');
@@ -336,19 +338,20 @@ class PosController extends Controller
                     $stok_awal = (int) ($stok_awal ?: 0);
                     $stok_akhir = $stok_awal + $qty;
 
-                    DB::table('mt_depo_stok_nm')
+                    DB::table('mt_depo_stok_brg_jasa')
                         ->where('kode_brg', $kode_brg)
                         ->where('kode_bagian', '070101')
                         ->update(['jml_sat_kcl' => $stok_akhir]);
 
-                    // Record return in tc_kartu_stok_nm
-                    DB::table('tc_kartu_stok_nm')->insert([
+                    // Record return in tc_kartu_stok_brg_jasa
+                    DB::table('tc_kartu_stok_brg_jasa')->insert([
                         'tgl_input' => $tglJam,
                         'kode_brg' => $kode_brg,
                         'stok_awal' => $stok_awal,
                         'pengeluaran' => 0,
                         'pemasukan' => $qty,
                         'stok_akhir' => $stok_akhir,
+                        'jenis_transaksi' => 7,
                         'kode_bagian' => '070101',
                         'petugas' => $id_dd_user,
                         'keterangan' => 'Retur/Batal Kasir No. '.$no_registrasi.' ('.$alasan.')',
@@ -457,8 +460,8 @@ class PosController extends Controller
                 $kd_tipe_brg = $barang ? (int) $barang->kd_tipe_brg : 1;
 
                 if ($kd_tipe_brg == 1) {
-                    // Update mt_depo_stok_nm
-                    $stok_awal = DB::table('mt_depo_stok_nm')
+                    // Update mt_depo_stok_brg_jasa
+                    $stok_awal = DB::table('mt_depo_stok_brg_jasa')
                         ->where('kode_brg', $kode_brg)
                         ->where('kode_bagian', '070101')
                         ->value('jml_sat_kcl');
@@ -466,19 +469,20 @@ class PosController extends Controller
                     $stok_awal = (float) ($stok_awal ?: 0);
                     $stok_akhir = $stok_awal + $qtyToReturn;
 
-                    DB::table('mt_depo_stok_nm')
+                    DB::table('mt_depo_stok_brg_jasa')
                         ->where('kode_brg', $kode_brg)
                         ->where('kode_bagian', '070101')
                         ->update(['jml_sat_kcl' => $stok_akhir]);
 
-                    // Record return in tc_kartu_stok_nm
-                    DB::table('tc_kartu_stok_nm')->insert([
+                    // Record return in tc_kartu_stok_brg_jasa
+                    DB::table('tc_kartu_stok_brg_jasa')->insert([
                         'tgl_input' => $tglJam,
                         'kode_brg' => $kode_brg,
                         'stok_awal' => $stok_awal,
                         'pengeluaran' => 0,
                         'pemasukan' => $qtyToReturn,
                         'stok_akhir' => $stok_akhir,
+                        'jenis_transaksi' => 7,
                         'kode_bagian' => '070101',
                         'petugas' => $id_dd_user,
                         'keterangan' => 'Retur Parsial Kasir No. '.$no_registrasi.' ('.$alasan.')',
@@ -507,6 +511,10 @@ class PosController extends Controller
                     'bill' => $newBill < 0 ? 0 : $newBill,
                     'uang_kembali' => $newUangKembali,
                 ];
+
+                if ($header->tunai > 0) $updateData['tunai'] = $updateData['bill'];
+                if ($header->debet > 0) $updateData['debet'] = $updateData['bill'];
+                if ($header->kredit > 0) $updateData['kredit'] = $updateData['bill'];
 
                 if ($allFullyReturned) {
                     $updateData['status_batal'] = 1;

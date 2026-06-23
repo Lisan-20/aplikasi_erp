@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        if (Schema::hasTable('tc_kartu_stok_nm')) {
+        if (Schema::hasTable('tc_kartu_stok_brg_jasa')) {
             return;
         }
 
-        Schema::create('tc_kartu_stok_nm', function (Blueprint $table) {
+        Schema::create('tc_kartu_stok_brg_jasa', function (Blueprint $table) {
             $table->increments('id_kartu');
             $table->dateTime('tgl_input')->nullable();
             $table->string('kode_brg', 20)->nullable();
@@ -36,6 +36,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tc_kartu_stok_nm');
+        Schema::dropIfExists('tc_kartu_stok_brg_jasa');
     }
 };
