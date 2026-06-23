@@ -16,7 +16,7 @@ SELECT     nama_brg, kode_brg, satuan_kecil
 FROM         mt_barang
 UNION
 SELECT     nama_brg, kode_brg, satuan_kecil
-FROM         mt_barang_nm
+FROM         mt_barang_jasa
 ");
     }
 

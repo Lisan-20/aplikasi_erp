@@ -58,7 +58,7 @@ class PenerimaanBarangController extends Controller
 
             if ($po) {
                 $po_details = DB::table('tc_po_nm_det as d')
-                    ->join('mt_barang_nm as b', 'd.kode_brg', '=', 'b.kode_brg')
+                    ->join('mt_barang_jasa as b', 'd.kode_brg', '=', 'b.kode_brg')
                     ->where('d.id_tc_po', $id_po)
                     ->select(
                         'd.id_tc_po_det',
@@ -107,7 +107,7 @@ class PenerimaanBarangController extends Controller
 
     public function searchBarangNm(Request $request)
     {
-        $query = DB::table('mt_barang_nm')
+        $query = DB::table('mt_barang_jasa')
             ->select('kode_brg', 'nama_brg', 'satuan_besar as satuan');
 
         if ($request->has('search') && $request->search != '') {

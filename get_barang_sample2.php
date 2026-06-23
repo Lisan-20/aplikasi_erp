@@ -8,5 +8,5 @@ $app = require_once 'bootstrap/app.php';
 $kernel = $app->make(Kernel::class);
 $kernel->bootstrap();
 
-$sample = DB::table('mt_barang_nm')->limit(5)->get();
+$sample = DB::table('mt_barang_jasa')->limit(5)->get();
 echo json_encode($sample, JSON_PRETTY_PRINT);

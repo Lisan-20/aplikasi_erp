@@ -50,6 +50,9 @@ return new class extends Migration
             $table->text('keterangan')->nullable();
             $table->integer('status')->nullable();
         });
+
+        // Copy all data from mt_barang_jasa to mt_barang_jasa
+        DB::statement('INSERT INTO mt_barang_jasa SELECT * FROM mt_barang_jasa');
     }
 
     /**

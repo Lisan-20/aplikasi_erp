@@ -24,7 +24,7 @@ try {
 
     // 1. Gudang creates PR
     $kodesupplier = DB::table('mt_supplier')->value('kodesupplier') ?? 'SUP001';
-    $kode_brg = DB::table('mt_barang_nm')->value('kode_brg') ?? 'BRG001';
+    $kode_brg = DB::table('mt_barang_jasa')->value('kode_brg') ?? 'BRG001';
 
     $reqDataPR = [
         'kodesupplier' => $kodesupplier,

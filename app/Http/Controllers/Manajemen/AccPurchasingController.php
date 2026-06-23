@@ -53,7 +53,7 @@ class AccPurchasingController extends Controller
         $prIds = collect($prs->items())->pluck('id_tc_permohonan');
         if ($prIds->isNotEmpty()) {
             $details = DB::table('tc_permohonan_nm_det as a')
-                ->join('mt_barang_nm as b', 'a.kode_brg', '=', 'b.kode_brg')
+                ->join('mt_barang_jasa as b', 'a.kode_brg', '=', 'b.kode_brg')
                 ->whereIn('a.id_tc_permohonan', $prIds)
                 ->where('a.status_batal', 0)
                 ->select(

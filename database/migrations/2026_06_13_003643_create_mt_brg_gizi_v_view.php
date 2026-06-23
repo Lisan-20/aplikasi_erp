@@ -12,13 +12,13 @@ return new class extends Migration
     {
         DB::statement("CREATE OR ALTER VIEW dbo.mt_brg_gizi_v
 AS
-SELECT     dbo.mt_barang_nm.nama_brg, dbo.mt_barang_nm.kode_brg, dbo.mt_barang_nm.kode_golongan, dbo.mt_golongan_nm.nama_golongan, 
-                      dbo.mt_barang_nm.kode_sub_golongan, dbo.mt_sub_golongan_nm.nama_sub_golongan, dbo.mt_barang_nm.satuan_besar, dbo.mt_barang_nm.satuan_kecil, 
-                      dbo.mt_barang_nm.[content]
-FROM         dbo.mt_barang_nm INNER JOIN
-                      dbo.mt_golongan_nm ON dbo.mt_barang_nm.kode_golongan = dbo.mt_golongan_nm.kode_golongan INNER JOIN
-                      dbo.mt_sub_golongan_nm ON dbo.mt_barang_nm.kode_sub_golongan = dbo.mt_sub_golongan_nm.kode_sub_gol
-WHERE     (dbo.mt_barang_nm.kode_kategori = 'L')
+SELECT     dbo.mt_barang_jasa.nama_brg, dbo.mt_barang_jasa.kode_brg, dbo.mt_barang_jasa.kode_golongan, dbo.mt_golongan_nm.nama_golongan, 
+                      dbo.mt_barang_jasa.kode_sub_golongan, dbo.mt_sub_golongan_nm.nama_sub_golongan, dbo.mt_barang_jasa.satuan_besar, dbo.mt_barang_jasa.satuan_kecil, 
+                      dbo.mt_barang_jasa.[content]
+FROM         dbo.mt_barang_jasa INNER JOIN
+                      dbo.mt_golongan_nm ON dbo.mt_barang_jasa.kode_golongan = dbo.mt_golongan_nm.kode_golongan INNER JOIN
+                      dbo.mt_sub_golongan_nm ON dbo.mt_barang_jasa.kode_sub_golongan = dbo.mt_sub_golongan_nm.kode_sub_gol
+WHERE     (dbo.mt_barang_jasa.kode_kategori = 'L')
 ");
     }
 

@@ -18,7 +18,7 @@ SELECT     dbo.tc_permohonan_cash_gizi.id_tc_permohonan, dbo.tc_permohonan_cash_
 FROM         dbo.tc_permohonan_cash_gizi INNER JOIN
                       dbo.tc_permohonan_cash_det_gizi ON 
                       dbo.tc_permohonan_cash_gizi.id_tc_permohonan = dbo.tc_permohonan_cash_det_gizi.id_tc_permohonan INNER JOIN
-                      dbo.mt_barang_nm ON dbo.tc_permohonan_cash_det_gizi.kode_brg = dbo.mt_barang_nm.kode_brg
+                      dbo.mt_barang_jasa ON dbo.tc_permohonan_cash_det_gizi.kode_brg = dbo.mt_barang_jasa.kode_brg
 GROUP BY dbo.tc_permohonan_cash_gizi.id_tc_permohonan, dbo.tc_permohonan_cash_gizi.kode_permohonan, dbo.tc_permohonan_cash_gizi.status_batal, 
                       dbo.tc_permohonan_cash_gizi.status_kirim, dbo.tc_permohonan_cash_gizi.tgl_permohonan, dbo.tc_permohonan_cash_gizi.kodesupplier
 ");

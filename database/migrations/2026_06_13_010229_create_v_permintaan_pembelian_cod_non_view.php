@@ -16,7 +16,7 @@ SELECT     TOP (20) a.id_tc_permohonan, a.no_acc, a.kode_permohonan, a.tgl_permo
                       a.flag_asal
 FROM         dbo.tc_permohonan_cash AS a INNER JOIN
                       dbo.tc_permohonan_cash_det AS b ON b.id_tc_permohonan = a.id_tc_permohonan INNER JOIN
-                      dbo.mt_barang_nm ON b.kode_brg = dbo.mt_barang_nm.kode_brg
+                      dbo.mt_barang_jasa ON b.kode_brg = dbo.mt_barang_jasa.kode_brg
 WHERE     (a.status_batal = 0) AND (a.status_kirim = 1)
 GROUP BY a.no_acc, a.id_tc_permohonan, a.kode_permohonan, a.tgl_permohonan, a.status_batal, a.kodesupplier, a.flag_asal
 ORDER BY a.tgl_permohonan DESC

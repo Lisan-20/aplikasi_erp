@@ -12,11 +12,11 @@ return new class extends Migration
     {
         DB::statement("CREATE OR ALTER VIEW dbo.pemeliharaan_brg_v
 AS
-SELECT     dbo.mt_depo_stok_nm.kode_brg, dbo.mt_barang_nm.nama_brg, dbo.mt_bagian.nama_bagian, dbo.mt_barang_nm.inv_tehnik, dbo.mt_barang_nm.satuan_kecil, dbo.mt_depo_stok_nm.jml_sat_kcl, 
+SELECT     dbo.mt_depo_stok_nm.kode_brg, dbo.mt_barang_jasa.nama_brg, dbo.mt_bagian.nama_bagian, dbo.mt_barang_jasa.inv_tehnik, dbo.mt_barang_jasa.satuan_kecil, dbo.mt_depo_stok_nm.jml_sat_kcl, 
                       dbo.mt_depo_stok_nm.kode_depo_stok, dbo.mt_bagian.kode_bagian
 FROM         dbo.mt_depo_stok_nm INNER JOIN
                       dbo.mt_bagian ON dbo.mt_depo_stok_nm.kode_bagian = dbo.mt_bagian.kode_bagian INNER JOIN
-                      dbo.mt_barang_nm ON dbo.mt_depo_stok_nm.kode_brg = dbo.mt_barang_nm.kode_brg
+                      dbo.mt_barang_jasa ON dbo.mt_depo_stok_nm.kode_brg = dbo.mt_barang_jasa.kode_brg
 ");
     }
 

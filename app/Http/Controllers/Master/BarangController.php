@@ -11,7 +11,7 @@ class BarangController extends Controller
 {
     public function index(Request $request)
     {
-        $query = DB::table('mt_barang_nm');
+        $query = DB::table('mt_barang_jasa');
 
         if ($request->has('search') && $request->search != '') {
             $search = $request->search;
@@ -31,7 +31,7 @@ class BarangController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'kode_brg' => 'required|max:50|unique:mt_barang_nm,kode_brg',
+            'kode_brg' => 'required|max:50|unique:mt_barang_jasa,kode_brg',
             'nama_brg' => 'required|max:255',
             'satuan_besar' => 'nullable|max:50',
             'satuan_kecil' => 'nullable|max:50',
@@ -40,7 +40,7 @@ class BarangController extends Controller
         ]);
 
         try {
-            DB::table('mt_barang_nm')->insert([
+            DB::table('mt_barang_jasa')->insert([
                 'kode_brg' => $request->kode_brg,
                 'nama_brg' => $request->nama_brg,
                 'satuan_besar' => $request->satuan_besar,
@@ -69,7 +69,7 @@ class BarangController extends Controller
         ]);
 
         try {
-            DB::table('mt_barang_nm')->where('kode_brg', $id)->update([
+            DB::table('mt_barang_jasa')->where('kode_brg', $id)->update([
                 'nama_brg' => $request->nama_brg,
                 'satuan_besar' => $request->satuan_besar,
                 'satuan_kecil' => $request->satuan_kecil,
@@ -87,7 +87,7 @@ class BarangController extends Controller
     {
         try {
             // Daripada menghapus permanen, kita ubah status jadi 0
-            DB::table('mt_barang_nm')->where('kode_brg', $id)->update(['status' => 0]);
+            DB::table('mt_barang_jasa')->where('kode_brg', $id)->update(['status' => 0]);
 
             return redirect()->back()->with('success', 'Barang berhasil dinonaktifkan.');
         } catch (\Exception $e) {

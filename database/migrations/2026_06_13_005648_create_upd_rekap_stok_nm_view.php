@@ -12,9 +12,9 @@ return new class extends Migration
     {
         DB::statement("CREATE OR ALTER VIEW dbo.upd_rekap_stok_nm
 AS
-SELECT     dbo.mt_rekap_stok_nm.kode_brg, dbo.mt_barang_nm_old.nama_brg
+SELECT     dbo.mt_rekap_stok_nm.kode_brg, dbo.mt_barang_jasa_old.nama_brg
 FROM         dbo.mt_rekap_stok_nm INNER JOIN
-                      dbo.mt_barang_nm_old ON dbo.mt_rekap_stok_nm.kode_brg = dbo.mt_barang_nm_old.kode_brg
+                      dbo.mt_barang_jasa_old ON dbo.mt_rekap_stok_nm.kode_brg = dbo.mt_barang_jasa_old.kode_brg
 ");
     }
 

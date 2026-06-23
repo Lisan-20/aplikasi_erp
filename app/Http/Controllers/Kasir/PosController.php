@@ -20,19 +20,19 @@ class PosController extends Controller
     {
         $keyword = $request->query('q', '');
 
-        $query = DB::table('mt_barang_nm')
+        $query = DB::table('mt_barang_jasa')
             ->leftJoin('mt_depo_stok_nm', function ($join) {
-                $join->on('mt_barang_nm.kode_brg', '=', 'mt_depo_stok_nm.kode_brg')
+                $join->on('mt_barang_jasa.kode_brg', '=', 'mt_depo_stok_nm.kode_brg')
                     ->where('mt_depo_stok_nm.kode_bagian', '070101');
             })
             ->where(function ($q) {
                 $q->where('mt_depo_stok_nm.jml_sat_kcl', '>', 0)
-                    ->orWhere('mt_barang_nm.kd_tipe_brg', 2);
+                    ->orWhere('mt_barang_jasa.kd_tipe_brg', 2);
             })
-            ->select('mt_barang_nm.*', 'mt_depo_stok_nm.jml_sat_kcl');
+            ->select('mt_barang_jasa.*', 'mt_depo_stok_nm.jml_sat_kcl');
 
         if ($keyword) {
-            $query->where('mt_barang_nm.nama_brg', 'like', '%'.$keyword.'%');
+            $query->where('mt_barang_jasa.nama_brg', 'like', '%'.$keyword.'%');
         }
 
         $barang = $query->paginate(30);
@@ -63,7 +63,7 @@ class PosController extends Controller
             JOIN tc_trans_kasir_detail d2 
                 ON d1.no_registrasi = d2.no_registrasi 
                 AND d1.kode_brg != d2.kode_brg
-            JOIN mt_barang_nm b 
+            JOIN mt_barang_jasa b 
                 ON d2.kode_brg = b.kode_brg
             JOIN mt_depo_stok_nm s
                 ON b.kode_brg = s.kode_brg
@@ -161,7 +161,7 @@ class PosController extends Controller
                 $kode_brg = $item['kode_brg'];
                 $qty = $item['qty'];
 
-                $barang = DB::table('mt_barang_nm')->where('kode_brg', $kode_brg)->first();
+                $barang = DB::table('mt_barang_jasa')->where('kode_brg', $kode_brg)->first();
                 $kd_tipe_brg = $barang ? (int) $barang->kd_tipe_brg : 1;
 
                 if ($kd_tipe_brg == 1) {
@@ -242,7 +242,7 @@ class PosController extends Controller
         }
 
         $details = DB::table('tc_trans_kasir_detail as d')
-            ->join('mt_barang_nm as b', 'd.kode_brg', '=', 'b.kode_brg')
+            ->join('mt_barang_jasa as b', 'd.kode_brg', '=', 'b.kode_brg')
             ->where('d.no_registrasi', $no_registrasi)
             ->select('d.*', 'b.nama_brg')
             ->get();
@@ -323,7 +323,7 @@ class PosController extends Controller
                 $kode_brg = $detail->kode_brg;
                 $qty = (int) $detail->qty;
 
-                $barang = DB::table('mt_barang_nm')->where('kode_brg', $kode_brg)->first();
+                $barang = DB::table('mt_barang_jasa')->where('kode_brg', $kode_brg)->first();
                 $kd_tipe_brg = $barang ? (int) $barang->kd_tipe_brg : 1;
 
                 if ($kd_tipe_brg == 1) {
@@ -370,7 +370,7 @@ class PosController extends Controller
     public function getTransaksiDetail($no_registrasi)
     {
         $details = DB::table('tc_trans_kasir_detail as d')
-            ->join('mt_barang_nm as b', 'd.kode_brg', '=', 'b.kode_brg')
+            ->join('mt_barang_jasa as b', 'd.kode_brg', '=', 'b.kode_brg')
             ->where('d.no_registrasi', $no_registrasi)
             ->select('d.*', 'b.nama_brg')
             ->get();
@@ -453,7 +453,7 @@ class PosController extends Controller
                         'status_retur' => 1,
                     ]);
 
-                $barang = DB::table('mt_barang_nm')->where('kode_brg', $kode_brg)->first();
+                $barang = DB::table('mt_barang_jasa')->where('kode_brg', $kode_brg)->first();
                 $kd_tipe_brg = $barang ? (int) $barang->kd_tipe_brg : 1;
 
                 if ($kd_tipe_brg == 1) {

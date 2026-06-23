@@ -79,7 +79,7 @@ class PengadaanController extends Controller
     {
         $query = DB::table('tc_permohonan_nm as a')
             ->join('tc_permohonan_nm_det as b', 'a.id_tc_permohonan', '=', 'b.id_tc_permohonan')
-            ->join('mt_barang_nm as c', 'b.kode_brg', '=', 'c.kode_brg')
+            ->join('mt_barang_jasa as c', 'b.kode_brg', '=', 'c.kode_brg')
             ->whereNotNull('a.no_acc')
             ->where('a.status_batal', 0)
             ->where('b.status_batal', 0)
@@ -129,7 +129,7 @@ class PengadaanController extends Controller
 
     public function searchBarang(Request $request)
     {
-        $query = DB::table('mt_barang_nm')
+        $query = DB::table('mt_barang_jasa')
             ->select('kode_brg', 'nama_brg', 'satuan_besar as satuan');
 
         if ($request->has('search') && $request->search != '') {

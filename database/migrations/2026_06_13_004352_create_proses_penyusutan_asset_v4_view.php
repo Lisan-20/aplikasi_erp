@@ -18,11 +18,11 @@ SELECT     dbo.proses_penyusutan_asset_v2.kode_brg, dbo.proses_penyusutan_asset_
                       dbo.proses_penyusutan_asset_v2.nama_bagian, dbo.proses_penyusutan_asset_v2.thn_peroleh, dbo.proses_penyusutan_asset_v2.acc_d, dbo.proses_penyusutan_asset_v2.acc_k, 
                       dbo.proses_penyusutan_asset_v2.thn_penyusutan, dbo.proses_penyusutan_asset_v2.satuan_besar, dbo.proses_penyusutan_asset_v2.tahun, dbo.proses_penyusutan_asset_v2.bulan, 
                       dbo.proses_penyusutan_asset_v2.rate_harga, dbo.proses_penyusutan_asset_v2.rate_harga / (dbo.proses_penyusutan_asset_v2.estimasi_penggunaan * 12) AS nilai_penyusutan, 
-                      dbo.mt_barang_nm.kode_pabrik, dbo.mt_barang_nm.jenis_askes, dbo.mt_barang_nm.id_pabrik, dbo.mt_barang_nm.kode_golongan, dbo.mt_golongan_nm.nama_golongan, 
-                      dbo.mt_barang_nm.buatan, dbo.mt_barang_nm.merk, dbo.mt_barang_nm.type, dbo.mt_barang_nm.supplier, dbo.mt_barang_nm.sn, dbo.mt_barang_nm.inv, dbo.mt_barang_nm.flag_asset
+                      dbo.mt_barang_jasa.kode_pabrik, dbo.mt_barang_jasa.jenis_askes, dbo.mt_barang_jasa.id_pabrik, dbo.mt_barang_jasa.kode_golongan, dbo.mt_golongan_nm.nama_golongan, 
+                      dbo.mt_barang_jasa.buatan, dbo.mt_barang_jasa.merk, dbo.mt_barang_jasa.type, dbo.mt_barang_jasa.supplier, dbo.mt_barang_jasa.sn, dbo.mt_barang_jasa.inv, dbo.mt_barang_jasa.flag_asset
 FROM         dbo.proses_penyusutan_asset_v2 INNER JOIN
-                      dbo.mt_barang_nm ON dbo.proses_penyusutan_asset_v2.kode_brg = dbo.mt_barang_nm.kode_brg INNER JOIN
-                      dbo.mt_golongan_nm ON dbo.mt_barang_nm.kode_golongan = dbo.mt_golongan_nm.kode_golongan
+                      dbo.mt_barang_jasa ON dbo.proses_penyusutan_asset_v2.kode_brg = dbo.mt_barang_jasa.kode_brg INNER JOIN
+                      dbo.mt_golongan_nm ON dbo.mt_barang_jasa.kode_golongan = dbo.mt_golongan_nm.kode_golongan
 ");
     }
 

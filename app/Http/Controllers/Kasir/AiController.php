@@ -29,7 +29,7 @@ class AiController extends Controller
         }
 
         // Ambil nama barang berdasarkan kode untuk dikirim ke AI
-        $itemNames = DB::table('mt_barang_nm')
+        $itemNames = DB::table('mt_barang_jasa')
             ->whereIn('kode_brg', $cartItemCodes)
             ->pluck('nama_brg')
             ->toArray();

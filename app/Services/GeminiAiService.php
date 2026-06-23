@@ -102,7 +102,7 @@ class GeminiAiService
         $words = explode(' ', $cleanName);
         $searchKeyword = $words[0] ?? $cleanName;
 
-        $barang = DB::table('mt_barang_nm as b')
+        $barang = DB::table('mt_barang_jasa as b')
             ->join('mt_depo_stok_nm as s', 'b.kode_brg', '=', 's.kode_brg')
             ->where('s.kode_bagian', '070101')
             ->where('s.jml_sat_kcl', '>', 0)

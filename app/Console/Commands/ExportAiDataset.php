@@ -17,7 +17,7 @@ class ExportAiDataset extends Command
         $this->info('Memulai ekstraksi data historis transaksi kasir...');
 
         $transaksi = DB::table('tc_trans_kasir_detail as d')
-            ->join('mt_barang_nm as b', 'd.kode_brg', '=', 'b.kode_brg')
+            ->join('mt_barang_jasa as b', 'd.kode_brg', '=', 'b.kode_brg')
             ->select('d.no_registrasi', 'b.nama_brg')
             ->orderBy('d.no_registrasi')
             ->get();
