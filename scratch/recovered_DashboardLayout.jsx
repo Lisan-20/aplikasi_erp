@@ -10,7 +10,7 @@ Melanjutkan kesepakatan kita untuk menggeser konsep *Hospital Queue* (Antrian Lo
 > Saat ini URL yang Anda sebutkan adalah `http://localhost/kasir/antrian-loket`. Demi konsistensi "ERP Generik", saya akan mengganti rute ini menjadi `/kasir/pos` atau `/kasir/utama`. Nama *Controller* juga akan diubah dari `AntrianLoketController` menjadi `PosController` (atau `KasirUtamaController`). Harap setujui perubahan *naming convention* ini.
 
 > [!IMPORTANT]
-> **Tabel Stok `mt_depo_stok_nm`**
+> **Tabel Stok `mt_depo_stok_brg_jasa`**
 > Pada kode *legacy*, pencarian barang dibatasi secara keras (*hard-coded*): `where('kode_bagian', '070101')`. Di ERP generik, gudang/departemen kasir mungkin dinamis. Untuk saat ini, saya akan tetap menggunakan '070101' sebagai *default depo*, namun logika stoknya akan dibuat kondisional (Jasa tidak butuh cek stok di depo ini).
 
 ## Open Questions
@@ -25,10 +25,10 @@ Melanjutkan kesepakatan kita untuk menggeser konsep *Hospital Queue* (Antrian Lo
 #### [MODIFY] [AntrianLoketController.php](file:///d:/001_Aplikasi/aplikasi_erp_laravel/app/Http/Controllers/Kasir/AntrianLoketController.php) -> `PosController.php`
 - Mengganti nama *class* dan *file* menjadi `PosController`.
 - **Fungsi `searchBarang`**:
-  - Mengubah *Query Builder* menjadi `LEFT JOIN` ke `mt_depo_stok_nm` agar **Jasa** (yang mungkin tidak ada di tabel stok) tetap muncul di hasil pencarian.
+  - Mengubah *Query Builder* menjadi `LEFT JOIN` ke `mt_depo_stok_brg_jasa` agar **Jasa** (yang mungkin tidak ada di tabel stok) tetap muncul di hasil pencarian.
   - Memilih kolom `kd_tipe_brg`.
 - **Fungsi `checkout`**:
-  - Menambahkan pengkondisian `if ($kd_tipe_brg == 1)` sebelum melakukan `stok_akhir = stok_awal - qty` dan `DB::table('tc_kartu_stok_nm')->insert(...)`.
+  - Menambahkan pengkondisian `if ($kd_tipe_brg == 1)` sebelum melakukan `stok_akhir = stok_awal - qty` dan `DB::table('tc_kartu_stok_brg_jasa')->insert(...)`.
   - Jika `kd_tipe_brg == 2`, sistem akan langsung melompat ke proses *insert* `tc_trans_kasir_detail` tanpa menyentuh tabel stok gudang.
 - **Fungsi `batalTransaksi` & `returParsial`**:
   - Menerapkan kondisi yang sama: Jangan mengembalikan stok jika barang yang di-retur adalah Jasa.
@@ -50,6 +50,6 @@ Melanjutkan kesepakatan kita untuk menggeser konsep *Hospital Queue* (Antrian Lo
 ## Verification Plan
 
 ### Automated/Manual Testing
-- **Test Case 1 (Barang Jadi):** Kasir mencari barang fisik -> Tambah ke keranjang melebihi stok -> UI menolak. Transaksi berhasil -> Cek `mt_depo_stok_nm` -> Stok berkurang.
+- **Test Case 1 (Barang Jadi):** Kasir mencari barang fisik -> Tambah ke keranjang melebihi stok -> UI menolak. Transaksi berhasil -> Cek `mt_depo_stok_brg_jasa` -> Stok berkurang.
 - **Test Case 2 (Jasa Layanan):** Kasir mencari jasa -> UI menampilkan badge 'Jasa' -> Tambah ke keranjang kuantitas 100 -> UI mengizinkan. Transaksi berhasil -> Tidak ada error *stok minus* di *Backend*.
 - **Test Case 3 (Hybrid):** Checkout 1 nota berisi 1 Barang dan 1 Jasa secara bersamaan.

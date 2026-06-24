@@ -219,6 +219,11 @@ Route::middleware(['web', 'check.permission'])->group(function () {
             Route::put('/kelurahan/{id}', [\App\Http\Controllers\Master\WilayahController::class, 'updateKelurahan']);
             Route::delete('/kelurahan/{id}', [\App\Http\Controllers\Master\WilayahController::class, 'destroyKelurahan']);
         });
+
+        Route::get('/bagian', [\App\Http\Controllers\Master\BagianController::class, 'index'])->name('bagian');
+        Route::post('/bagian', [\App\Http\Controllers\Master\BagianController::class, 'store'])->name('bagian.store');
+        Route::put('/bagian/{id}', [\App\Http\Controllers\Master\BagianController::class, 'update'])->name('bagian.update');
+        Route::delete('/bagian/{id}', [\App\Http\Controllers\Master\BagianController::class, 'destroy'])->name('bagian.destroy');
     });
 
     Route::prefix('master')->name('master.')->group(function () {
@@ -264,6 +269,13 @@ Route::middleware(['web', 'check.permission'])->group(function () {
 
     // Helper API
     Route::get('/api/search-barang-nm', [PenerimaanBarangController::class, 'searchBarangNm'])->name('api.search-barang-nm');
+
+    Route::prefix('hrd')->name('hrd.')->group(function () {
+        Route::get('/data-pegawai', [\App\Http\Controllers\Hrd\DataPegawaiController::class, 'index'])->name('data-pegawai');
+        Route::post('/data-pegawai', [\App\Http\Controllers\Hrd\DataPegawaiController::class, 'store'])->name('data-pegawai.store');
+        Route::put('/data-pegawai/{id}', [\App\Http\Controllers\Hrd\DataPegawaiController::class, 'update'])->name('data-pegawai.update');
+        Route::delete('/data-pegawai/{id}', [\App\Http\Controllers\Hrd\DataPegawaiController::class, 'destroy'])->name('data-pegawai.destroy');
+    });
 
 });
 

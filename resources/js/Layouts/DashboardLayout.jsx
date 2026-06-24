@@ -6,6 +6,7 @@ import {
     FileText, LogOut, LayoutDashboard,
     Sun, Moon, Boxes, Database, Layers, Activity
 } from 'lucide-react';
+import Swal from 'sweetalert2';
 
 export default function DashboardLayout({ children }) {
     const page = usePage();
@@ -18,6 +19,26 @@ export default function DashboardLayout({ children }) {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [openMenus, setOpenMenus] = useState({});
 
+    const { flash } = usePage().props;
+
+    useEffect(() => {
+        if (flash?.success) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: flash.success,
+                timer: 2000,
+                showConfirmButton: false
+            });
+        }
+        if (flash?.error) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal!',
+                text: flash.error,
+            });
+        }
+    }, [flash]); // Akan tertrigger setiap kali "flash" berubah
     // Close dropdowns when clicking outside
     useEffect(() => {
         const handleClickOutside = (e) => {
@@ -135,7 +156,7 @@ export default function DashboardLayout({ children }) {
                                 <span>Ganti Modul</span>
                             </Link>
                         </li>
-                        
+
                         <div className="dash-nav-divider"></div>
 
                         {menus.map((menu, idx) => {
@@ -465,7 +486,7 @@ export default function DashboardLayout({ children }) {
                     transition: all 0.2s;
                     font-weight: 500;
                 }
-                
+
                 .dash-dropdown-item:hover {
                     color: var(--text-main);
                     background: var(--glass-hover);
@@ -551,7 +572,7 @@ export default function DashboardLayout({ children }) {
                     .dash-nav-right .dash-clock, .dash-nav-right .dash-user-info { display: none; }
                     .dash-brand h2 { font-size: 1.1rem; }
                     .dash-tag { display: none; }
-                    
+
                     .dash-navbar { padding: 0 16px; }
                     .dash-content { padding: 16px; }
 
@@ -572,13 +593,13 @@ export default function DashboardLayout({ children }) {
                         transition: transform 0.3s ease;
                         height: calc(100vh - 64px);
                     }
-                    
+
                     .dash-top-nav.mobile-open {
                         transform: translateX(0);
                     }
 
                     .dash-nav-container { padding: 16px; }
-                    
+
                     .dash-nav-list {
                         flex-direction: column;
                         align-items: flex-start;
