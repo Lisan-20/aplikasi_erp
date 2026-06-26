@@ -7,113 +7,123 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
+use App\Models\Pengadaan\TcErpPo;
 
 class AccPurchasingController extends Controller
 {
     public function index(Request $request)
     {
-        $query = DB::table('tc_permohonan_nm as a')
-            ->leftJoin('mt_supplier as b', 'a.kodesupplier', '=', 'b.kodesupplier')
-            ->select(
-                'a.id_tc_permohonan',
-                'a.kode_permohonan',
-                'a.tgl_permohonan',
-                'a.status_batal',
-                'a.status_kirim',
-                'a.no_acc',
-                'a.tgl_acc',
-                'a.kodesupplier',
-                'b.namasupplier as nama_supplier'
-            )
-            ->where('a.status_batal', 0)
-            ->orderBy('a.tgl_permohonan', 'desc');
+        $query = TcErpPo::query()->with('supplier')->orderBy('tgl_po', 'desc');
 
         if ($request->has('search') && $request->search != '') {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
-                $q->where('a.kode_permohonan', 'like', "%{$search}%")
-                    ->orWhere('b.namasupplier', 'like', "%{$search}%");
+                $q->where('no_po', 'like', "%{$search}%")
+                  ->orWhereHas('supplier', function ($sq) use ($search) {
+                      $sq->where('nama_supplier', 'like', "%{$search}%");
+                  });
             });
         }
 
         if ($request->has('status') && $request->status != '') {
             if ($request->status == 'belum') {
-                $query->whereNull('a.no_acc');
+                $query->where('status', 0); // Draft/Menunggu ACC
             } elseif ($request->status == 'sudah') {
-                $query->whereNotNull('a.no_acc');
+                $query->whereIn('status', [1, 2, 3, 4]); // ACC / Selesai / Batal
             }
         } else {
-            // Default show only pending
-            $query->whereNull('a.no_acc');
+            // Default show only pending ACC
+            $query->where('status', 0);
         }
 
-        $prs = $query->paginate(20)->withQueryString();
+        $pos = $query->paginate(20)->withQueryString();
 
-        // Get details for PRs to show in modal
-        $prIds = collect($prs->items())->pluck('id_tc_permohonan');
-        if ($prIds->isNotEmpty()) {
-            $details = DB::table('tc_permohonan_nm_det as a')
-                ->join('mt_barang_jasa as b', 'a.kode_brg', '=', 'b.kode_brg')
-                ->whereIn('a.id_tc_permohonan', $prIds)
-                ->where('a.status_batal', 0)
-                ->select(
-                    'a.id_tc_permohonan',
-                    'a.id_tc_permohonan_det',
-                    'a.kode_brg',
-                    'b.nama_brg',
-                    'a.jumlah_besar',
-                    'a.satuan'
-                )
-                ->get();
+        // Eager load details first
+        $pos->getCollection()->transform(function ($po) {
+            $po->load('details');
+            return $po;
+        });
 
-            $detailsGrouped = $details->groupBy('id_tc_permohonan');
+        // Collect all item codes and fetch names
+        $allKodeBrg = [];
+        foreach ($pos->items() as $po) {
+            $allKodeBrg = array_merge($allKodeBrg, $po->details->pluck('kode_brg')->toArray());
+        }
+        
+        $barangs = [];
+        if (count($allKodeBrg) > 0) {
+            $barangs = \Illuminate\Support\Facades\DB::table('mt_barang_jasa')
+                ->whereIn('kode_brg', array_unique($allKodeBrg))
+                ->pluck('nama_brg', 'kode_brg');
+        }
 
-            foreach ($prs->items() as $item) {
-                $item->items = isset($detailsGrouped[$item->id_tc_permohonan]) ? $detailsGrouped[$item->id_tc_permohonan] : [];
-                $item->jml_brg = count($item->items);
+        $pos->getCollection()->transform(function ($po) use ($barangs) {
+            $po->jml_brg = $po->details->count();
+            foreach ($po->details as $det) {
+                $det->nama_brg = isset($barangs[$det->kode_brg]) ? $barangs[$det->kode_brg] : $det->kode_brg;
             }
-        }
+            return $po;
+        });
 
         return Inertia::render('Manajemen/AccPurchasing/Index', [
-            'prs' => $prs,
+            'pos' => $pos,
             'filters' => $request->only(['search', 'status']),
         ]);
     }
 
     public function approve(Request $request, $id)
     {
-        $pr = DB::table('tc_permohonan_nm')->where('id_tc_permohonan', $id)->first();
-        if (! $pr) {
-            return back()->withErrors(['error' => 'Permintaan Pembelian tidak ditemukan.']);
+        $po = TcErpPo::find($id);
+        if (! $po) {
+            return back()->withErrors(['error' => 'Purchase Order tidak ditemukan.']);
         }
 
-        if ($pr->no_acc) {
-            return back()->withErrors(['error' => 'Permintaan Pembelian ini sudah disetujui sebelumnya.']);
+        if ($po->status != 0) {
+            return back()->withErrors(['error' => 'Purchase Order ini tidak dalam status Menunggu ACC.']);
         }
 
         try {
             DB::beginTransaction();
 
-            // Generate no_acc from kode_permohonan (replace PPNM with NPPNM)
-            $noAcc = str_replace('PPNM', 'NPPNM', $pr->kode_permohonan);
-
-            DB::table('tc_permohonan_nm')
-                ->where('id_tc_permohonan', $id)
-                ->update([
-                    'no_acc' => $noAcc,
-                    'tgl_acc' => Carbon::now(),
-                    'user_id_acc' => 1, // hardcode for now
-                    'status_kirim' => 1,
-                ]);
+            $po->status = 1; // ACC / Menunggu Penerimaan
+            $po->tgl_acc = Carbon::now();
+            $po->acc_by = auth()->id() ?? 1;
+            $po->save();
 
             DB::commit();
 
-            return back()->with('success', 'Permintaan Pembelian berhasil disetujui (No ACC: '.$noAcc.').');
-
+            return redirect()->back()->with('success', 'Purchase Order berhasil disetujui.');
         } catch (\Exception $e) {
             DB::rollBack();
+            return back()->withErrors(['error' => 'Terjadi kesalahan sistem: ' . $e->getMessage()]);
+        }
+    }
 
-            return back()->withErrors(['error' => 'Gagal menyetujui: '.$e->getMessage()]);
+    public function reject(Request $request, $id)
+    {
+        $request->validate([
+            'alasan' => 'required|string|max:255'
+        ]);
+
+        $po = TcErpPo::findOrFail($id);
+
+        if ($po->status != 0) {
+            return back()->withErrors(['error' => 'Purchase Order ini tidak dalam status Menunggu ACC.']);
+        }
+
+        try {
+            DB::beginTransaction();
+
+            $po->status = 2; // Revisi
+            $po->keterangan_revisi = $request->alasan;
+            $po->save();
+
+            DB::commit();
+
+            return redirect()->back()->with('success', 'Purchase Order dikembalikan ke bagian pengadaan untuk direvisi.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->withErrors(['error' => 'Terjadi kesalahan sistem: ' . $e->getMessage()]);
         }
     }
 }

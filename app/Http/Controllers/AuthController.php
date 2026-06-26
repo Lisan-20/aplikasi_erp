@@ -38,6 +38,7 @@ class AuthController extends Controller
             // Set session
             Session::put('user', $user);
             Session::put('id_dd_user', $user->id_dd_user);
+            Session::put('no_induk', $user->no_induk);
 
             // Log login
             $idLogUser = DB::table('log_user_login')->insertGetId([

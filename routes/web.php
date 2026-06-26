@@ -242,12 +242,17 @@ Route::middleware(['web', 'check.permission'])->group(function () {
     Route::prefix('manajemen')->name('manajemen.')->group(function () {
         Route::get('/acc-purchasing', [AccPurchasingController::class, 'index']);
         Route::post('/acc-purchasing/{id}/approve', [AccPurchasingController::class, 'approve']);
+        Route::post('/acc-purchasing/{id}/reject', [AccPurchasingController::class, 'reject']);
     });
 
     Route::prefix('pengadaan')->name('pengadaan.')->group(function () {
         Route::get('/po', [PengadaanController::class, 'index'])->name('po.index');
         Route::get('/po/create', [PengadaanController::class, 'create'])->name('po.create');
         Route::post('/po', [PengadaanController::class, 'store'])->name('po.store');
+        Route::delete('/po/{id}', [PengadaanController::class, 'destroy'])->name('po.destroy');
+        Route::get('/po/{id}/edit', [PengadaanController::class, 'edit'])->name('po.edit');
+        Route::get('/po/{id}', [PengadaanController::class, 'show'])->name('po.show');
+        Route::post('/po/{id}/revisi', [PengadaanController::class, 'revisiStore'])->name('po.revisiStore');
         Route::get('/api/search-supplier', [PengadaanController::class, 'searchSupplier'])->name('api.search-supplier');
         Route::get('/api/search-pr', [PengadaanController::class, 'searchPR'])->name('api.search-pr');
         Route::get('/api/search-barang', [PengadaanController::class, 'searchBarang'])->name('api.search-barang');
@@ -264,7 +269,13 @@ Route::middleware(['web', 'check.permission'])->group(function () {
         Route::get('/penerimaan', [PenerimaanBarangController::class, 'index'])->name('penerimaan.index');
         Route::get('/penerimaan/create', [PenerimaanBarangController::class, 'create'])->name('penerimaan.create');
         Route::post('/penerimaan', [PenerimaanBarangController::class, 'store'])->name('penerimaan.store');
+        Route::get('/api/penerimaan/{id}/details', [PenerimaanBarangController::class, 'getDetails'])->name('api.penerimaan.details');
         Route::get('/api/search-po', [PenerimaanBarangController::class, 'searchPo'])->name('api.search-po');
+
+        Route::get('/return-supplier', [App\Http\Controllers\Gudang\ReturnSupplierController::class, 'index'])->name('return-supplier.index');
+        Route::get('/return-supplier/create/{id}', [App\Http\Controllers\Gudang\ReturnSupplierController::class, 'create'])->name('return-supplier.create');
+        Route::post('/return-supplier', [App\Http\Controllers\Gudang\ReturnSupplierController::class, 'store'])->name('return-supplier.store');
+        Route::get('/api/return-supplier/{kode}/details', [App\Http\Controllers\Gudang\ReturnSupplierController::class, 'getReturnDetails'])->name('api.return.details');
     });
 
     // Helper API

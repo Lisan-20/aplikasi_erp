@@ -7,49 +7,65 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
+use App\Models\Pengadaan\TcErpPr;
+use App\Models\Pengadaan\TcErpPrDetail;
+use App\Models\Master\MtErpSupplier;
 
 class PermintaanPembelianController extends Controller
 {
     public function index(Request $request)
     {
-        $query = DB::table('tc_permohonan_nm as a')
-            ->leftJoin('mt_supplier as b', 'a.kodesupplier', '=', 'b.kodesupplier')
+        $query = TcErpPr::query()
+            ->leftJoin('mt_erp_supplier', 'tc_erp_pr.supplier_id', '=', 'mt_erp_supplier.id')
             ->select(
-                'a.id_tc_permohonan',
-                'a.kode_permohonan',
-                'a.tgl_permohonan',
-                'a.status_batal',
-                'a.status_kirim',
-                'a.no_acc',
-                'a.tgl_acc',
-                'b.namasupplier as nama_supplier'
+                'tc_erp_pr.id',
+                'tc_erp_pr.no_pr as kode_permohonan',
+                'tc_erp_pr.tgl_pr as tgl_permohonan',
+                'tc_erp_pr.status',
+                'mt_erp_supplier.nama_supplier'
             )
-            ->where('a.status_batal', 0)
-            ->orderBy('a.tgl_permohonan', 'desc');
+            ->where('tc_erp_pr.status', '!=', 3) // Exclude Batal
+            ->orderBy('tc_erp_pr.tgl_pr', 'desc');
 
         if ($request->has('search') && $request->search != '') {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
-                $q->where('a.kode_permohonan', 'like', "%{$search}%")
-                    ->orWhere('b.namasupplier', 'like', "%{$search}%");
+                $q->where('tc_erp_pr.no_pr', 'like', "%{$search}%")
+                    ->orWhere('mt_erp_supplier.nama_supplier', 'like', "%{$search}%");
             });
         }
 
         $prs = $query->paginate(20)->withQueryString();
 
         // Get total items for each PR
-        $prIds = collect($prs->items())->pluck('id_tc_permohonan');
+        $prIds = collect($prs->items())->pluck('id');
         if ($prIds->isNotEmpty()) {
-            $counts = DB::table('tc_permohonan_nm_det')
-                ->whereIn('id_tc_permohonan', $prIds)
-                ->where('status_batal', 0)
-                ->select('id_tc_permohonan', DB::raw('count(*) as jml_brg'))
-                ->groupBy('id_tc_permohonan')
+            $counts = TcErpPrDetail::whereIn('pr_id', $prIds)
+                ->select('pr_id', DB::raw('count(*) as jml_brg'))
+                ->groupBy('pr_id')
                 ->get()
-                ->keyBy('id_tc_permohonan');
+                ->keyBy('pr_id');
+
+            // Find if PR has an approved PO
+            $approvedPrs = DB::table('tc_erp_pr_detail as prd')
+                ->join('tc_erp_po_detail as pod', 'prd.id', '=', 'pod.pr_detail_id')
+                ->join('tc_erp_po as po', 'pod.po_id', '=', 'po.id')
+                ->whereIn('prd.pr_id', $prIds)
+                ->where('po.status', '>=', 1) // 1 = ACC by management
+                ->select('prd.pr_id', 'po.no_po', 'po.tgl_acc')
+                ->get()
+                ->keyBy('pr_id');
 
             foreach ($prs->items() as $item) {
-                $item->jml_brg = isset($counts[$item->id_tc_permohonan]) ? $counts[$item->id_tc_permohonan]->jml_brg : 0;
+                $item->jml_brg = isset($counts[$item->id]) ? $counts[$item->id]->jml_brg : 0;
+                
+                if (isset($approvedPrs[$item->id])) {
+                    $item->no_acc = 'ACC';
+                    $item->tgl_acc = $approvedPrs[$item->id]->tgl_acc;
+                } else {
+                    $item->no_acc = null;
+                    $item->tgl_acc = null;
+                }
             }
         }
 
@@ -76,56 +92,49 @@ class PermintaanPembelianController extends Controller
         try {
             DB::beginTransaction();
 
-            // Generate kode_permohonan (e.g. 489/PPNM/06/2026)
             $month = Carbon::now()->format('m');
             $year = Carbon::now()->format('Y');
 
-            $lastPr = DB::table('tc_permohonan_nm')
-                ->whereYear('tgl_permohonan', $year)
-                ->orderBy('id_tc_permohonan', 'desc')
+            $lastPr = TcErpPr::whereYear('tgl_pr', $year)
+                ->orderBy('id', 'desc')
                 ->first();
 
             $nextNum = 1;
-            if ($lastPr && preg_match('/^(\d+)\//', $lastPr->kode_permohonan, $matches)) {
+            if ($lastPr && preg_match('/^(\d+)\//', $lastPr->no_pr, $matches)) {
                 $nextNum = intval($matches[1]) + 1;
             }
 
-            $kodePermohonan = sprintf('%d/PPNM/%s/%s', $nextNum, $month, $year);
+            $noPr = sprintf('%d/PR/%s/%s', $nextNum, $month, $year);
 
-            $idTcPermohonan = DB::table('tc_permohonan_nm')->insertGetId([
-                'kode_permohonan' => $kodePermohonan,
-                'no_urut_periodik' => $nextNum,
-                'tgl_permohonan' => Carbon::now(),
+            // supplier_id from kodesupplier (frontend might send ID if updated, or kodesupplier)
+            // Let's assume kodesupplier is actually the ID for the new mt_erp_supplier table, 
+            // since we will update the search-supplier API to return the ID.
+
+            $pr = TcErpPr::create([
+                'no_pr' => $noPr,
+                'tgl_pr' => Carbon::now(),
+                'status' => 1, // 1 = Diajukan
                 'user_id' => 1, // hardcode for now
-                'jenis_permohonan' => 1,
-                'status_batal' => 0,
-                'status_kirim' => 1,
-                'kodesupplier' => $request->kodesupplier,
-                'kode_bagian' => '070201', // Gudang Non Medis
+                'supplier_id' => $request->kodesupplier,
             ]);
 
             $details = [];
             foreach ($request->items as $item) {
                 $details[] = [
-                    'id_tc_permohonan' => $idTcPermohonan,
+                    'pr_id' => $pr->id,
                     'kode_brg' => $item['kode_brg'],
-                    'jumlah_besar' => $item['jumlah_besar'],
-                    'satuan_besar' => $item['satuan_besar'] ?? '',
-                    'rasio' => 1,
-                    'status_po' => 0,
-                    'status_batal' => 0,
-                    'user_id' => 1,
-                    'flag_satuan' => 1,
-                    'pilih_satuan' => 1,
-                    'satuan' => $item['satuan'] ?? '',
+                    'qty_minta' => $item['jumlah_besar'],
+                    'qty_po' => 0,
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
                 ];
             }
 
-            DB::table('tc_permohonan_nm_det')->insert($details);
+            TcErpPrDetail::insert($details);
 
             DB::commit();
 
-            return redirect('/gudang/permintaan-pembelian')->with('success', 'Permintaan Pembelian berhasil dibuat dengan Kode: '.$kodePermohonan);
+            return redirect('/gudang/permintaan-pembelian')->with('success', 'Permintaan Pembelian berhasil dibuat dengan Kode: '.$noPr);
 
         } catch (\Exception $e) {
             DB::rollBack();
@@ -134,3 +143,4 @@ class PermintaanPembelianController extends Controller
         }
     }
 }
+

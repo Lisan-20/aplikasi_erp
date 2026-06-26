@@ -3,21 +3,23 @@ import { Head, Link, useForm, router } from '@inertiajs/react';
 import DashboardLayout from '@/Layouts/DashboardLayout';
 import { FileText, ArrowLeft, Trash2, Save, ShoppingCart, RefreshCw } from 'lucide-react';
 import AsyncSelect from 'react-select/async';
+import dayjs from 'dayjs';
 import Swal from 'sweetalert2';
 
-import dayjs from 'dayjs';
-
-export default function FormPo() {
+export default function EditPo({ auth, po, cart: initialCart, supplier: initialSupplier, selectedPr: initialPr }) {
     const { data, setData, post, processing, errors } = useForm({
-        kodesupplier: '',
-        tgl_po: dayjs().format('YYYY-MM-DD'),
-        cart: [],
-        ppn: 11, // Default PPN 11%
-        discount_harga: 0
+        tgl_po: po.tgl_po ? po.tgl_po.split(' ')[0] : dayjs().format('YYYY-MM-DD'),
+        kodesupplier: initialSupplier ? initialSupplier.kodesupplier : '',
+        ppn: po.ppn_persen || 0,
+        ppn_nominal: po.ppn_nominal || 0,
+        discount_harga: po.discount_harga || 0,
+        total_sbl_ppn: po.total_sbl_ppn || 0,
+        total_stl_ppn: po.total_stl_ppn || 0,
+        cart: initialCart || []
     });
 
-    const [selectedSupplier, setSelectedSupplier] = useState(null);
-    const [selectedPr, setSelectedPr] = useState(null);
+    const [selectedPr, setSelectedPr] = useState(initialPr || null);
+    const [selectedSupplier, setSelectedSupplier] = useState(initialSupplier ? { value: initialSupplier.kodesupplier, label: initialSupplier.namasupplier } : null);
     const [selectedBarang, setSelectedBarang] = useState(null);
 
     const loadSuppliers = async (inputValue) => {
@@ -55,7 +57,6 @@ export default function FormPo() {
             const barang = val.data;
             const currentCart = [...data.cart];
             
-            // Periksa jika barang sudah ada di keranjang untuk PO manual
             if (!currentCart.find(c => c.kode_brg === barang.kode_brg && !c.id_tc_permohonan)) {
                 currentCart.push({
                     id_tc_permohonan: null,
@@ -78,8 +79,10 @@ export default function FormPo() {
         setSelectedPr(val);
         if (val) {
             const pr = val.data;
+            if (pr.kodesupplier && !data.kodesupplier) {
+                setData('kodesupplier', pr.kodesupplier);
+            }
 
-            // Append items to cart
             const newItems = pr.items.map(item => ({
                 id_tc_permohonan: pr.id_tc_permohonan,
                 id_tc_permohonan_det: item.id_tc_permohonan_det,
@@ -87,10 +90,9 @@ export default function FormPo() {
                 nama_brg: item.nama_brg,
                 satuan_besar: item.satuan_besar || 'PCS',
                 qty: item.qty,
-                harga_beli: 0 // user needs to input this
+                harga_beli: 0
             }));
 
-            // merge with existing, avoid duplicates
             const currentCart = [...data.cart];
             newItems.forEach(ni => {
                 if (!currentCart.find(c => c.id_tc_permohonan_det === ni.id_tc_permohonan_det)) {
@@ -98,15 +100,8 @@ export default function FormPo() {
                 }
             });
 
-            setData(prev => ({
-                ...prev,
-                cart: currentCart,
-                kodesupplier: (pr.kodesupplier && !prev.kodesupplier) ? pr.kodesupplier : prev.kodesupplier
-            }));
-            
-            setTimeout(() => {
-                setSelectedPr(null); // reset selector visually
-            }, 100);
+            setData('cart', currentCart);
+            setSelectedPr(null);
         }
     };
 
@@ -128,25 +123,14 @@ export default function FormPo() {
     const ppnAmount = (totalSetelahDiskon * parseFloat(data.ppn || 0)) / 100;
     const grandTotal = totalSetelahDiskon + ppnAmount;
 
-    const handleSubmit = (e) => {
+    const submit = (e) => {
         e.preventDefault();
+        
         if (data.cart.length === 0) {
             Swal.fire('Error', 'Daftar pesanan masih kosong!', 'error');
             return;
         }
-        if (!data.kodesupplier) {
-            Swal.fire('Peringatan', 'Silakan pilih Supplier terlebih dahulu!', 'warning');
-            return;
-        }
-        
-        // Cek apakah ada harga yang tidak valid
-        const hasZeroPrice = data.cart.some(item => parseFloat(item.harga_beli) < 0);
-        if (hasZeroPrice) {
-            Swal.fire('Peringatan', 'Pastikan semua barang memiliki harga beli yang valid (tidak boleh minus).', 'warning');
-            return;
-        }
-        
-        // Transform data before post to include calculations
+
         const payload = {
             ...data,
             total_sbl_ppn: subTotal,
@@ -154,46 +138,55 @@ export default function FormPo() {
             total_stl_ppn: grandTotal
         };
 
-        router.post('/pengadaan/po', payload, {
-            onError: (err) => {
-                const firstError = Object.values(err)[0];
-                Swal.fire('Gagal Menyimpan', firstError || 'Terjadi kesalahan saat memvalidasi data.', 'error');
-            },
+        router.post(`/pengadaan/po/${po.id}/revisi`, payload, {
+            preserveScroll: true,
             onSuccess: () => {
-                // Notifikasi dari flash message di index
+                Swal.fire({
+                    title: 'Berhasil!',
+                    text: 'Revisi Purchase Order telah disimpan dan dikirim untuk ACC.',
+                    icon: 'success',
+                    confirmButtonColor: '#10b981'
+                });
             }
         });
     };
 
     return (
         <DashboardLayout>
-            <Head title="Buat PO Baru" />
+            <Head title="Revisi PO" />
 
             <div className="pl-container">
                 <div className="pl-header glass-panel">
                     <div className="pl-title">
-                        <h1>Buat Purchase Order</h1>
-                        <p>Tarik dari Permintaan Pembelian (PR) yang disetujui</p>
+                        <h1 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'white', margin: 0 }}>
+                            Revisi Purchase Order
+                        </h1>
+                        <p style={{ color: 'var(--text-muted)', margin: '5px 0 0 0', fontSize: '0.9rem' }}>
+                            Ubah daftar pesanan dari PO {po.no_po} yang butuh revisi.
+                        </p>
                     </div>
                     <div className="pl-actions flex gap-2">
-                        <Link href="/pengadaan/po" className="dash-btn secondary">
-                            <ArrowLeft size={18} />
-                            <span>Kembali</span>
-                        </Link>
                         <button 
                             type="button" 
-                            onClick={handleSubmit}
-                            disabled={processing}
-                            className="dash-btn primary"
+                            className="dash-btn secondary"
+                            onClick={() => window.history.back()}
                         >
-                            {processing ? <div className="spinner-border spinner-border-sm" role="status" /> : <Save size={18} />}
-                            <span>Simpan & Terbitkan PO</span>
+                            Batal
+                        </button>
+                        <button 
+                            type="submit" 
+                            className="dash-btn primary"
+                            disabled={processing}
+                            onClick={submit}
+                            style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
+                        >
+                            <Save size={18} />
+                            Simpan Revisi
                         </button>
                     </div>
                 </div>
 
                 <div className="row" style={{ padding: '0 20px', marginTop: '20px' }}>
-                    {/* Left Column - Form Supplier & Add PR */}
                     <div className="col-lg-4 col-md-5">
                         <div className="glass-panel" style={{ padding: '20px', marginBottom: '20px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
                             <div>
@@ -211,6 +204,8 @@ export default function FormPo() {
                                     value={selectedPr}
                                     onChange={(val) => handleSelectPr(val)}
                                     placeholder="Cari PR yang Diajukan Gudang..."
+                                    menuPortalTarget={document.body}
+                                    menuPosition={'fixed'}
                                     styles={{
                                         control: (base) => ({ ...base, backgroundColor: 'rgba(255, 255, 255, 0.05)', borderColor: 'rgba(255, 255, 255, 0.2)', color: 'white' }),
                                         singleValue: (base) => ({ ...base, color: 'white' }),
@@ -286,7 +281,6 @@ export default function FormPo() {
                     </div>
                     </div>
 
-                    {/* Right Column - Cart & Summary */}
                     <div className="col-lg-8 col-md-7">
                         <div className="glass-panel table-wrap">
                             <div style={{ padding: '15px', borderBottom: '1px solid var(--border-color)' }}>

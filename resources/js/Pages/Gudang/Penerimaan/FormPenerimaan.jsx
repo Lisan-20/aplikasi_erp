@@ -18,14 +18,16 @@ export default function FormPenerimaan({ po, po_details }) {
 
     useEffect(() => {
         if (po && po_details) {
-            setData('id_tc_po', po.id_tc_po);
-            setData('items', po_details);
+            setData(data => ({
+                ...data,
+                id_tc_po: po.id_tc_po,
+                items: po_details
+            }));
         }
     }, [po, po_details]);
 
     const loadPos = async (inputValue) => {
-        if (!inputValue) return [];
-        const res = await fetch(`/gudang/api/search-po?search=${inputValue}`);
+        const res = await fetch(`/gudang/api/search-po?search=${inputValue || ''}`);
         return await res.json();
     };
 
@@ -34,14 +36,17 @@ export default function FormPenerimaan({ po, po_details }) {
         if (val) {
             router.get(`/gudang/penerimaan/create`, { id_tc_po: val.value }, { preserveState: true, replace: true });
         } else {
-            setData('items', []);
-            setData('id_tc_po', '');
+            setData(data => ({
+                ...data,
+                items: [],
+                id_tc_po: ''
+            }));
         }
     };
 
     const updateQtyTerima = (index, value) => {
         const newItems = [...data.items];
-        newItems[index].qty_terima = value;
+        newItems[index].qty_terima = value === '' ? '' : Number(value);
         setData('items', newItems);
     };
 
@@ -55,6 +60,12 @@ export default function FormPenerimaan({ po, po_details }) {
 
         if (!data.no_faktur) {
             Swal.fire('Oops', 'Nomor Faktur / Surat Jalan wajib diisi!', 'warning');
+            return;
+        }
+
+        const hasExceedingQty = data.items.some(item => parseFloat(item.qty_terima) > parseFloat(item.qty_pesan));
+        if (hasExceedingQty) {
+            Swal.fire('Error', 'Terdapat barang dengan Qty Terima melebihi pesanan!', 'error');
             return;
         }
 
@@ -219,15 +230,15 @@ export default function FormPenerimaan({ po, po_details }) {
                                                             textAlign: 'center', 
                                                             fontWeight: 'bold', 
                                                             padding: '0.5rem',
-                                                            borderColor: item.qty_terima > item.qty_pesan ? 'var(--color-danger)' : 'var(--color-primary)',
+                                                            borderColor: Number(item.qty_terima) > Number(item.qty_pesan) ? 'var(--color-danger)' : 'var(--color-primary)',
                                                             background: 'var(--bg-surface-elevated)',
-                                                            color: item.qty_terima > item.qty_pesan ? 'var(--color-danger)' : 'var(--color-primary)'
+                                                            color: Number(item.qty_terima) > Number(item.qty_pesan) ? 'var(--color-danger)' : 'var(--color-primary)'
                                                         }}
                                                         value={item.qty_terima}
                                                         onChange={e => updateQtyTerima(idx, e.target.value)}
                                                         min="0"
                                                     />
-                                                    {item.qty_terima > item.qty_pesan && (
+                                                    {Number(item.qty_terima) > Number(item.qty_pesan) && (
                                                         <p style={{ fontSize: '10px', color: 'var(--color-danger)', marginTop: '0.25rem', textAlign: 'center' }}>Qty terima melebihi pesanan!</p>
                                                     )}
                                                 </td>

@@ -16,19 +16,19 @@ export default function FormPermintaan() {
 
     const loadSuppliers = async (inputValue) => {
         if (!inputValue || inputValue.length < 2) return [];
-        const res = await fetch(`/api/search-supplier?search=${inputValue}`);
+        const res = await fetch(`/pengadaan/api/search-supplier?search=${inputValue}`);
         const json = await res.json();
         return json.map(item => ({ label: item.namasupplier, value: item.kodesupplier }));
     };
 
     const loadBarang = async (inputValue) => {
         if (!inputValue || inputValue.length < 2) return [];
-        const res = await fetch(`/api/search-barang-nm?search=${inputValue}`);
+        const res = await fetch(`/pengadaan/api/search-barang?search=${inputValue}`);
         const json = await res.json();
         return json.map(item => ({
-            label: `${item.nama_brg} (${item.satuan_kecil})`,
+            label: `${item.nama_brg} (${item.satuan || '-'})`,
             value: item.kode_brg,
-            satuan: item.satuan_kecil
+            satuan: item.satuan || '-'
         }));
     };
 
@@ -129,6 +129,8 @@ export default function FormPermintaan() {
                                     value={selectedSupplier}
                                     onChange={handleSupplierChange}
                                     placeholder="Ketik nama supplier..."
+                                    menuPortalTarget={document.body}
+                                    menuPosition={'fixed'}
                                     styles={{
                                         control: (base) => ({
                                             ...base,
@@ -212,6 +214,8 @@ export default function FormPermintaan() {
                                                             value={item.selectedOption}
                                                             onChange={(val) => handleItemChange(item.id, val)}
                                                             placeholder="Ketik nama barang..."
+                                                            menuPortalTarget={document.body}
+                                                            menuPosition={'fixed'}
                                                             styles={{
                                                                 control: (base) => ({
                                                                     ...base, backgroundColor: 'rgba(255, 255, 255, 0.05)', borderColor: 'rgba(255, 255, 255, 0.2)', color: 'white'
