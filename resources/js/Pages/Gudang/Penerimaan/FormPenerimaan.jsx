@@ -13,6 +13,7 @@ export default function FormPenerimaan({ po, po_details }) {
         id_tc_po: po ? po.id_tc_po : '',
         no_faktur: '',
         tgl_penerimaan: dayjs().format('YYYY-MM-DD'),
+        hpp_method: 'average', // default method
         items: po_details || []
     });
 
@@ -168,6 +169,26 @@ export default function FormPenerimaan({ po, po_details }) {
                                     />
                                     {errors.no_faktur && <span style={{ color: 'var(--color-danger)', fontSize: '0.75rem' }}>{errors.no_faktur}</span>}
                                 </div>
+                                
+                                {po && (
+                                    <div>
+                                        <label style={{ display: 'block', fontSize: '0.875rem', marginBottom: '0.5rem', color: 'var(--text-secondary)' }}>Metode Update HPP</label>
+                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                                            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.875rem', cursor: 'pointer' }}>
+                                                <input type="radio" name="hpp_method" value="average" checked={data.hpp_method === 'average'} onChange={e => setData('hpp_method', e.target.value)} />
+                                                Moving Average (Rata-rata)
+                                            </label>
+                                            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.875rem', cursor: 'pointer' }}>
+                                                <input type="radio" name="hpp_method" value="last" checked={data.hpp_method === 'last'} onChange={e => setData('hpp_method', e.target.value)} />
+                                                Harga Beli Terakhir (PO)
+                                            </label>
+                                            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.875rem', cursor: 'pointer' }}>
+                                                <input type="radio" name="hpp_method" value="none" checked={data.hpp_method === 'none'} onChange={e => setData('hpp_method', e.target.value)} />
+                                                Jangan Update HPP
+                                            </label>
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         </div>
 

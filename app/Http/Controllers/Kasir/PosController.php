@@ -187,6 +187,8 @@ class PosController extends Controller
                             'jml_sat_kcl' => $stok_akhir,
                         ]);
 
+                    $currentHpp = DB::table('mt_barang_jasa')->where('kode_brg', $kode_brg)->value('harga_beli');
+
                     // Insert to tc_kartu_stok_brg_jasa
                     DB::table('tc_kartu_stok_brg_jasa')->insert([
                         'tgl_input' => $tglJam,
@@ -195,6 +197,7 @@ class PosController extends Controller
                         'pengeluaran' => $qty,
                         'pemasukan' => 0,
                         'stok_akhir' => $stok_akhir,
+                        'harga_hpp' => (float) $currentHpp,
                         'jenis_transaksi' => 6,
                         'kode_bagian' => '070101',
                         'petugas' => $id_dd_user,
@@ -343,6 +346,8 @@ class PosController extends Controller
                         ->where('kode_bagian', '070101')
                         ->update(['jml_sat_kcl' => $stok_akhir]);
 
+                    $currentHpp = DB::table('mt_barang_jasa')->where('kode_brg', $kode_brg)->value('harga_beli');
+
                     // Record return in tc_kartu_stok_brg_jasa
                     DB::table('tc_kartu_stok_brg_jasa')->insert([
                         'tgl_input' => $tglJam,
@@ -351,6 +356,7 @@ class PosController extends Controller
                         'pengeluaran' => 0,
                         'pemasukan' => $qty,
                         'stok_akhir' => $stok_akhir,
+                        'harga_hpp' => (float) $currentHpp,
                         'jenis_transaksi' => 7,
                         'kode_bagian' => '070101',
                         'petugas' => $id_dd_user,
@@ -474,6 +480,8 @@ class PosController extends Controller
                         ->where('kode_bagian', '070101')
                         ->update(['jml_sat_kcl' => $stok_akhir]);
 
+                    $currentHpp = DB::table('mt_barang_jasa')->where('kode_brg', $kode_brg)->value('harga_beli');
+
                     // Record return in tc_kartu_stok_brg_jasa
                     DB::table('tc_kartu_stok_brg_jasa')->insert([
                         'tgl_input' => $tglJam,
@@ -482,6 +490,7 @@ class PosController extends Controller
                         'pengeluaran' => 0,
                         'pemasukan' => $qtyToReturn,
                         'stok_akhir' => $stok_akhir,
+                        'harga_hpp' => (float) $currentHpp,
                         'jenis_transaksi' => 7,
                         'kode_bagian' => '070101',
                         'petugas' => $id_dd_user,

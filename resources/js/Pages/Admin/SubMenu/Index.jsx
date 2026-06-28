@@ -10,7 +10,7 @@ export default function SubMenuIndex() {
     const [search, setSearch] = useState(filters?.search || '');
     const [filterModul, setFilterModul] = useState(filters?.id_dc_modul || '');
     const [filterMenu, setFilterMenu] = useState(filters?.id_dc_menu || '');
-    
+
     const [isFormOpen, setIsFormOpen] = useState(false);
     const [editingId, setEditingId] = useState(null);
     const [formData, setFormData] = useState({
@@ -23,7 +23,7 @@ export default function SubMenuIndex() {
         no_urut: '',
         status_sub_menu: '1'
     });
-    
+
     const [sortItems, setSortItems] = useState(submenus.data || []);
     const [isSorting, setIsSorting] = useState(false);
 
@@ -44,7 +44,7 @@ export default function SubMenuIndex() {
         }));
 
     const formMenuOptions = menus.map(m => {
-        const modul = moduls.find(mod => mod.id_dc_modul === m.id_dc_modul);
+        const modul = moduls.find(mod => mod.id_dc_modul == m.id_dc_modul);
         return {
             value: m.id_dc_menu,
             label: `${modul?.nama_modul || 'Unknown'} - ${m.nama_menu}`
@@ -168,7 +168,7 @@ export default function SubMenuIndex() {
     return (
         <DashboardLayout>
             <Head title="Konfigurasi Sub Menu" />
-            
+
             <div className="pl-container">
                 <div className="pl-header glass-panel">
                     <div className="pl-title">
@@ -243,12 +243,12 @@ export default function SubMenuIndex() {
                                             {(submenus.current_page - 1) * submenus.per_page + index + 1}
                                         </td>
                                         <td style={{ textAlign: 'center' }}>
-                                            <input 
-                                                type="number" 
+                                            <input
+                                                type="number"
                                                 className="premium-input"
                                                 style={{ width: '80px', textAlign: 'center', padding: '4px' }}
-                                                value={item.no_urut || ''} 
-                                                onChange={(e) => handleSortChange(index, e.target.value)} 
+                                                value={item.no_urut || ''}
+                                                onChange={(e) => handleSortChange(index, e.target.value)}
                                             />
                                         </td>
                                         <td>
@@ -296,7 +296,7 @@ export default function SubMenuIndex() {
                             let label = link.label;
                             if (label.includes('Previous')) label = '«';
                             if (label.includes('Next')) label = '»';
-                            
+
                             return link.url ? (
                                 <Link
                                     key={index}
@@ -349,33 +349,33 @@ export default function SubMenuIndex() {
                                         <label className="form-label">
                                             Nama Sub Menu <span className="text-red-500">*</span>
                                         </label>
-                                        <input 
-                                            type="text" 
-                                            className="premium-input" 
-                                            required 
+                                        <input
+                                            type="text"
+                                            className="premium-input"
+                                            required
                                             value={formData.nama_sub_menu}
                                             onChange={(e) => setFormData({...formData, nama_sub_menu: e.target.value})}
                                         />
                                     </div>
                                     <div>
                                         <label className="form-label">No. Urut</label>
-                                        <input 
-                                            type="number" 
-                                            className="premium-input" 
+                                        <input
+                                            type="number"
+                                            className="premium-input"
                                             value={formData.no_urut}
                                             onChange={(e) => setFormData({...formData, no_urut: e.target.value})}
                                         />
                                     </div>
                                 </div>
-                                
+
                                 <div className="p-4 rounded-lg bg-orange-500/10 border border-orange-500/30">
                                     <h6 className="text-orange-500 font-semibold mb-3">Konfigurasi URL / Navigasi</h6>
-                                    
+
                                     <div className="mb-3">
                                         <label className="form-label">URL (React/Inertia)</label>
-                                        <input 
-                                            type="text" 
-                                            className="premium-input border-green-500/50 text-green-600 dark:text-green-400" 
+                                        <input
+                                            type="text"
+                                            className="premium-input border-green-500/50 text-green-600 dark:text-green-400"
                                             value={formData.url_sub_menu_baru}
                                             onChange={(e) => setFormData({...formData, url_sub_menu_baru: e.target.value})}
                                             placeholder="e.g., /admin/user atau /registrasi/pasien-baru"
@@ -388,8 +388,8 @@ export default function SubMenuIndex() {
 
                                 <div>
                                     <label className="form-label">Keterangan / Deskripsi</label>
-                                    <textarea 
-                                        className="premium-input" 
+                                    <textarea
+                                        className="premium-input"
                                         rows="2"
                                         value={formData.summary}
                                         onChange={(e) => setFormData({...formData, summary: e.target.value})}

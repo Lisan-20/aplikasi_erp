@@ -1,15 +1,19 @@
 import React, { useState } from 'react';
 import { useForm, router } from '@inertiajs/react';
 import DashboardLayout from '@/Layouts/DashboardLayout';
+import { AlertTriangle, Settings2 } from 'lucide-react';
 
 export default function StokGudangIndex({ barang, filters, flash }) {
     const [search, setSearch] = useState(filters.search || '');
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isMinMaxModalOpen, setIsMinMaxModalOpen] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
 
     const { data, setData, post, processing, errors, reset, clearErrors } = useForm({
         kode_brg: '',
         stok_aktual: '',
+        stok_minimum: '',
+        stok_maksimum: ''
     });
 
     const handleSearch = (e) => {
@@ -27,15 +31,34 @@ export default function StokGudangIndex({ barang, filters, flash }) {
         setIsModalOpen(true);
     };
 
+    const openMinMaxModal = (item) => {
+        clearErrors();
+        setSelectedItem(item);
+        setData({
+            kode_brg: item.kode_brg,
+            stok_minimum: item.stok_minimum || 0,
+            stok_maksimum: item.stok_maksimum || 0,
+        });
+        setIsMinMaxModalOpen(true);
+    };
+
     const closeModal = () => {
         setIsModalOpen(false);
+        setIsMinMaxModalOpen(false);
         reset();
         setSelectedItem(null);
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmitOpname = (e) => {
         e.preventDefault();
         post('/gudang/stok-gudang', {
+            onSuccess: () => closeModal(),
+        });
+    };
+
+    const handleSubmitMinMax = (e) => {
+        e.preventDefault();
+        post('/gudang/stok-gudang/minmax', {
             onSuccess: () => closeModal(),
         });
     };
@@ -48,7 +71,7 @@ export default function StokGudangIndex({ barang, filters, flash }) {
                 <div className="pl-header glass-panel p-4 flex flex-col md:flex-row justify-between items-center gap-4 rounded-xl">
                     <div>
                         <h1 className="text-2xl font-bold text-gray-800 dark:text-white">Stok Gudang</h1>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">Penyesuaian (Opname) Stok di Depo Gudang Sementara (070101)</p>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">Penyesuaian Stok & Pengaturan Batas di Depo Utama (070101)</p>
                     </div>
                     <div className="flex gap-2 w-full md:w-auto">
                         <form onSubmit={handleSearch} className="flex gap-2 w-full">
@@ -94,41 +117,58 @@ export default function StokGudangIndex({ barang, filters, flash }) {
                 {/* Table */}
                 <div className="flex-1 glass-panel p-4 rounded-xl overflow-hidden flex flex-col">
                     <div className="overflow-x-auto">
-                        <table className="premium-table w-full">
+                        <table className="premium-table w-full text-sm">
                             <thead>
                                 <tr>
                                     <th className="w-16">No</th>
                                     <th>Kode Barang</th>
                                     <th>Nama Barang</th>
                                     <th>Satuan</th>
-                                    <th className="text-right">Stok Gudang</th>
-                                    <th className="text-center w-32">Aksi</th>
+                                    <th className="text-right text-gray-500">Min</th>
+                                    <th className="text-right text-gray-500">Max</th>
+                                    <th className="text-right">Stok Aktual</th>
+                                    <th className="text-center w-48">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {barang.data.length > 0 ? (
-                                    barang.data.map((item, index) => (
-                                        <tr key={index} className="hover:bg-gray-50/50 dark:hover:bg-gray-800/50 transition-colors">
+                                    barang.data.map((item, index) => {
+                                        const isLowStock = item.stok_minimum > 0 && item.stok <= item.stok_minimum;
+                                        return (
+                                        <tr key={index} className={`transition-colors ${isLowStock ? 'bg-red-50/80 dark:bg-red-900/20' : 'hover:bg-gray-50/50 dark:hover:bg-gray-800/50'}`}>
                                             <td className="text-center">{barang.from + index}</td>
-                                            <td className="font-medium">{item.kode_brg}</td>
-                                            <td>{item.nama_brg}</td>
+                                            <td className="font-mono text-xs">{item.kode_brg}</td>
+                                            <td className="font-medium flex items-center gap-2">
+                                                {item.nama_brg}
+                                                {isLowStock && <AlertTriangle className="w-4 h-4 text-red-500" title="Stok Menipis!" />}
+                                            </td>
                                             <td>{item.satuan_kecil || '-'}</td>
-                                            <td className="text-right font-bold text-blue-600 dark:text-blue-400">
+                                            <td className="text-right text-gray-500">{Number(item.stok_minimum || 0).toLocaleString('id-ID')}</td>
+                                            <td className="text-right text-gray-500">{Number(item.stok_maksimum || 0).toLocaleString('id-ID')}</td>
+                                            <td className={`text-right font-bold ${isLowStock ? 'text-red-600 dark:text-red-400' : 'text-blue-600 dark:text-blue-400'}`}>
                                                 {Number(item.stok).toLocaleString('id-ID')}
                                             </td>
                                             <td className="text-center">
-                                                <button 
-                                                    onClick={() => openModal(item)}
-                                                    className="px-3 py-1 bg-amber-100 text-amber-700 hover:bg-amber-200 rounded-lg text-sm font-medium transition-colors"
-                                                >
-                                                    Opname
-                                                </button>
+                                                <div className="flex gap-1 justify-center">
+                                                    <button 
+                                                        onClick={() => openModal(item)}
+                                                        className="px-2 py-1 bg-amber-100 text-amber-700 hover:bg-amber-200 rounded-lg text-xs font-medium transition-colors"
+                                                    >
+                                                        Opname
+                                                    </button>
+                                                    <button 
+                                                        onClick={() => openMinMaxModal(item)}
+                                                        className="px-2 py-1 bg-slate-100 text-slate-700 hover:bg-slate-200 rounded-lg text-xs font-medium transition-colors flex items-center gap-1"
+                                                    >
+                                                        <Settings2 className="w-3 h-3" /> Min/Max
+                                                    </button>
+                                                </div>
                                             </td>
                                         </tr>
-                                    ))
+                                    )})
                                 ) : (
                                     <tr>
-                                        <td colSpan="6" className="text-center py-8 text-gray-500">
+                                        <td colSpan="8" className="text-center py-8 text-gray-500">
                                             Tidak ada data barang ditemukan.
                                         </td>
                                     </tr>
@@ -165,46 +205,86 @@ export default function StokGudangIndex({ barang, filters, flash }) {
                         <div className="p-6 border-b border-gray-100 dark:border-gray-800 flex justify-between items-center">
                             <h3 className="text-xl font-bold text-gray-800 dark:text-white">Opname Stok Gudang</h3>
                             <button onClick={closeModal} className="text-gray-400 hover:text-gray-600">
-                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
-                                </svg>
+                                &times;
                             </button>
                         </div>
                         
-                        <form onSubmit={handleSubmit} className="p-6 flex flex-col gap-4">
+                        <form onSubmit={handleSubmitOpname} className="p-6 flex flex-col gap-4">
                             <div className="bg-blue-50 dark:bg-blue-900/30 p-4 rounded-xl border border-blue-100 dark:border-blue-800">
                                 <p className="text-sm text-blue-600 dark:text-blue-400 font-medium mb-1">Barang Terpilih:</p>
                                 <p className="text-lg font-bold text-gray-800 dark:text-white">{selectedItem?.nama_brg}</p>
-                                <p className="text-sm text-gray-500">{selectedItem?.kode_brg}</p>
                             </div>
 
                             <div className="form-group">
-                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Stok Aktual / Fisik (Sekarang)</label>
-                                <div className="relative">
-                                    <input 
-                                        type="number" 
-                                        className="premium-input w-full text-xl py-3"
-                                        placeholder="0"
-                                        min="0"
-                                        value={data.stok_aktual}
-                                        onChange={e => setData('stok_aktual', e.target.value)}
-                                        required
-                                    />
-                                    <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 font-medium">
-                                        {selectedItem?.satuan_kecil}
-                                    </span>
-                                </div>
-                                {errors.stok_aktual && <span className="text-red-500 text-sm mt-1 block">{errors.stok_aktual}</span>}
-                                
-                                <p className="text-xs text-gray-500 mt-2">
-                                    Stok sebelumnya di sistem: <strong className="text-gray-700 dark:text-gray-300">{Number(selectedItem?.stok).toLocaleString('id-ID')}</strong> {selectedItem?.satuan_kecil}
-                                </p>
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Stok Aktual (Fisik)</label>
+                                <input 
+                                    type="number" 
+                                    className="premium-input w-full text-xl py-3"
+                                    min="0"
+                                    value={data.stok_aktual}
+                                    onChange={e => setData('stok_aktual', e.target.value)}
+                                    required
+                                />
                             </div>
 
                             <div className="flex gap-3 justify-end mt-4">
                                 <button type="button" onClick={closeModal} className="btn-secondary px-6 py-2 rounded-xl">Batal</button>
-                                <button type="submit" disabled={processing} className="btn-primary px-6 py-2 rounded-xl flex items-center gap-2">
-                                    {processing ? 'Menyimpan...' : 'Simpan Opname'}
+                                <button type="submit" disabled={processing} className="btn-primary px-6 py-2 rounded-xl">
+                                    Simpan Opname
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
+
+            {/* Modal Min/Max */}
+            {isMinMaxModalOpen && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+                    <div className="bg-white dark:bg-slate-900 w-full max-w-md rounded-2xl shadow-xl overflow-hidden transform transition-all">
+                        <div className="p-6 border-b border-gray-100 dark:border-gray-800 flex justify-between items-center">
+                            <h3 className="text-xl font-bold text-gray-800 dark:text-white">Atur Batas Stok</h3>
+                            <button onClick={closeModal} className="text-gray-400 hover:text-gray-600">
+                                &times;
+                            </button>
+                        </div>
+                        
+                        <form onSubmit={handleSubmitMinMax} className="p-6 flex flex-col gap-4">
+                            <div className="bg-slate-50 dark:bg-slate-800/30 p-4 rounded-xl border border-slate-100 dark:border-slate-700">
+                                <p className="text-sm text-slate-600 dark:text-slate-400 font-medium mb-1">Barang Terpilih:</p>
+                                <p className="text-lg font-bold text-gray-800 dark:text-white">{selectedItem?.nama_brg}</p>
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="form-group">
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Stok Minimum</label>
+                                    <input 
+                                        type="number" 
+                                        className="premium-input w-full text-lg py-2 border-red-200"
+                                        min="0"
+                                        value={data.stok_minimum}
+                                        onChange={e => setData('stok_minimum', e.target.value)}
+                                        required
+                                    />
+                                    <p className="text-xs text-gray-500 mt-1">Peringatan jika stok dibawah ini.</p>
+                                </div>
+                                <div className="form-group">
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Stok Maksimum</label>
+                                    <input 
+                                        type="number" 
+                                        className="premium-input w-full text-lg py-2 border-green-200"
+                                        min="0"
+                                        value={data.stok_maksimum}
+                                        onChange={e => setData('stok_maksimum', e.target.value)}
+                                        required
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="flex gap-3 justify-end mt-4">
+                                <button type="button" onClick={closeModal} className="btn-secondary px-6 py-2 rounded-xl">Batal</button>
+                                <button type="submit" disabled={processing} className="bg-slate-800 text-white hover:bg-slate-700 px-6 py-2 rounded-xl transition-colors">
+                                    Simpan Batasan
                                 </button>
                             </div>
                         </form>

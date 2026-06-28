@@ -262,6 +262,7 @@ Route::middleware(['web', 'check.permission'])->group(function () {
         Route::get('/stok-gudang', [StokGudangController::class, 'index'])->name('stok-gudang.index');
         Route::get('/stok-gudang/riwayat', [StokGudangController::class, 'riwayat'])->name('stok-gudang.riwayat');
         Route::post('/stok-gudang', [StokGudangController::class, 'store'])->name('stok-gudang.store');
+        Route::post('/stok-gudang/minmax', [StokGudangController::class, 'updateMinMax'])->name('stok-gudang.minmax');
 
         Route::get('/permintaan-pembelian', [PermintaanPembelianController::class, 'index']);
         Route::get('/permintaan-pembelian/create', [PermintaanPembelianController::class, 'create'])->name('permintaan-pembelian.create');
@@ -288,6 +289,11 @@ Route::middleware(['web', 'check.permission'])->group(function () {
         Route::get('/laporan-stok/export', [App\Http\Controllers\Gudang\LaporanStokController::class, 'exportCsv'])->name('laporan-stok.export');
         Route::get('/laporan-stok/cetak', [App\Http\Controllers\Gudang\LaporanStokController::class, 'cetak'])->name('laporan-stok.cetak');
         Route::get('/api/search-barang-master', [App\Http\Controllers\Gudang\LaporanStokController::class, 'searchBarang'])->name('api.search-barang-master');
+        
+        Route::get('/penerimaan-internal', [App\Http\Controllers\Gudang\PenerimaanInternalController::class, 'index'])->name('penerimaan-internal.index');
+        Route::get('/penerimaan-internal/{id}', [App\Http\Controllers\Gudang\PenerimaanInternalController::class, 'show'])->name('penerimaan-internal.show');
+        Route::post('/penerimaan-internal/{id}/terima', [App\Http\Controllers\Gudang\PenerimaanInternalController::class, 'terima'])->name('penerimaan-internal.terima');
+
     });
 
     // Helper API

@@ -204,4 +204,9 @@ Maka Agen AI akan memuat dokumen ini dan langsung memiliki ingatan yang seragam.
   - **Efek Ganda Persediaan:** Mutasi ini memotong stok dari Bagian Asal (Gudang Utama) dengan mencatat rekaman `jenis_transaksi = 8` (Pengeluaran Internal), sekaligus menambah stok di Bagian Tujuan dengan mencatat `jenis_transaksi = 9` (Penerimaan Internal).
   - Jika barang belum pernah ada di unit tujuan, sistem otomatis membuatkan baris *stok* baru untuk unit tersebut.
   - **Detail Riwayat Transaksi:** Menyediakan Modal Detail Riwayat (Pop-up) untuk melacak Nomor Dokumen, Petugas Pengirim, dan rincian item beserta kuantitasnya secara rinci tanpa perlu berpindah halaman.
-- **Kesiapan Modul Keuangan:** Setelah siklus logistik dan pergudangan tuntas, sistem resmi dinyatakan siap untuk transisi ke rancang bangun **Modul Akuntansi, Manajemen, dan Keuangan** (General Ledger, Chart of Accounts, Journal Entries).
+  - **Dinamisasi Modul (Konteks Session):** Menyesuaikan *query* penerimaan internal agar secara dinamis membaca `active_modul` tempat *user* berada, sehingga data yang muncul akan difilter sesuai *kode_bagian* modul tersebut (contoh: Gudang vs Akuntansi).
+
+### Tahap 22: Rencana Modul Akuntansi Inti (General Ledger) & Evaluasi Alur Logistik
+- **Penyelarasan Alur Bisnis Penuh:** Menetapkan alur standar *Supply Chain* terpadu (Modul Gudang ➔ Pengadaan ➔ Manajemen ACC ➔ Penerimaan ➔ Akuntansi/Tukar Faktur ➔ Manajemen Pembayaran ➔ Keuangan).
+- **Urgensi Chart of Accounts (COA):** Disepakati bahwa sebelum menggarap Modul Tukar Faktur dan Pembayaran Supplier (yang mana secara logis akan menciptakan Jurnal *Accounts Payable* dan Jurnal Kas/Bank), sistem **wajib** terlebih dahulu dibangunkan fondasi **Modul Akuntansi** berupa Bagan Akun Utama (COA) dan Mesin Jurnal.
+- **Rencana Struktur Database Baru:** Ditetapkan rancangan (tercetak di `implementation_plan.md` saat ini) untuk membuat tabel `tc_erp_jurnal_header` dan `tc_erp_jurnal_detail` yang bersih khusus untuk sistem ERP ini, guna menghindari konflik dengan tabel *legacy* rumah sakit (`mt_jurnal`, `v_jurnal`, dll).

@@ -216,6 +216,28 @@ class PenerimaanBarangController extends Controller
                     ]);
                 }
 
+                // Process HPP (Costing) Update
+                if ($request->has('hpp_method') && $request->hpp_method !== 'none') {
+                    $harga_baru = (float) $item['harga_satuan'];
+                    if ($request->hpp_method === 'average') {
+                        $barangMaster = DB::table('mt_barang_jasa')->where('kode_brg', $item['kode_brg'])->first();
+                        $harga_lama = $barangMaster ? (float) $barangMaster->harga_beli : 0;
+                        $qty_baru = (int) $item['qty_terima'];
+                        $total_stok = $stok_awal + $qty_baru;
+
+                        if ($total_stok > 0) {
+                            $harga_baru = (($stok_awal * $harga_lama) + ($qty_baru * $harga_baru)) / $total_stok;
+                        }
+                    }
+
+                    DB::table('mt_barang_jasa')
+                        ->where('kode_brg', $item['kode_brg'])
+                        ->update(['harga_beli' => $harga_baru]);
+                }
+
+                // Get the final HPP for history logging
+                $currentHpp = DB::table('mt_barang_jasa')->where('kode_brg', $item['kode_brg'])->value('harga_beli');
+
                 // Insert into tc_kartu_stok_brg_jasa
                 DB::table('tc_kartu_stok_brg_jasa')->insert([
                     'kode_brg' => $item['kode_brg'],
@@ -225,6 +247,7 @@ class PenerimaanBarangController extends Controller
                     'pemasukan' => (int) $item['qty_terima'],
                     'pengeluaran' => 0,
                     'stok_akhir' => $stok_awal + (int) $item['qty_terima'],
+                    'harga_hpp' => (float) $currentHpp,
                     'jenis_transaksi' => 1,
                     'keterangan' => 'Penerimaan Barang '.$kode_penerimaan,
                     'petugas' => auth()->id() ?? 1,

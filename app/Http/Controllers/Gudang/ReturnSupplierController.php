@@ -174,6 +174,8 @@ class ReturnSupplierController extends Controller
                         ->where('kode_bagian', '070101')
                         ->value('jml_sat_kcl');
 
+                    $currentHpp = DB::table('mt_barang_jasa')->where('kode_brg', $item['kode_brg'])->value('harga_beli');
+
                     DB::table('tc_kartu_stok_brg_jasa')->insert([
                         'kode_brg' => $item['kode_brg'],
                         'kode_bagian' => '070101',
@@ -182,6 +184,7 @@ class ReturnSupplierController extends Controller
                         'pemasukan' => 0,
                         'pengeluaran' => (int)$item['qty_retur'],
                         'stok_akhir' => $currentStok,
+                        'harga_hpp' => (float) $currentHpp,
                         'jenis_transaksi' => 2, // 2 = Pengeluaran
                         'keterangan' => 'Retur Barang ke Supplier ' . ($lpb['namasupplier'] ?? '') . ' ' . $rbNumber . ' (LPB: ' . $lpb['kode_penerimaan'] . ')',
                         'petugas' => $no_induk ?? '1'

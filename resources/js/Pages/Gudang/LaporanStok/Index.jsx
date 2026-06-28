@@ -19,8 +19,10 @@ export default function LaporanStokIndex({ laporan, filters, totalItems }) {
         1: 'Penerimaan',
         2: 'Retur ke Supplier',
         4: 'Stok Opname',
-        5: 'Pengeluaran Internal',
-        6: 'Penjualan (Kasir)'
+        6: 'Penjualan (Kasir)',
+        7: 'Retur / Batal (Kasir)',
+        8: 'Pengeluaran Internal',
+        9: 'Penerimaan Internal'
     };
 
     const handleSearch = (e) => {
@@ -193,6 +195,8 @@ export default function LaporanStokIndex({ laporan, filters, totalItems }) {
                                             <th className="text-right text-green-600">Masuk</th>
                                             <th className="text-right text-red-600">Keluar</th>
                                             <th className="text-right">Saldo Akhir</th>
+                                            <th className="text-right text-purple-600">Harga HPP</th>
+                                            <th className="text-right text-indigo-600">Total Nilai</th>
                                             <th>Jenis / Keterangan</th>
                                         </tr>
                                     </thead>
@@ -215,6 +219,12 @@ export default function LaporanStokIndex({ laporan, filters, totalItems }) {
                                                     <td className="text-right font-bold text-blue-600 dark:text-blue-400">
                                                         {Number(item.stok_akhir).toLocaleString('id-ID')}
                                                     </td>
+                                                    <td className="text-right font-medium text-purple-600 dark:text-purple-400">
+                                                        {item.harga_hpp ? `Rp ${Number(item.harga_hpp).toLocaleString('id-ID')}` : '-'}
+                                                    </td>
+                                                    <td className="text-right font-bold text-indigo-600 dark:text-indigo-400">
+                                                        {item.harga_hpp ? `Rp ${Number(item.harga_hpp * item.stok_akhir).toLocaleString('id-ID')}` : '-'}
+                                                    </td>
                                                     <td>
                                                         <div className="text-xs font-bold text-gray-800 dark:text-gray-200">
                                                             {jenisTransaksiMap[item.jenis_transaksi] || 'Transaksi Lain'}
@@ -227,7 +237,7 @@ export default function LaporanStokIndex({ laporan, filters, totalItems }) {
                                             ))
                                         ) : (
                                             <tr>
-                                                <td colSpan="8" className="text-center py-12 text-gray-500">
+                                                <td colSpan="10" className="text-center py-12 text-gray-500">
                                                     Tidak ada mutasi stok ditemukan pada periode ini.
                                                 </td>
                                             </tr>

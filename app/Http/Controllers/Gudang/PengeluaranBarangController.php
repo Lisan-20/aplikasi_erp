@@ -162,6 +162,8 @@ class PengeluaranBarangController extends Controller
 
                 // Kartu Stok Log Asal
                 $keterangan_asal = "Pengeluaran Internal ke Bagian: " . $request->kode_bagian_minta . " (No: " . $nomor_permintaan . ")";
+                $currentHpp = DB::table('mt_barang_jasa')->where('kode_brg', $item['kode_brg'])->value('harga_beli');
+
                 DB::table('tc_kartu_stok_brg_jasa')->insert([
                     'tgl_input' => now(),
                     'kode_brg' => $item['kode_brg'],
@@ -169,49 +171,15 @@ class PengeluaranBarangController extends Controller
                     'pemasukan' => 0,
                     'pengeluaran' => $jumlah,
                     'stok_akhir' => $stok_akhir,
+                    'harga_hpp' => (float) $currentHpp,
                     'jenis_transaksi' => 8, // Pengeluaran Internal
                     'kode_bagian' => '070101',
                     'petugas' => $id_dd_user,
                     'keterangan' => $keterangan_asal,
                 ]);
 
-                // Update Stok Tujuan (Bagian Peminta)
-                $stokTujuanExist = DB::table('mt_depo_stok_brg_jasa')
-                    ->where('kode_brg', $item['kode_brg'])
-                    ->where('kode_bagian', $request->kode_bagian_minta)
-                    ->lockForUpdate()
-                    ->first();
-
-                $stok_awal_tujuan = $stokTujuanExist ? (float) $stokTujuanExist->jml_sat_kcl : 0;
-                $stok_akhir_tujuan = $stok_awal_tujuan + $jumlah;
-
-                if ($stokTujuanExist) {
-                    DB::table('mt_depo_stok_brg_jasa')
-                        ->where('kode_brg', $item['kode_brg'])
-                        ->where('kode_bagian', $request->kode_bagian_minta)
-                        ->update(['jml_sat_kcl' => $stok_akhir_tujuan]);
-                } else {
-                    DB::table('mt_depo_stok_brg_jasa')->insert([
-                        'kode_brg' => $item['kode_brg'],
-                        'kode_bagian' => $request->kode_bagian_minta,
-                        'jml_sat_kcl' => $stok_akhir_tujuan
-                    ]);
-                }
-
-                // Kartu Stok Log Tujuan
-                $keterangan_tujuan = "Penerimaan Internal dari Gudang (070101) (No: " . $nomor_permintaan . ")";
-                DB::table('tc_kartu_stok_brg_jasa')->insert([
-                    'tgl_input' => now(),
-                    'kode_brg' => $item['kode_brg'],
-                    'stok_awal' => $stok_awal_tujuan,
-                    'pemasukan' => $jumlah,
-                    'pengeluaran' => 0,
-                    'stok_akhir' => $stok_akhir_tujuan,
-                    'jenis_transaksi' => 9, // Penerimaan Internal
-                    'kode_bagian' => $request->kode_bagian_minta,
-                    'petugas' => $id_dd_user,
-                    'keterangan' => $keterangan_tujuan,
-                ]);
+                // HAPUS Update Stok Tujuan dan Kartu Stok Tujuan dari sini.
+                // Stok tujuan hanya akan bertambah saat dikonfirmasi di menu Penerimaan Internal.
             }
 
             DB::commit();

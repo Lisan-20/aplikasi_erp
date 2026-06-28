@@ -23,7 +23,9 @@ class StokGudangController extends Controller
                 'mt_barang_jasa.kode_brg',
                 'mt_barang_jasa.nama_brg',
                 'mt_barang_jasa.satuan_kecil',
-                DB::raw('COALESCE(mt_depo_stok_brg_jasa.jml_sat_kcl, 0) as stok')
+                DB::raw('COALESCE(mt_depo_stok_brg_jasa.jml_sat_kcl, 0) as stok'),
+                DB::raw('COALESCE(mt_depo_stok_brg_jasa.stok_minimum, 0) as stok_minimum'),
+                DB::raw('COALESCE(mt_depo_stok_brg_jasa.stok_maksimum, 0) as stok_maksimum')
             )
             ->where(function($q) {
                 $q->where('mt_barang_jasa.status', 1)
@@ -99,6 +101,8 @@ class StokGudangController extends Controller
                 $id_dd_user = auth()->user() ? auth()->user()->id_dd_user : 'SYSTEM';
             }
 
+            $currentHpp = DB::table('mt_barang_jasa')->where('kode_brg', $kode_brg)->value('harga_beli');
+
             DB::table('tc_kartu_stok_brg_jasa')->insert([
                 'tgl_input' => now(),
                 'kode_brg' => $kode_brg,
@@ -106,6 +110,7 @@ class StokGudangController extends Controller
                 'pemasukan' => $pemasukan,
                 'pengeluaran' => $pengeluaran,
                 'stok_akhir' => (float) $stok_aktual,
+                'harga_hpp' => (float) $currentHpp,
                 'jenis_transaksi' => $jenis_transaksi,
                 'kode_bagian' => $kode_bagian,
                 'petugas' => $id_dd_user,
@@ -163,5 +168,49 @@ class StokGudangController extends Controller
             'riwayat' => $riwayat,
             'filters' => ['search' => $search]
         ]);
+    }
+
+    public function updateMinMax(Request $request)
+    {
+        $request->validate([
+            'kode_brg' => 'required',
+            'stok_minimum' => 'required|numeric|min:0',
+            'stok_maksimum' => 'required|numeric|min:0'
+        ]);
+
+        $kode_bagian = '070101'; // Default gudang
+        
+        try {
+            DB::beginTransaction();
+            
+            $stokExist = DB::table('mt_depo_stok_brg_jasa')
+                ->where('kode_brg', $request->kode_brg)
+                ->where('kode_bagian', $kode_bagian)
+                ->first();
+                
+            if ($stokExist) {
+                DB::table('mt_depo_stok_brg_jasa')
+                    ->where('kode_brg', $request->kode_brg)
+                    ->where('kode_bagian', $kode_bagian)
+                    ->update([
+                        'stok_minimum' => $request->stok_minimum,
+                        'stok_maksimum' => $request->stok_maksimum
+                    ]);
+            } else {
+                DB::table('mt_depo_stok_brg_jasa')->insert([
+                    'kode_brg' => $request->kode_brg,
+                    'kode_bagian' => $kode_bagian,
+                    'jml_sat_kcl' => 0,
+                    'stok_minimum' => $request->stok_minimum,
+                    'stok_maksimum' => $request->stok_maksimum
+                ]);
+            }
+            
+            DB::commit();
+            return redirect()->back()->with('success', 'Batas stok minimum & maksimum berhasil diperbarui.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Gagal update batas stok: ' . $e->getMessage());
+        }
     }
 }

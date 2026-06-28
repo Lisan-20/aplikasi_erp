@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Session;
 
 class LaporanStokController extends Controller
 {
@@ -19,6 +20,11 @@ class LaporanStokController extends Controller
         $laporan = [];
         $totalItems = 0;
         
+        // Dapatkan kode bagian
+        $id_modul = Session::get('active_modul');
+        $kode_bagian_modul = $id_modul ? DB::table('dc_modul')->where('id_dc_modul', $id_modul)->value('kode_bagian') : null;
+        $kode_bagian = $kode_bagian_modul ?? Session::get('kode_bagian') ?? '070101';
+
         // Hanya query jika filter tanggal diisi
         if ($startDate && $endDate) {
             $query = DB::table('tc_kartu_stok_brg_jasa')
@@ -28,7 +34,7 @@ class LaporanStokController extends Controller
                     'mt_barang_jasa.nama_brg',
                     'mt_barang_jasa.satuan_kecil'
                 )
-                ->where('tc_kartu_stok_brg_jasa.kode_bagian', '070101')
+                ->where('tc_kartu_stok_brg_jasa.kode_bagian', $kode_bagian)
                 ->whereBetween(DB::raw('CAST(tc_kartu_stok_brg_jasa.tgl_input AS DATE)'), [$startDate, $endDate]);
 
             if ($kodeBrg) {
@@ -76,6 +82,10 @@ class LaporanStokController extends Controller
         $endDate = $request->input('end_date');
         $kodeBrg = $request->input('kode_brg');
         
+        $id_modul = Session::get('active_modul');
+        $kode_bagian_modul = $id_modul ? DB::table('dc_modul')->where('id_dc_modul', $id_modul)->value('kode_bagian') : null;
+        $kode_bagian = $kode_bagian_modul ?? Session::get('kode_bagian') ?? '070101';
+
         $query = DB::table('tc_kartu_stok_brg_jasa')
             ->join('mt_barang_jasa', 'tc_kartu_stok_brg_jasa.kode_brg', '=', 'mt_barang_jasa.kode_brg')
             ->select(
@@ -83,7 +93,7 @@ class LaporanStokController extends Controller
                 'mt_barang_jasa.nama_brg',
                 'mt_barang_jasa.satuan_kecil'
             )
-            ->where('tc_kartu_stok_brg_jasa.kode_bagian', '070101')
+            ->where('tc_kartu_stok_brg_jasa.kode_bagian', $kode_bagian)
             ->whereBetween(DB::raw('CAST(tc_kartu_stok_brg_jasa.tgl_input AS DATE)'), [$startDate, $endDate]);
 
         if ($kodeBrg) {
@@ -110,14 +120,16 @@ class LaporanStokController extends Controller
             "Expires"             => "0"
         ];
 
-        $columns = ['Tanggal', 'Kode Barang', 'Nama Barang', 'Stok Awal', 'Pemasukan', 'Pengeluaran', 'Stok Akhir', 'Jenis Transaksi', 'Keterangan'];
+        $columns = ['Tanggal', 'Kode Barang', 'Nama Barang', 'Stok Awal', 'Pemasukan', 'Pengeluaran', 'Stok Akhir', 'Harga HPP', 'Total Nilai', 'Jenis Transaksi', 'Keterangan'];
         
         $jenisTransaksiMap = [
             1 => 'Penerimaan',
             2 => 'Retur ke Supplier',
             4 => 'Stok Opname',
-            5 => 'Pengeluaran Internal',
-            6 => 'Penjualan (Kasir)'
+            6 => 'Penjualan (Kasir)',
+            7 => 'Retur / Batal (Kasir)',
+            8 => 'Pengeluaran Internal',
+            9 => 'Penerimaan Internal'
         ];
 
         $callback = function() use($data, $columns, $jenisTransaksiMap, $startDate, $endDate) {
@@ -126,16 +138,22 @@ class LaporanStokController extends Controller
             // Add UTF-8 BOM for Excel
             fputs($file, "\xEF\xBB\xBF");
             
+            $id_modul = Session::get('active_modul');
+            $kode_bagian_modul = $id_modul ? DB::table('dc_modul')->where('id_dc_modul', $id_modul)->value('kode_bagian') : null;
+            $kode_bagian = $kode_bagian_modul ?? Session::get('kode_bagian') ?? '070101';
+            $nama_bagian = DB::table('mt_bagian')->where('kode_bagian', $kode_bagian)->value('nama_bagian') ?? 'Depo Utama';
+
             // Header information
             fputcsv($file, ['LAPORAN SALDO PERSEDIAAN (KARTU STOK)'], ';');
             fputcsv($file, ["Periode: $startDate s/d $endDate"], ';');
-            fputcsv($file, ["Gudang: Depo Utama (070101)"], ';');
+            fputcsv($file, ["Gudang: $nama_bagian ($kode_bagian)"], ';');
             fputcsv($file, [], ';'); // Empty row
 
             fputcsv($file, $columns, ';');
             
             foreach ($data as $item) {
                 $jenis = $jenisTransaksiMap[$item->jenis_transaksi] ?? 'Transaksi Lain';
+                $total_nilai = $item->stok_akhir * ($item->harga_hpp ?? 0);
                 fputcsv($file, [
                     \Carbon\Carbon::parse($item->tgl_input)->format('d/m/Y H:i'),
                     $item->kode_brg,
@@ -144,6 +162,8 @@ class LaporanStokController extends Controller
                     $item->pemasukan,
                     $item->pengeluaran,
                     $item->stok_akhir,
+                    $item->harga_hpp ?? 0,
+                    $total_nilai,
                     $jenis,
                     $item->keterangan
                 ], ';');
@@ -165,10 +185,17 @@ class LaporanStokController extends Controller
             1 => 'Penerimaan',
             2 => 'Retur ke Supplier',
             4 => 'Stok Opname',
-            5 => 'Pengeluaran Internal',
-            6 => 'Penjualan (Kasir)'
+            6 => 'Penjualan (Kasir)',
+            7 => 'Retur / Batal (Kasir)',
+            8 => 'Pengeluaran Internal',
+            9 => 'Penerimaan Internal'
         ];
 
-        return view('gudang.laporan_stok_cetak', compact('data', 'startDate', 'endDate', 'jenisTransaksiMap'));
+        $id_modul = Session::get('active_modul');
+        $kode_bagian_modul = $id_modul ? DB::table('dc_modul')->where('id_dc_modul', $id_modul)->value('kode_bagian') : null;
+        $kode_bagian = $kode_bagian_modul ?? Session::get('kode_bagian') ?? '070101';
+        $nama_bagian = DB::table('mt_bagian')->where('kode_bagian', $kode_bagian)->value('nama_bagian') ?? 'Depo Utama';
+
+        return view('gudang.laporan_stok_cetak', compact('data', 'startDate', 'endDate', 'jenisTransaksiMap', 'kode_bagian', 'nama_bagian'));
     }
 }
