@@ -260,6 +260,7 @@ Route::middleware(['web', 'check.permission'])->group(function () {
 
     Route::prefix('gudang')->name('gudang.')->group(function () {
         Route::get('/stok-gudang', [StokGudangController::class, 'index'])->name('stok-gudang.index');
+        Route::get('/stok-gudang/riwayat', [StokGudangController::class, 'riwayat'])->name('stok-gudang.riwayat');
         Route::post('/stok-gudang', [StokGudangController::class, 'store'])->name('stok-gudang.store');
 
         Route::get('/permintaan-pembelian', [PermintaanPembelianController::class, 'index']);
@@ -276,6 +277,17 @@ Route::middleware(['web', 'check.permission'])->group(function () {
         Route::get('/return-supplier/create/{id}', [App\Http\Controllers\Gudang\ReturnSupplierController::class, 'create'])->name('return-supplier.create');
         Route::post('/return-supplier', [App\Http\Controllers\Gudang\ReturnSupplierController::class, 'store'])->name('return-supplier.store');
         Route::get('/api/return-supplier/{kode}/details', [App\Http\Controllers\Gudang\ReturnSupplierController::class, 'getReturnDetails'])->name('api.return.details');
+
+        Route::get('/pengeluaran-barang', [App\Http\Controllers\Gudang\PengeluaranBarangController::class, 'index'])->name('pengeluaran-barang.index');
+        Route::get('/pengeluaran-barang/create', [App\Http\Controllers\Gudang\PengeluaranBarangController::class, 'create'])->name('pengeluaran-barang.create');
+        Route::get('/pengeluaran-barang/{id}', [App\Http\Controllers\Gudang\PengeluaranBarangController::class, 'show'])->name('pengeluaran-barang.show');
+        Route::post('/pengeluaran-barang', [App\Http\Controllers\Gudang\PengeluaranBarangController::class, 'store'])->name('pengeluaran-barang.store');
+        Route::get('/api/search-barang-stok', [App\Http\Controllers\Gudang\PengeluaranBarangController::class, 'apiSearchBarang'])->name('api.search-barang-stok');
+
+        Route::get('/laporan-stok', [App\Http\Controllers\Gudang\LaporanStokController::class, 'index'])->name('laporan-stok.index');
+        Route::get('/laporan-stok/export', [App\Http\Controllers\Gudang\LaporanStokController::class, 'exportCsv'])->name('laporan-stok.export');
+        Route::get('/laporan-stok/cetak', [App\Http\Controllers\Gudang\LaporanStokController::class, 'cetak'])->name('laporan-stok.cetak');
+        Route::get('/api/search-barang-master', [App\Http\Controllers\Gudang\LaporanStokController::class, 'searchBarang'])->name('api.search-barang-master');
     });
 
     // Helper API

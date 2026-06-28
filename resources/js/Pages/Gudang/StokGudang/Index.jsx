@@ -64,6 +64,21 @@ export default function StokGudangIndex({ barang, filters, flash }) {
                     </div>
                 </div>
 
+                {/* Tabs */}
+                <div className="flex border-b border-gray-200 dark:border-gray-700">
+                    <button 
+                        className="px-6 py-3 font-medium text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400"
+                    >
+                        Daftar Barang (Opname)
+                    </button>
+                    <button 
+                        onClick={() => router.get('/gudang/stok-gudang/riwayat')}
+                        className="px-6 py-3 font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 border-b-2 border-transparent"
+                    >
+                        Riwayat Opname
+                    </button>
+                </div>
+
                 {/* Flash Messages */}
                 {flash?.success && (
                     <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative">

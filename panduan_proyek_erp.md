@@ -196,3 +196,12 @@ Maka Agen AI akan memuat dokumen ini dan langsung memiliki ingatan yang seragam.
   - **Efek Persediaan:** Memotong kembali stok di gudang dan merekamnya sebagai pengeluaran/retur pada Kartu Stok.
   - **Efek Finansial (Credit Note):** Menerbitkan jurnal minus otomatis ke `transaksi_hutang` agar total hutang perusahaan ke *supplier* ikut terpotong sejumlah nilai barang yang dikembalikan.
 - **Agenda Modul Gudang Lanjutan:** Disepakati bahwa sebelum menginjak Modul Finansial & Akuntansi Inti, sistem harus terlebih dahulu diperkuat dengan fitur *Internal Issue* (Distribusi Barang Antar Unit), Stok Opname Terpusat, dan Laporan Saldo Persediaan Gudang (sebagai dasar kalkulasi *Cost of Goods Sold* atau HPP).
+
+### Tahap 21: Modul Gudang Lanjutan (Stok Opname, Laporan, & Pengeluaran Internal)
+- **Stok Opname (Audit Inventaris):** Menyempurnakan fungsionalitas Stok Opname Gudang (Penyesuaian Stok Fisik). Memperbaiki *bug* kalkulasi selisih stok (konversi tipe data antara nvarchar dan int) saat barang disesuaikan. Memastikan rekaman tersimpan sempurna di Kartu Stok (`jenis_transaksi = 4`).
+- **Laporan Stok Gudang (Inventory Balance):** Membangun layar Laporan Stok komprehensif yang bisa difilter berdasarkan bulan, tahun, dan *Search Term* barang. Menyertakan kapabilitas Cetak PDF (*Print View*) dan Ekspor ke format CSV yang rapi saat dibuka di Microsoft Excel. Laporan ini menjadi pondasi dasar penilaian persediaan (Inventory Valuation).
+- **Pengeluaran Internal (Transfer Antar-Unit):** Mengimplementasikan fitur *Internal Issue* atau pengiriman barang dari Gudang Utama (`070101`) ke bagian/unit lain di dalam perusahaan.
+  - **Efek Ganda Persediaan:** Mutasi ini memotong stok dari Bagian Asal (Gudang Utama) dengan mencatat rekaman `jenis_transaksi = 8` (Pengeluaran Internal), sekaligus menambah stok di Bagian Tujuan dengan mencatat `jenis_transaksi = 9` (Penerimaan Internal).
+  - Jika barang belum pernah ada di unit tujuan, sistem otomatis membuatkan baris *stok* baru untuk unit tersebut.
+  - **Detail Riwayat Transaksi:** Menyediakan Modal Detail Riwayat (Pop-up) untuk melacak Nomor Dokumen, Petugas Pengirim, dan rincian item beserta kuantitasnya secara rinci tanpa perlu berpindah halaman.
+- **Kesiapan Modul Keuangan:** Setelah siklus logistik dan pergudangan tuntas, sistem resmi dinyatakan siap untuk transisi ke rancang bangun **Modul Akuntansi, Manajemen, dan Keuangan** (General Ledger, Chart of Accounts, Journal Entries).

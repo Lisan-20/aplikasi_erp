@@ -64,8 +64,8 @@ class StokGudangController extends Controller
                 ->where('kode_bagian', $kode_bagian)
                 ->first();
 
-            $stok_awal = $stokExist ? $stokExist->jml_sat_kcl : 0;
-            $selisih = $stok_aktual - $stok_awal;
+            $stok_awal = $stokExist ? (float) $stokExist->jml_sat_kcl : 0;
+            $selisih = (float) $stok_aktual - $stok_awal;
 
             if ($selisih == 0) {
                 DB::rollBack();
@@ -91,8 +91,8 @@ class StokGudangController extends Controller
             $jenis = DB::table('mt_jenis_kartu_stok')->where('jenis_transaksi', $jenis_transaksi)->first();
             $keterangan = $jenis ? $jenis->nama_jenis : 'Stok Opname';
 
-            $pemasukan = $selisih > 0 ? $selisih : 0;
-            $pengeluaran = $selisih < 0 ? abs($selisih) : 0;
+            $pemasukan = (float) ($selisih > 0 ? $selisih : 0);
+            $pengeluaran = (float) ($selisih < 0 ? abs($selisih) : 0);
 
             $id_dd_user = Session::get('id_dd_user');
             if (!$id_dd_user) {
@@ -105,11 +105,22 @@ class StokGudangController extends Controller
                 'stok_awal' => $stok_awal,
                 'pemasukan' => $pemasukan,
                 'pengeluaran' => $pengeluaran,
-                'stok_akhir' => $stok_aktual,
+                'stok_akhir' => (float) $stok_aktual,
                 'jenis_transaksi' => $jenis_transaksi,
                 'kode_bagian' => $kode_bagian,
                 'petugas' => $id_dd_user,
                 'keterangan' => $keterangan,
+            ]);
+
+            // Catat ke Riwayat Stok Opname (tc_stok_opname_brg)
+            $no_induk = Session::get('no_induk') ?: (auth()->user() ? auth()->user()->username : 'SYSTEM');
+            DB::table('tc_stok_opname_brg')->insert([
+                'tgl_stok_opname' => now(),
+                'kode_bagian' => $kode_bagian,
+                'kode_brg' => $kode_brg,
+                'stok_sebelum' => $stok_awal,
+                'stok_sekarang' => $stok_aktual,
+                'no_induk' => $no_induk,
             ]);
 
             DB::commit();
@@ -118,5 +129,39 @@ class StokGudangController extends Controller
             DB::rollBack();
             return redirect()->back()->with('error', 'Gagal update stok: ' . $e->getMessage());
         }
+    }
+
+    public function riwayat(Request $request)
+    {
+        $search = $request->input('search');
+
+        $query = DB::table('tc_stok_opname_brg')
+            ->join('mt_barang_jasa', 'tc_stok_opname_brg.kode_brg', '=', 'mt_barang_jasa.kode_brg')
+            ->leftJoin('mt_karyawan', 'tc_stok_opname_brg.no_induk', '=', 'mt_karyawan.no_induk')
+            ->select(
+                'tc_stok_opname_brg.*',
+                'mt_barang_jasa.nama_brg',
+                'mt_barang_jasa.satuan_kecil',
+                'mt_karyawan.nama_pegawai'
+            )
+            ->where('tc_stok_opname_brg.kode_bagian', '070101');
+
+        if ($search) {
+            $query->where(function($q) use ($search) {
+                $q->where('mt_barang_jasa.kode_brg', 'like', "%{$search}%")
+                  ->orWhere('mt_barang_jasa.nama_brg', 'like', "%{$search}%")
+                  ->orWhere('tc_stok_opname_brg.no_induk', 'like', "%{$search}%")
+                  ->orWhere('mt_karyawan.nama_pegawai', 'like', "%{$search}%");
+            });
+        }
+
+        $riwayat = $query->orderBy('tc_stok_opname_brg.tgl_stok_opname', 'desc')
+                         ->paginate(20)
+                         ->withQueryString();
+
+        return Inertia::render('Gudang/StokGudang/Riwayat', [
+            'riwayat' => $riwayat,
+            'filters' => ['search' => $search]
+        ]);
     }
 }
