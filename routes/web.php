@@ -51,6 +51,55 @@ use App\Http\Controllers\Pengadaan\PengadaanController;
 |
 */
 
+// Akuntansi Modul
+Route::prefix('akuntansi')->name('akuntansi.')->group(function () {
+    // COA Master
+    Route::get('/coa', [App\Http\Controllers\Akuntansi\CoaController::class, 'index'])->name('coa');
+    Route::post('/coa', [App\Http\Controllers\Akuntansi\CoaController::class, 'store'])->name('coa.store');
+    Route::put('/coa/{id}', [App\Http\Controllers\Akuntansi\CoaController::class, 'update'])->name('coa.update');
+    Route::delete('/coa/{id}', [App\Http\Controllers\Akuntansi\CoaController::class, 'destroy'])->name('coa.destroy');
+
+    // Jurnal Umum
+    Route::get('/jurnal', [App\Http\Controllers\Akuntansi\JurnalController::class, 'index'])->name('jurnal');
+    Route::get('/jurnal/create', [App\Http\Controllers\Akuntansi\JurnalController::class, 'create'])->name('jurnal.create');
+    Route::post('/jurnal', [App\Http\Controllers\Akuntansi\JurnalController::class, 'store'])->name('jurnal.store');
+    Route::get('/jurnal/{id}/edit', [App\Http\Controllers\Akuntansi\JurnalController::class, 'edit'])->name('jurnal.edit');
+    Route::put('/jurnal/{id}', [App\Http\Controllers\Akuntansi\JurnalController::class, 'update'])->name('jurnal.update');
+    Route::delete('/jurnal/{id}', [App\Http\Controllers\Akuntansi\JurnalController::class, 'destroy'])->name('jurnal.destroy');
+
+    // Tukar Faktur
+    Route::get('/tukar-faktur', [App\Http\Controllers\Akuntansi\TukarFakturController::class, 'index'])->name('tukar-faktur');
+    Route::post('/tukar-faktur/proses', [App\Http\Controllers\Akuntansi\TukarFakturController::class, 'proses'])->name('tukar-faktur.proses');
+
+    // Laporan Keuangan
+    Route::prefix('laporan')->name('laporan.')->group(function () {
+        Route::get('/buku-besar', [App\Http\Controllers\Akuntansi\LaporanKeuanganController::class, 'bukuBesar'])->name('buku-besar');
+        Route::get('/neraca-saldo', [App\Http\Controllers\Akuntansi\LaporanKeuanganController::class, 'neracaSaldo'])->name('neraca-saldo');
+        Route::get('/laba-rugi', [App\Http\Controllers\Akuntansi\LaporanKeuanganController::class, 'labaRugi'])->name('laba-rugi');
+    });
+
+    // Pembayaran Hutang dipindah ke Keuangan
+});
+
+// Keuangan Modul
+Route::prefix('keuangan')->name('keuangan.')->group(function () {
+    // Pembayaran Hutang
+    Route::get('/pembayaran-hutang', [App\Http\Controllers\Keuangan\PembayaranHutangController::class, 'index'])->name('pembayaran-hutang');
+    Route::post('/pembayaran-hutang/proses', [App\Http\Controllers\Keuangan\PembayaranHutangController::class, 'proses'])->name('pembayaran-hutang.proses');
+
+    // Penerimaan Piutang
+    Route::get('/penerimaan-piutang', [App\Http\Controllers\Keuangan\PenerimaanPiutangController::class, 'index'])->name('penerimaan-piutang');
+    Route::post('/penerimaan-piutang/proses', [App\Http\Controllers\Keuangan\PenerimaanPiutangController::class, 'proses'])->name('penerimaan-piutang.proses');
+});
+
+// Kasir B2B Modul
+Route::prefix('kasir')->name('kasir.')->group(function () {
+    // Faktur Penjualan (B2B)
+    Route::get('/faktur', [App\Http\Controllers\Penjualan\FakturPenjualanController::class, 'index'])->name('faktur.index');
+    Route::get('/faktur/create', [App\Http\Controllers\Penjualan\FakturPenjualanController::class, 'create'])->name('faktur.create');
+    Route::post('/faktur', [App\Http\Controllers\Penjualan\FakturPenjualanController::class, 'store'])->name('faktur.store');
+});
+
 // Auth Routes
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.post');

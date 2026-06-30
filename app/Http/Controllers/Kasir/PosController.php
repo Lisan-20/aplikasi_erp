@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 use Inertia\Inertia;
+use App\Helpers\JurnalHelper;
 
 class PosController extends Controller
 {
@@ -157,6 +158,8 @@ class PosController extends Controller
                 'uang_kembali' => $uang_kembali,
             ]);
 
+            $total_hpp = 0;
+
             // Process Items
             foreach ($items as $item) {
                 $kode_brg = $item['kode_brg'];
@@ -203,6 +206,8 @@ class PosController extends Controller
                         'petugas' => $id_dd_user,
                         'keterangan' => 'Penjualan No. '.$no_registrasi,
                     ]);
+                    
+                    $total_hpp += (float) $currentHpp * (int) $qty;
                 }
 
                 // Insert to tc_trans_kasir_detail
@@ -216,6 +221,24 @@ class PosController extends Controller
                     'tgl_input' => $tglJam,
                 ]);
             }
+
+            // JURNAL OTOMATIS POS KASIR
+            // Debit: Kas (1111) sebesar $bill (Asumsi tunai/retail)
+            // Kredit: Pendapatan Penjualan (4111) sebesar $bill
+            // Debit: HPP (5111) sebesar $total_hpp
+            // Kredit: Persediaan (1131) sebesar $total_hpp
+            
+            JurnalHelper::buatJurnalOtomatis(
+                $no_registrasi,
+                date('Y-m-d'),
+                "Penjualan Kasir POS (No: {$no_registrasi})",
+                [
+                    ['kode_akun' => '1111', 'posisi' => 'debit', 'nominal' => $bill, 'keterangan' => 'Penerimaan Kasir'],
+                    ['kode_akun' => '4111', 'posisi' => 'kredit', 'nominal' => $bill, 'keterangan' => 'Pendapatan Kasir'],
+                    ['kode_akun' => '5111', 'posisi' => 'debit', 'nominal' => $total_hpp, 'keterangan' => 'HPP Kasir'],
+                    ['kode_akun' => '1131', 'posisi' => 'kredit', 'nominal' => $total_hpp, 'keterangan' => 'Persediaan Keluar Kasir'],
+                ]
+            );
 
             DB::commit();
 

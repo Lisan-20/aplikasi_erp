@@ -27,6 +27,7 @@
                 } catch (e) {}
             })();
         </script>
+        @routes
         @inertiaHead
     </head>
     <body class="font-sans antialiased text-slate-900 bg-slate-50 dark:bg-slate-900 dark:text-slate-100" style="margin: 0; padding: 0;">
